@@ -61,7 +61,11 @@ export const translations = {
       connected: 'Connected',
       disconnected: 'Disconnected',
       welcome: 'Welcome',
-      type: 'Type'
+      type: 'Type',
+      as: 'as',
+      or: 'or',
+      date: 'Date',
+      status: 'Status'
     },
     navigation: {
       home: 'Home',
@@ -156,6 +160,8 @@ export const translations = {
       login: 'Worker Login',
       dashboard: 'Worker Dashboard',
       profile: 'Worker Profile',
+      manageProfile: 'Manage your profile information',
+      identityInfo: 'Identity Information',
       identifyYourself: 'Identify Yourself',
       aadharNumber: 'Aadhar Card Number',
       generateOtp: 'Generate OTP',
@@ -271,12 +277,16 @@ export const translations = {
       checkInError: 'Failed to check in. Please try again.',
       checkOutError: 'Failed to check out. Please try again.',
       recentAttendance: 'Recent Attendance',
+      attendanceHistory: 'Attendance History',
+      viewAttendanceHistory: 'View your attendance history and reports',
+      dailyAttendance: 'Daily Attendance',
       partial: 'Partial Day',
       totalDays: 'Total Days',
+      totalHours: 'Total Hours',
+      hours: 'Hours',
       notifications: 'Notifications',
       quickActions: 'Quick Actions',
       viewProfile: 'View Profile',
-      attendanceHistory: 'Attendance History',
       updateDocuments: 'Update Documents'
     },
     establishment: {
@@ -348,7 +358,15 @@ export const translations = {
       attendanceReport: 'Attendance Report',
       complianceReport: 'Compliance Report',
       safetyReport: 'Safety Report',
-      establishment: 'Establishment'
+      establishment: 'Establishment',
+      totalWorkers: 'Total Workers',
+      activeWorkers: 'Active Workers',
+      pendingRegistrations: 'Pending Registrations',
+      complianceScore: 'Compliance Score',
+      manageWorkers: 'Manage your workers and their registrations',
+      viewAttendanceReports: 'View attendance reports and analytics',
+      viewComplianceStatus: 'View compliance status and reports',
+      workers: 'Workers'
     },
     department: {
       login: 'Department Login',
@@ -414,7 +432,15 @@ export const translations = {
       activateRegistration: 'Activate Registration',
       locationMap: 'Location Map',
       statistics: 'Statistics',
-      department: 'Department'
+      department: 'Department',
+      workers: 'Workers',
+      applications: 'Applications',
+      roles: {
+        acl: 'ACL (Assistant Commissioner of Labour)',
+        dcl: 'DCL (Deputy Commissioner of Labour)',
+        addlCommissioner: 'Additional Commissioner',
+        commissioner: 'Commissioner'
+      }
     },
     forms: {
       validation: {
@@ -541,7 +567,16 @@ export const translations = {
       days: 'days',
       weeks: 'weeks',
       months: 'months',
-      years: 'years'
+      years: 'years',
+      month: 'Month',
+      year: 'Year'
+    },
+    errors: {
+      pageNotFound: 'Page Not Found',
+      pageNotFoundDesc: 'The page you are looking for does not exist or has been moved.',
+      serverError: 'Server Error',
+      networkError: 'Network Error',
+      accessDenied: 'Access Denied'
     },
     pwa: {
       installApp: 'Install App',
@@ -626,7 +661,11 @@ export const translations = {
       connected: 'కనెక్ట్ అయింది',
       disconnected: 'డిస్‌కనెక్ట్ అయింది',
       welcome: 'స్వాగతం',
-      type: 'రకం'
+      type: 'రకం',
+      as: 'గా',
+      or: 'లేదా',
+      date: 'తేదీ',
+      status: 'స్థితి'
     },
     navigation: {
       home: 'హోమ్',
@@ -721,6 +760,8 @@ export const translations = {
       login: 'కార్మిక లాగిన్',
       dashboard: 'కార్మిక డాష్‌బోర్డ్',
       profile: 'కార్మిక ప్రొఫైల్',
+      manageProfile: 'మీ ప్రొఫైల్ సమాచారాన్ని నిర్వహించండి',
+      identityInfo: 'గుర్తింపు సమాచారం',
       identifyYourself: 'మిమ్మల్ని గుర్తించండి',
       aadharNumber: 'ఆధార్ కార్డ్ నంబర్',
       generateOtp: 'OTP జనరేట్ చేయండి',
@@ -836,12 +877,16 @@ export const translations = {
       checkInError: 'చెక్ ఇన్ విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి.',
       checkOutError: 'చెక్ అవుట్ విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి.',
       recentAttendance: 'ఇటీవలి హాజరు',
+      attendanceHistory: 'హాజరు చరిత్ర',
+      viewAttendanceHistory: 'మీ హాజరు చరిత్ర మరియు నివేదికలను చూడండి',
+      dailyAttendance: 'రోజువారీ హాజరు',
       partial: 'పాక్షిక రోజు',
       totalDays: 'మొత్తం రోజులు',
+      totalHours: 'మొత్తం గంటలు',
+      hours: 'గంటలు',
       notifications: 'నోటిఫికేషన్లు',
       quickActions: 'త్వరిత చర్యలు',
       viewProfile: 'ప్రొఫైల్ చూడండి',
-      attendanceHistory: 'హాజరు చరిత్ర',
       updateDocuments: 'పత్రాలను నవీకరించండి'
     },
     establishment: {
@@ -913,12 +958,20 @@ export const translations = {
       attendanceReport: 'హాజరు నివేదిక',
       complianceReport: 'సమ్మతి నివేదిక',
       safetyReport: 'భద్రతా నివేదిక',
-      establishment: 'సంస్థ'
+      establishment: 'సంస్థ',
+      totalWorkers: 'మొత్తం కార్మికులు',
+      activeWorkers: 'చురుకైన కార్మికులు',
+      pendingRegistrations: 'పెండింగ్ నమోదులు',
+      complianceScore: 'సమ్మతి స్కోర్',
+      manageWorkers: 'మీ కార్మికులు మరియు వారి నమోదులను నిర్వహించండి',
+      viewAttendanceReports: 'హాజరు నివేదికలు మరియు విశ్లేషణలను చూడండి',
+      viewComplianceStatus: 'సమ్మతి స్థితి మరియు నివేదికలను చూడండి',
+      workers: 'కార్మికులు'
     },
     department: {
       login: 'శాఖ లాగిన్',
       dashboard: 'శాఖ డాష్‌బోర్డ్',
-      role: 'శాఖ పాత్র',
+      role: 'శాఖ పాత్ర',
       workerStats: 'కార్మిక గణాంకాలు',
       establishmentStats: 'సంస్థ గణాంకాలు',
       totalWorkers: 'మొత్తం కార్మికులు',
@@ -979,7 +1032,15 @@ export const translations = {
       activateRegistration: 'నమోదును సక్రియం చేయండి',
       locationMap: 'స్థాన మ్యాప్',
       statistics: 'గణాంకాలు',
-      department: 'శాఖ'
+      department: 'శాఖ',
+      workers: 'కార్మికులు',
+      applications: 'దరఖాస్తులు',
+      roles: {
+        acl: 'ACL (సహాయ కార్మిక కమిషనర్)',
+        dcl: 'DCL (డిప్యూటీ కార్మిక కమిషనర్)',
+        addlCommissioner: 'అదనపు కమిషనర్',
+        commissioner: 'కమిషనర్'
+      }
     },
     forms: {
       validation: {
@@ -1106,7 +1167,16 @@ export const translations = {
       days: 'రోజులు',
       weeks: 'వారాలు',
       months: 'నెలలు',
-      years: 'సంవత్సరాలు'
+      years: 'సంవత్సరాలు',
+      month: 'నెల',
+      year: 'సంవత్సరం'
+    },
+    errors: {
+      pageNotFound: 'పేజీ కనుగొనబడలేదు',
+      pageNotFoundDesc: 'మీరు వెతుకుతున్న పేజీ లేదు లేదా తరలించబడింది.',
+      serverError: 'సర్వర్ లోపం',
+      networkError: 'నెట్‌వర్క్ లోపం',
+      accessDenied: 'ప్రవేశం నిరాకరించబడింది'
     },
     pwa: {
       installApp: 'యాప్ ఇన్‌స్టాల్ చేయండి',
