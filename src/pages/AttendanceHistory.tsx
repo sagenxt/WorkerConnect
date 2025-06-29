@@ -1,37 +1,205 @@
-import React, { useState } from 'react';
-import { Calendar, Clock, MapPin, Filter, Download } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Clock, MapPin, Filter, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+
+interface AttendanceRecord {
+  id: string;
+  date: Date;
+  checkInTime?: Date;
+  checkOutTime?: Date;
+  checkInLocation?: { latitude: number; longitude: number; address: string };
+  checkOutLocation?: { latitude: number; longitude: number; address: string };
+  status: 'present' | 'absent' | 'partial' | 'holiday' | 'leave';
+  workHours?: number;
+  overtime?: number;
+  notes?: string;
+}
 
 const AttendanceHistory: React.FC = () => {
   const { t } = useLanguage();
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [loading, setLoading] = useState(true);
 
-  // Mock attendance data
-  const attendanceData = [
-    { date: '2024-01-15', checkIn: '09:00', checkOut: '17:30', status: 'present', hours: 8.5 },
-    { date: '2024-01-16', checkIn: '09:15', checkOut: '16:45', status: 'present', hours: 7.5 },
-    { date: '2024-01-17', status: 'absent', hours: 0 },
-    { date: '2024-01-18', checkIn: '09:00', checkOut: '13:00', status: 'partial', hours: 4 },
-    { date: '2024-01-19', checkIn: '08:45', checkOut: '17:45', status: 'present', hours: 9 }
-  ];
+  // Mock data generation
+  useEffect(() => {
+    const generateMockData = () => {
+      const records: AttendanceRecord[] = [];
+      const startDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+      const endDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
 
-  const getStatusColor = (status: string) => {
+      for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+        const dayOfWeek = date.getDay();
+        let status: AttendanceRecord['status'] = 'present';
+        let checkInTime: Date | undefined;
+        let checkOutTime: Date | undefined;
+        let workHours: number | undefined;
+
+        // Skip Sundays (make them holidays)
+        if (dayOfWeek === 0) {
+          status = 'holiday';
+        } else {
+          // Random attendance pattern
+          const random = Math.random();
+          if (random < 0.85) {
+            status = 'present';
+            checkInTime = new Date(date);
+            checkInTime.setHours(8 + Math.floor(Math.random() * 2), Math.floor(Math.random() * 60));
+            checkOutTime = new Date(checkInTime);
+            checkOutTime.setHours(checkInTime.getHours() + 8 + Math.floor(Math.random() * 2), Math.floor(Math.random() * 60));
+            workHours = (checkOutTime.getTime() - checkInTime.getTime()) / (1000 * 60 * 60);
+          } else if (random < 0.95) {
+            status = 'partial';
+            checkInTime = new Date(date);
+            checkInTime.setHours(9 + Math.floor(Math.random() * 3), Math.floor(Math.random() * 60));
+            workHours = 4 + Math.random() * 3;
+          } else {
+            status = 'absent';
+          }
+        }
+
+        records.push({
+          id: `${date.getTime()}`,
+          date: new Date(date),
+          checkInTime,
+          checkOutTime,
+          checkInLocation: checkInTime ? {
+            latitude: 17.3850 + (Math.random() - 0.5) * 0.01,
+            longitude: 78.4867 + (Math.random() - 0.5) * 0.01,
+            address: 'Construction Site - Hitech City'
+          } : undefined,
+          checkOutLocation: checkOutTime ? {
+            latitude: 17.3850 + (Math.random() - 0.5) * 0.01,
+            longitude: 78.4867 + (Math.random() - 0.5) * 0.01,
+            address: 'Construction Site - Hitech City'
+          } : undefined,
+          status,
+          workHours,
+          overtime: workHours && workHours > 8 ? workHours - 8 : 0,
+          notes: status === 'absent' ? 'Sick leave' : undefined
+        });
+      }
+
+      return records.reverse(); // Show latest first
+    };
+
+    setLoading(true);
+    setTimeout(() => {
+      setAttendanceRecords(generateMockData());
+      setLoading(false);
+    }, 500);
+  }, [currentMonth]);
+
+  const getStatusColor = (status: AttendanceRecord['status']) => {
     switch (status) {
-      case 'present': return 'text-green-600 bg-green-100';
-      case 'absent': return 'text-red-600 bg-red-100';
-      case 'partial': return 'text-yellow-600 bg-yellow-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'present':
+        return 'bg-green-100 text-green-800';
+      case 'partial':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'absent':
+        return 'bg-red-100 text-red-800';
+      case 'holiday':
+        return 'bg-blue-100 text-blue-800';
+      case 'leave':
+        return 'bg-purple-100 text-purple-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getStatusText = (status: string) => {
+  const getStatusText = (status: AttendanceRecord['status']) => {
     switch (status) {
-      case 'present': return t('department.present');
-      case 'absent': return t('department.absent');
-      case 'partial': return t('worker.partial');
-      default: return status;
+      case 'present':
+        return 'Present';
+      case 'partial':
+        return 'Partial';
+      case 'absent':
+        return 'Absent';
+      case 'holiday':
+        return 'Holiday';
+      case 'leave':
+        return 'Leave';
+      default:
+        return 'Unknown';
     }
+  };
+
+  const filteredRecords = selectedStatus === 'all' 
+    ? attendanceRecords 
+    : attendanceRecords.filter(record => record.status === selectedStatus);
+
+  const getMonthStats = () => {
+    const present = attendanceRecords.filter(r => r.status === 'present').length;
+    const partial = attendanceRecords.filter(r => r.status === 'partial').length;
+    const absent = attendanceRecords.filter(r => r.status === 'absent').length;
+    const holidays = attendanceRecords.filter(r => r.status === 'holiday').length;
+    const totalWorkingDays = attendanceRecords.length - holidays;
+    const totalHours = attendanceRecords.reduce((sum, record) => sum + (record.workHours || 0), 0);
+    const totalOvertime = attendanceRecords.reduce((sum, record) => sum + (record.overtime || 0), 0);
+
+    return {
+      present,
+      partial,
+      absent,
+      holidays,
+      totalWorkingDays,
+      totalHours: Math.round(totalHours * 10) / 10,
+      totalOvertime: Math.round(totalOvertime * 10) / 10,
+      attendancePercentage: totalWorkingDays > 0 ? Math.round(((present + partial) / totalWorkingDays) * 100) : 0
+    };
+  };
+
+  const stats = getMonthStats();
+
+  const navigateMonth = (direction: 'prev' | 'next') => {
+    const newMonth = new Date(currentMonth);
+    if (direction === 'prev') {
+      newMonth.setMonth(newMonth.getMonth() - 1);
+    } else {
+      newMonth.setMonth(newMonth.getMonth() + 1);
+    }
+    setCurrentMonth(newMonth);
+  };
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const exportData = () => {
+    const csvContent = [
+      ['Date', 'Status', 'Check In', 'Check Out', 'Work Hours', 'Overtime', 'Notes'],
+      ...filteredRecords.map(record => [
+        record.date.toLocaleDateString(),
+        getStatusText(record.status),
+        record.checkInTime ? formatTime(record.checkInTime) : '',
+        record.checkOutTime ? formatTime(record.checkOutTime) : '',
+        record.workHours ? record.workHours.toFixed(1) : '',
+        record.overtime ? record.overtime.toFixed(1) : '',
+        record.notes || ''
+      ])
+    ].map(row => row.join(',')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `attendance-${currentMonth.getFullYear()}-${currentMonth.getMonth() + 1}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
 
   return (
@@ -39,147 +207,191 @@ const AttendanceHistory: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+            Attendance History
+          </h1>
+          <p className="text-gray-600">
+            Track your daily attendance and work hours
+          </p>
+        </div>
+
+        {/* Month Navigation */}
+        <div className="card-mobile mb-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Calendar className="h-8 w-8 text-blue-600" />
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-                  {t('worker.attendanceHistory')}
-                </h1>
-                <p className="text-gray-600">
-                  {t('worker.viewAttendanceHistory')}
-                </p>
-              </div>
-            </div>
-            <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-              <Download className="h-4 w-4 mr-2" />
-              {t('common.download')}
+            <button
+              onClick={() => navigateMonth('prev')}
+              className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <ChevronLeft className="h-5 w-5 mr-1" />
+              Previous
+            </button>
+            
+            <h2 className="text-xl font-semibold text-gray-900">
+              {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+            </h2>
+            
+            <button
+              onClick={() => navigateMonth('next')}
+              disabled={currentMonth.getMonth() === new Date().getMonth() && currentMonth.getFullYear() === new Date().getFullYear()}
+              className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+              <ChevronRight className="h-5 w-5 ml-1" />
             </button>
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="card-mobile mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">
-              {t('common.filter')}
-            </h3>
-            <Filter className="h-5 w-5 text-gray-500" />
+        {/* Statistics */}
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
+          <div className="card-mobile text-center">
+            <div className="text-2xl font-bold text-green-600">{stats.present}</div>
+            <div className="text-sm text-gray-600">Present</div>
           </div>
-          
-          <div className="grid md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('time.month')}
-              </label>
-              <select
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                {Array.from({ length: 12 }, (_, i) => (
-                  <option key={i} value={i}>
-                    {new Date(2024, i, 1).toLocaleString('default', { month: 'long' })}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('time.year')}
-              </label>
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value={2024}>2024</option>
-                <option value={2023}>2023</option>
-                <option value={2022}>2022</option>
-              </select>
-            </div>
-            
-            <div className="flex items-end">
-              <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                {t('common.apply')}
-              </button>
-            </div>
+          <div className="card-mobile text-center">
+            <div className="text-2xl font-bold text-yellow-600">{stats.partial}</div>
+            <div className="text-sm text-gray-600">Partial</div>
+          </div>
+          <div className="card-mobile text-center">
+            <div className="text-2xl font-bold text-red-600">{stats.absent}</div>
+            <div className="text-sm text-gray-600">Absent</div>
+          </div>
+          <div className="card-mobile text-center">
+            <div className="text-2xl font-bold text-blue-600">{stats.holidays}</div>
+            <div className="text-sm text-gray-600">Holidays</div>
+          </div>
+          <div className="card-mobile text-center">
+            <div className="text-2xl font-bold text-purple-600">{stats.totalHours}h</div>
+            <div className="text-sm text-gray-600">Total Hours</div>
+          </div>
+          <div className="card-mobile text-center">
+            <div className="text-2xl font-bold text-indigo-600">{stats.attendancePercentage}%</div>
+            <div className="text-sm text-gray-600">Attendance</div>
           </div>
         </div>
 
-        {/* Summary Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="card-mobile text-center">
-            <div className="text-2xl font-bold text-green-600">18</div>
-            <div className="text-sm text-gray-600">{t('department.present')}</div>
-          </div>
-          <div className="card-mobile text-center">
-            <div className="text-2xl font-bold text-red-600">2</div>
-            <div className="text-sm text-gray-600">{t('department.absent')}</div>
-          </div>
-          <div className="card-mobile text-center">
-            <div className="text-2xl font-bold text-yellow-600">1</div>
-            <div className="text-sm text-gray-600">{t('worker.partial')}</div>
-          </div>
-          <div className="card-mobile text-center">
-            <div className="text-2xl font-bold text-blue-600">162</div>
-            <div className="text-sm text-gray-600">{t('worker.totalHours')}</div>
+        {/* Filters and Actions */}
+        <div className="card-mobile mb-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+            <div className="flex items-center space-x-4">
+              <Filter className="h-5 w-5 text-gray-500" />
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="all">All Status</option>
+                <option value="present">Present</option>
+                <option value="partial">Partial</option>
+                <option value="absent">Absent</option>
+                <option value="holiday">Holiday</option>
+                <option value="leave">Leave</option>
+              </select>
+            </div>
+            
+            <button
+              onClick={exportData}
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export CSV
+            </button>
           </div>
         </div>
 
-        {/* Attendance Table */}
+        {/* Attendance Records */}
         <div className="card-mobile">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">
-            {t('worker.dailyAttendance')}
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Daily Records ({filteredRecords.length} entries)
           </h3>
           
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('common.date')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('worker.checkIn')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('worker.checkOut')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('common.status')}</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">{t('worker.hours')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {attendanceData.map((record, index) => (
-                  <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4 text-gray-900">
-                      {new Date(record.date).toLocaleDateString()}
-                    </td>
-                    <td className="py-3 px-4 text-gray-600">
-                      {record.checkIn ? (
-                        <div className="flex items-center">
-                          <Clock className="h-4 w-4 mr-1 text-green-500" />
-                          {record.checkIn}
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="text-gray-600 mt-2">Loading attendance data...</p>
+            </div>
+          ) : filteredRecords.length === 0 ? (
+            <div className="text-center py-8">
+              <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600">No attendance records found for the selected filter.</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {filteredRecords.map((record) => (
+                <div key={record.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-3">
+                      <Calendar className="h-5 w-5 text-gray-500" />
+                      <div>
+                        <p className="font-medium text-gray-900">{formatDate(record.date)}</p>
+                        <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(record.status)}`}>
+                          {getStatusText(record.status)}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {record.workHours && (
+                      <div className="text-right">
+                        <p className="text-sm font-medium text-gray-900">
+                          {record.workHours.toFixed(1)} hours
+                        </p>
+                        {record.overtime && record.overtime > 0 && (
+                          <p className="text-xs text-orange-600">
+                            +{record.overtime.toFixed(1)}h overtime
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  
+                  {(record.checkInTime || record.checkOutTime) && (
+                    <div className="grid md:grid-cols-2 gap-4 mt-3 pt-3 border-t border-gray-100">
+                      {record.checkInTime && (
+                        <div className="flex items-center space-x-2">
+                          <Clock className="h-4 w-4 text-green-600" />
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              Check In: {formatTime(record.checkInTime)}
+                            </p>
+                            {record.checkInLocation && (
+                              <p className="text-xs text-gray-600 flex items-center">
+                                <MapPin className="h-3 w-3 mr-1" />
+                                {record.checkInLocation.address}
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      ) : '-'}
-                    </td>
-                    <td className="py-3 px-4 text-gray-600">
-                      {record.checkOut ? (
-                        <div className="flex items-center">
-                          <Clock className="h-4 w-4 mr-1 text-red-500" />
-                          {record.checkOut}
+                      )}
+                      
+                      {record.checkOutTime && (
+                        <div className="flex items-center space-x-2">
+                          <Clock className="h-4 w-4 text-red-600" />
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              Check Out: {formatTime(record.checkOutTime)}
+                            </p>
+                            {record.checkOutLocation && (
+                              <p className="text-xs text-gray-600 flex items-center">
+                                <MapPin className="h-3 w-3 mr-1" />
+                                {record.checkOutLocation.address}
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      ) : '-'}
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(record.status)}`}>
-                        {getStatusText(record.status)}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-gray-900 font-medium">
-                      {record.hours}h
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {record.notes && (
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Notes:</span> {record.notes}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
