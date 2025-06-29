@@ -220,3 +220,4 @@ For support and questions:
 
 **Note**: This application is designed to work seamlessly across web browsers, as a PWA, and as native mobile apps. The responsive design and mobile optimizations ensure a consistent experience across all platforms.# WorkerConnect
 # WorkerConnect
+# WorkerConnect
