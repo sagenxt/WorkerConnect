@@ -20,25 +20,25 @@ const DepartmentLogin: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const departmentRoles = [
-    { value: 'acl', label: 'ACL (Assistant Commissioner of Labour)' },
-    { value: 'dcl', label: 'DCL (Deputy Commissioner of Labour)' },
-    { value: 'addl_commissioner', label: 'Additional Commissioner' },
-    { value: 'commissioner', label: 'Commissioner' }
+    { value: 'acl', label: t('department.roles.acl') || 'ACL (Assistant Commissioner of Labour)' },
+    { value: 'dcl', label: t('department.roles.dcl') || 'DCL (Deputy Commissioner of Labour)' },
+    { value: 'addl_commissioner', label: t('department.roles.addlCommissioner') || 'Additional Commissioner' },
+    { value: 'commissioner', label: t('department.roles.commissioner') || 'Commissioner' }
   ];
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
+      newErrors.username = t('forms.validation.required');
     }
 
     if (!formData.password.trim()) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('forms.validation.required');
     }
 
     if (!formData.role) {
-      newErrors.role = 'Please select your role';
+      newErrors.role = t('forms.validation.required');
     }
 
     setErrors(newErrors);
@@ -78,7 +78,7 @@ const DepartmentLogin: React.FC = () => {
             {t('landing.loginAsDepartment')}
           </h2>
           <p className="mt-2 text-gray-600">
-            Sign in to your department account
+            {t('department.login')}
           </p>
         </div>
 
@@ -86,11 +86,11 @@ const DepartmentLogin: React.FC = () => {
           <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
             <div className="space-y-4">
               <FormSelect
-                label="Department Role"
+                label={t('department.role')}
                 value={formData.role}
                 onChange={(value) => setFormData(prev => ({ ...prev, role: value }))}
                 options={departmentRoles}
-                placeholder="Select your role"
+                placeholder={t('forms.placeholders.selectOption')}
                 required
                 error={errors.role}
               />
@@ -98,11 +98,11 @@ const DepartmentLogin: React.FC = () => {
               <div className="relative">
                 <User className="absolute left-3 top-10 h-5 w-5 text-gray-400" />
                 <FormInput
-                  label="Username"
+                  label={t('auth.username')}
                   type="text"
                   value={formData.username}
                   onChange={(value) => setFormData(prev => ({ ...prev, username: value }))}
-                  placeholder="Enter your username"
+                  placeholder={t('auth.username')}
                   required
                   error={errors.username}
                   className="pl-10"
@@ -112,11 +112,11 @@ const DepartmentLogin: React.FC = () => {
               <div className="relative">
                 <Lock className="absolute left-3 top-10 h-5 w-5 text-gray-400" />
                 <FormInput
-                  label="Password"
+                  label={t('auth.password')}
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={(value) => setFormData(prev => ({ ...prev, password: value }))}
-                  placeholder="Enter your password"
+                  placeholder={t('auth.password')}
                   required
                   error={errors.password}
                   className="pl-10 pr-10"
@@ -136,7 +136,7 @@ const DepartmentLogin: React.FC = () => {
                 to="/forgot-password"
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                Forgot your password?
+                {t('auth.forgotPassword')}
               </Link>
             </div>
 
@@ -145,20 +145,20 @@ const DepartmentLogin: React.FC = () => {
               disabled={isLoading}
               className="w-full mt-6 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isLoading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? t('auth.signingIn') : t('auth.signIn')}
             </button>
           </div>
         </form>
 
         <div className="text-center">
           <p className="text-sm text-gray-500">
-            Login as{' '}
+            {t('navigation.login')} {t('common.as')}{' '}
             <Link to="/login/worker" className="text-green-600 hover:text-green-700">
-              Worker
+              {t('worker.login')}
             </Link>
-            {' or '}
+            {' '}{t('common.or')}{' '}
             <Link to="/login/establishment" className="text-orange-600 hover:text-orange-700">
-              Establishment
+              {t('establishment.login')}
             </Link>
           </p>
         </div>

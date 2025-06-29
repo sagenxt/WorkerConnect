@@ -21,13 +21,13 @@ const WorkerLogin: React.FC = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.mobile.trim()) {
-      newErrors.mobile = 'Mobile number is required';
+      newErrors.mobile = t('forms.validation.mobile');
     } else if (!/^\d{10}$/.test(formData.mobile.trim())) {
-      newErrors.mobile = 'Please enter a valid 10-digit mobile number';
+      newErrors.mobile = t('forms.validation.mobile');
     }
 
     if (!formData.password.trim()) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('forms.validation.required');
     }
 
     setErrors(newErrors);
@@ -67,7 +67,7 @@ const WorkerLogin: React.FC = () => {
             {t('landing.loginAsWorker')}
           </h2>
           <p className="mt-2 text-gray-600">
-            Sign in to your worker account
+            {t('worker.login')}
           </p>
         </div>
 
@@ -77,11 +77,11 @@ const WorkerLogin: React.FC = () => {
               <div className="relative">
                 <Phone className="absolute left-3 top-10 h-5 w-5 text-gray-400" />
                 <FormInput
-                  label="Mobile Number"
+                  label={t('worker.mobileNumber')}
                   type="tel"
                   value={formData.mobile}
                   onChange={(value) => setFormData(prev => ({ ...prev, mobile: value }))}
-                  placeholder="Enter your mobile number"
+                  placeholder={t('forms.placeholders.enterMobile')}
                   required
                   maxLength={10}
                   pattern="[0-9]*"
@@ -93,11 +93,11 @@ const WorkerLogin: React.FC = () => {
               <div className="relative">
                 <Lock className="absolute left-3 top-10 h-5 w-5 text-gray-400" />
                 <FormInput
-                  label="Password"
+                  label={t('auth.password')}
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={(value) => setFormData(prev => ({ ...prev, password: value }))}
-                  placeholder="Enter your password"
+                  placeholder={t('auth.password')}
                   required
                   error={errors.password}
                   className="pl-10 pr-10"
@@ -117,7 +117,7 @@ const WorkerLogin: React.FC = () => {
                 to="/forgot-password"
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                Forgot your password?
+                {t('auth.forgotPassword')}
               </Link>
             </div>
 
@@ -126,32 +126,32 @@ const WorkerLogin: React.FC = () => {
               disabled={isLoading}
               className="w-full mt-6 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isLoading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? t('auth.signingIn') : t('auth.signIn')}
             </button>
           </div>
         </form>
 
         <div className="text-center">
           <p className="text-gray-600">
-            Don't have an account?{' '}
+            {t('auth.dontHaveAccount')}{' '}
             <Link
               to="/register/worker"
               className="font-medium text-green-600 hover:text-green-700"
             >
-              Register as Worker
+              {t('landing.registerAsWorker')}
             </Link>
           </p>
         </div>
 
         <div className="text-center">
           <p className="text-sm text-gray-500">
-            Login as{' '}
+            {t('navigation.login')} {t('common.as')}{' '}
             <Link to="/login/establishment" className="text-orange-600 hover:text-orange-700">
-              Establishment
+              {t('establishment.establishment')}
             </Link>
-            {' or '}
+            {' '}{t('common.or')}{' '}
             <Link to="/login/department" className="text-blue-600 hover:text-blue-700">
-              Department
+              {t('department.department')}
             </Link>
           </p>
         </div>

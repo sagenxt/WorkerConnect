@@ -21,13 +21,13 @@ const EstablishmentLogin: React.FC = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('forms.validation.email');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = t('forms.validation.email');
     }
 
     if (!formData.password.trim()) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('forms.validation.required');
     }
 
     setErrors(newErrors);
@@ -67,7 +67,7 @@ const EstablishmentLogin: React.FC = () => {
             {t('landing.loginAsEstablishment')}
           </h2>
           <p className="mt-2 text-gray-600">
-            Sign in to your establishment account
+            {t('establishment.login')}
           </p>
         </div>
 
@@ -77,11 +77,11 @@ const EstablishmentLogin: React.FC = () => {
               <div className="relative">
                 <Mail className="absolute left-3 top-10 h-5 w-5 text-gray-400" />
                 <FormInput
-                  label="Email Address"
+                  label={t('auth.email')}
                   type="email"
                   value={formData.email}
                   onChange={(value) => setFormData(prev => ({ ...prev, email: value }))}
-                  placeholder="Enter your email address"
+                  placeholder={t('forms.placeholders.enterEmail')}
                   required
                   error={errors.email}
                   className="pl-10"
@@ -91,11 +91,11 @@ const EstablishmentLogin: React.FC = () => {
               <div className="relative">
                 <Lock className="absolute left-3 top-10 h-5 w-5 text-gray-400" />
                 <FormInput
-                  label="Password"
+                  label={t('auth.password')}
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={(value) => setFormData(prev => ({ ...prev, password: value }))}
-                  placeholder="Enter your password"
+                  placeholder={t('auth.password')}
                   required
                   error={errors.password}
                   className="pl-10 pr-10"
@@ -115,7 +115,7 @@ const EstablishmentLogin: React.FC = () => {
                 to="/forgot-password"
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                Forgot your password?
+                {t('auth.forgotPassword')}
               </Link>
             </div>
 
@@ -124,32 +124,32 @@ const EstablishmentLogin: React.FC = () => {
               disabled={isLoading}
               className="w-full mt-6 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isLoading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? t('auth.signingIn') : t('auth.signIn')}
             </button>
           </div>
         </form>
 
         <div className="text-center">
           <p className="text-gray-600">
-            Don't have an account?{' '}
+            {t('auth.dontHaveAccount')}{' '}
             <Link
               to="/register/establishment"
               className="font-medium text-orange-600 hover:text-orange-700"
             >
-              Register as Establishment
+              {t('landing.registerAsEstablishment')}
             </Link>
           </p>
         </div>
 
         <div className="text-center">
           <p className="text-sm text-gray-500">
-            Login as{' '}
+            {t('navigation.login')} {t('common.as')}{' '}
             <Link to="/login/worker" className="text-green-600 hover:text-green-700">
-              Worker
+              {t('worker.login')}
             </Link>
-            {' or '}
+            {' '}{t('common.or')}{' '}
             <Link to="/login/department" className="text-blue-600 hover:text-blue-700">
-              Department
+              {t('department.department')}
             </Link>
           </p>
         </div>

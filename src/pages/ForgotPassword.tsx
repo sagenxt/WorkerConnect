@@ -22,9 +22,9 @@ const ForgotPassword: React.FC = () => {
     const newErrors: Record<string, string> = {};
     
     if (!formData.mobile.trim()) {
-      newErrors.mobile = 'Mobile number is required';
+      newErrors.mobile = t('forms.validation.mobile');
     } else if (!/^\d{10}$/.test(formData.mobile.trim())) {
-      newErrors.mobile = 'Please enter a valid 10-digit mobile number';
+      newErrors.mobile = t('forms.validation.mobile');
     }
 
     setErrors(newErrors);
@@ -35,9 +35,9 @@ const ForgotPassword: React.FC = () => {
     const newErrors: Record<string, string> = {};
     
     if (!formData.otp.trim()) {
-      newErrors.otp = 'OTP is required';
+      newErrors.otp = t('forms.validation.required');
     } else if (!/^\d{6}$/.test(formData.otp.trim())) {
-      newErrors.otp = 'Please enter a valid 6-digit OTP';
+      newErrors.otp = t('worker.enterOtp');
     }
 
     setErrors(newErrors);
@@ -48,15 +48,15 @@ const ForgotPassword: React.FC = () => {
     const newErrors: Record<string, string> = {};
     
     if (!formData.newPassword.trim()) {
-      newErrors.newPassword = 'New password is required';
+      newErrors.newPassword = t('forms.validation.required');
     } else if (formData.newPassword.length < 6) {
-      newErrors.newPassword = 'Password must be at least 6 characters long';
+      newErrors.newPassword = t('forms.validation.minLength').replace('{0}', '6');
     }
 
     if (!formData.confirmPassword.trim()) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = t('forms.validation.required');
     } else if (formData.newPassword !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('forms.validation.passwordMismatch');
     }
 
     setErrors(newErrors);
@@ -72,7 +72,7 @@ const ForgotPassword: React.FC = () => {
     setTimeout(() => {
       setIsLoading(false);
       setStep(2);
-      alert('OTP sent to your mobile number');
+      alert(t('worker.otpSent'));
     }, 1000);
   };
 
@@ -96,7 +96,7 @@ const ForgotPassword: React.FC = () => {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      alert('Password reset successfully! Please login with your new password.');
+      alert(t('auth.passwordResetSent'));
       // In real app, redirect to login page
       window.location.href = '/login/worker';
     }, 1000);
@@ -109,21 +109,21 @@ const ForgotPassword: React.FC = () => {
           <div className="space-y-6">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Forgot Password
+                {t('auth.resetPassword')}
               </h2>
               <p className="text-gray-600">
-                Enter your mobile number to receive an OTP
+                {t('auth.resetPasswordDesc')}
               </p>
             </div>
 
             <div className="relative">
               <Phone className="absolute left-3 top-10 h-5 w-5 text-gray-400" />
               <FormInput
-                label="Mobile Number"
+                label={t('worker.mobileNumber')}
                 type="tel"
                 value={formData.mobile}
                 onChange={(value) => setFormData(prev => ({ ...prev, mobile: value }))}
-                placeholder="Enter your mobile number"
+                placeholder={t('forms.placeholders.enterMobile')}
                 required
                 maxLength={10}
                 pattern="[0-9]*"
@@ -138,11 +138,11 @@ const ForgotPassword: React.FC = () => {
               className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
-                'Sending OTP...'
+                t('common.loading')
               ) : (
                 <>
                   <Send className="h-4 w-4 mr-2" />
-                  Send OTP
+                  {t('worker.generateOtp')}
                 </>
               )}
             </button>
@@ -154,18 +154,18 @@ const ForgotPassword: React.FC = () => {
           <div className="space-y-6">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Verify OTP
+                {t('worker.verifyOtp')}
               </h2>
               <p className="text-gray-600">
-                Enter the 6-digit OTP sent to {formData.mobile}
+                {t('worker.otpSent')} {formData.mobile}
               </p>
             </div>
 
             <FormInput
-              label="Enter OTP"
+              label={t('worker.enterOtp')}
               value={formData.otp}
               onChange={(value) => setFormData(prev => ({ ...prev, otp: value }))}
-              placeholder="Enter 6-digit OTP"
+              placeholder={t('worker.enterOtp')}
               required
               maxLength={6}
               pattern="[0-9]*"
@@ -177,14 +177,14 @@ const ForgotPassword: React.FC = () => {
                 onClick={() => setStep(1)}
                 className="flex-1 py-3 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
               >
-                Back
+                {t('common.back')}
               </button>
               <button
                 onClick={handleVerifyOtp}
                 disabled={isLoading}
                 className="flex-1 py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
               >
-                {isLoading ? 'Verifying...' : 'Verify OTP'}
+                {isLoading ? t('common.loading') : t('worker.verifyOtp')}
               </button>
             </div>
 
@@ -193,7 +193,7 @@ const ForgotPassword: React.FC = () => {
                 onClick={handleSendOtp}
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                Didn't receive OTP? Resend
+                {t('worker.generateOtp')}
               </button>
             </div>
           </div>
@@ -204,10 +204,10 @@ const ForgotPassword: React.FC = () => {
           <div className="space-y-6">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Reset Password
+                {t('auth.resetPassword')}
               </h2>
               <p className="text-gray-600">
-                Enter your new password
+                {t('auth.newPassword')}
               </p>
             </div>
 
@@ -215,11 +215,11 @@ const ForgotPassword: React.FC = () => {
               <div className="relative">
                 <Lock className="absolute left-3 top-10 h-5 w-5 text-gray-400" />
                 <FormInput
-                  label="New Password"
+                  label={t('auth.newPassword')}
                   type={showPassword ? 'text' : 'password'}
                   value={formData.newPassword}
                   onChange={(value) => setFormData(prev => ({ ...prev, newPassword: value }))}
-                  placeholder="Enter new password"
+                  placeholder={t('auth.newPassword')}
                   required
                   error={errors.newPassword}
                   className="pl-10 pr-10"
@@ -236,11 +236,11 @@ const ForgotPassword: React.FC = () => {
               <div className="relative">
                 <Lock className="absolute left-3 top-10 h-5 w-5 text-gray-400" />
                 <FormInput
-                  label="Confirm New Password"
+                  label={t('auth.confirmPassword')}
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={formData.confirmPassword}
                   onChange={(value) => setFormData(prev => ({ ...prev, confirmPassword: value }))}
-                  placeholder="Confirm new password"
+                  placeholder={t('auth.confirmPassword')}
                   required
                   error={errors.confirmPassword}
                   className="pl-10 pr-10"
@@ -260,7 +260,7 @@ const ForgotPassword: React.FC = () => {
               disabled={isLoading}
               className="w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
-              {isLoading ? 'Resetting Password...' : 'Reset Password'}
+              {isLoading ? t('common.loading') : t('auth.resetPassword')}
             </button>
           </div>
         );
@@ -285,9 +285,9 @@ const ForgotPassword: React.FC = () => {
 
         <div className="text-center">
           <p className="text-gray-600">
-            Remember your password?{' '}
+            {t('auth.alreadyHaveAccount')}{' '}
             <Link to="/login/worker" className="font-medium text-blue-600 hover:text-blue-700">
-              Sign In
+              {t('auth.signIn')}
             </Link>
           </p>
         </div>
