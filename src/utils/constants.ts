@@ -141,6 +141,38 @@ export const GENDERS = [
   { value: 'other', label: 'Other' }
 ];
 
+// Andhra Pradesh specific locations for mock data
+export const AP_LOCATIONS = {
+  workSites: [
+    { name: 'Amaravati Capital Construction Site', district: 'Guntur', coordinates: { lat: 16.5062, lng: 80.6480 } },
+    { name: 'Visakhapatnam Port Expansion', district: 'Visakhapatnam', coordinates: { lat: 17.6868, lng: 83.2185 } },
+    { name: 'Tirupati Airport Development', district: 'Tirupati', coordinates: { lat: 13.6288, lng: 79.4192 } },
+    { name: 'Vijayawada Metro Rail Project', district: 'Krishna', coordinates: { lat: 16.5062, lng: 80.6480 } },
+    { name: 'Kakinada Smart City Project', district: 'Kakinada', coordinates: { lat: 16.9891, lng: 82.2475 } },
+    { name: 'Nellore Industrial Corridor', district: 'Nellore', coordinates: { lat: 14.4426, lng: 79.9865 } }
+  ],
+  establishments: [
+    'Amaravati Infrastructure Corporation Ltd',
+    'Visakhapatnam Steel Plant Construction',
+    'Tirupati Urban Development Authority',
+    'Krishna District Collectorate Projects',
+    'Guntur Municipal Corporation Works',
+    'Prakasam District Road Development',
+    'Chittoor Rural Development Projects',
+    'Kurnool Irrigation Department',
+    'Anantapur Solar Park Development',
+    'Kadapa Mining Infrastructure'
+  ],
+  officers: [
+    { name: 'Sri K. Venkateswara Rao', designation: 'Assistant Commissioner of Labour', district: 'Guntur' },
+    { name: 'Smt. P. Lakshmi Devi', designation: 'Deputy Commissioner of Labour', district: 'Visakhapatnam' },
+    { name: 'Sri M. Ramesh Kumar', designation: 'Labour Inspector', district: 'Tirupati' },
+    { name: 'Smt. S. Bharathi', designation: 'Labour Officer', district: 'Krishna' },
+    { name: 'Sri N. Suresh Babu', designation: 'Enforcement Officer', district: 'Prakasam' },
+    { name: 'Smt. R. Padmavathi', designation: 'Assistant Commissioner', district: 'Chittoor' }
+  ]
+};
+
 // Helper functions to get display labels
 export const getDistrictLabel = (value: string): string => {
   const district = DISTRICTS.find(d => d.name.toLowerCase().replace(/\s+/g, '_') === value);

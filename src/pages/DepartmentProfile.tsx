@@ -10,37 +10,38 @@ const DepartmentProfile: React.FC = () => {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    officerName: 'Dr. Priya Sharma',
+    officerName: 'Sri K. Venkateswara Rao',
     designation: 'Assistant Commissioner of Labour',
     employeeId: 'ACL001234',
-    department: 'Labour Department',
-    division: 'Construction Workers Division',
-    emailAddress: 'priya.sharma@labour.ap.gov.in',
+    department: 'Labour, Employment, Training & Factories Department',
+    division: 'Building and Other Construction Workers Division',
+    emailAddress: 'acl.guntur@labour.ap.gov.in',
     mobileNumber: '9876543210',
-    officeNumber: '040-23456789',
-    joiningDate: '2020-03-15',
-    experience: '15',
-    qualification: 'M.A. Labour Studies, Ph.D. Industrial Relations',
+    officeNumber: '0863-2234567',
+    joiningDate: '2018-07-15',
+    experience: '18',
+    qualification: 'M.A. Labour Studies, LL.B',
     office: {
-      name: 'District Labour Office',
-      address: 'Labour Bhavan, Secretariat Road',
-      district: 'hyderabad',
-      pincode: '500022'
+      name: 'District Labour Office, Guntur',
+      address: 'Labour Bhavan, Collectorate Complex, Guntur',
+      district: 'guntur',
+      pincode: '522001'
     },
     jurisdiction: {
-      districts: ['hyderabad', 'rangareddy', 'medchal_malkajgiri'],
-      establishments: '1,250',
-      workers: '45,000'
+      districts: ['guntur', 'prakasam', 'bapatla'],
+      establishments: '2,850',
+      workers: '78,500'
     }
   });
 
   const designations = [
     { value: 'acl', label: 'Assistant Commissioner of Labour' },
     { value: 'dcl', label: 'Deputy Commissioner of Labour' },
-    { value: 'addl_commissioner', label: 'Additional Commissioner' },
-    { value: 'commissioner', label: 'Commissioner' },
+    { value: 'addl_commissioner', label: 'Additional Commissioner of Labour' },
+    { value: 'commissioner', label: 'Commissioner of Labour' },
     { value: 'inspector', label: 'Labour Inspector' },
-    { value: 'officer', label: 'Labour Officer' }
+    { value: 'officer', label: 'Labour Officer' },
+    { value: 'enforcement_officer', label: 'Labour Enforcement Officer' }
   ];
 
   const handleSave = () => {
@@ -274,7 +275,7 @@ const DepartmentProfile: React.FC = () => {
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="text-gray-600 text-sm font-medium">Districts:</span>
                 <span className="text-gray-900 font-medium text-sm">
-                  {formData.jurisdiction.districts.length} districts
+                  Guntur, Prakasam, Bapatla
                 </span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
@@ -297,19 +298,19 @@ const DepartmentProfile: React.FC = () => {
             <div className="space-y-1">
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="text-gray-600 text-sm font-medium">Applications Processed:</span>
-                <span className="text-gray-900 font-medium text-sm">1,234</span>
+                <span className="text-gray-900 font-medium text-sm">2,847</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="text-gray-600 text-sm font-medium">Inspections Conducted:</span>
-                <span className="text-gray-900 font-medium text-sm">89</span>
+                <span className="text-gray-900 font-medium text-sm">156</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="text-gray-600 text-sm font-medium">Compliance Rate:</span>
-                <span className="text-green-600 font-medium text-sm">94.5%</span>
+                <span className="text-green-600 font-medium text-sm">96.2%</span>
               </div>
               <div className="flex justify-between items-center py-2">
                 <span className="text-gray-600 text-sm font-medium">Average Response Time:</span>
-                <span className="text-gray-900 font-medium text-sm">2.3 days</span>
+                <span className="text-gray-900 font-medium text-sm">1.8 days</span>
               </div>
             </div>
           </InfoCard>

@@ -33,6 +33,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import InstallPrompt from './components/InstallPrompt';
 import MobileNavigation from './components/MobileNavigation';
 import NetworkStatus from './components/NetworkStatus';
+import MobileAppPrompt from './components/MobileAppPrompt';
 
 function App() {
   return (
@@ -145,6 +146,7 @@ function App() {
             </main>
             <MobileNavigation />
             <InstallPrompt />
+            <MobileAppPrompt />
           </div>
         </Router>
       </AuthProvider>
