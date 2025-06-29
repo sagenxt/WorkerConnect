@@ -4,7 +4,14 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import FormInput from '../components/FormInput';
 import FormSelect from '../components/FormSelect';
-import { DISTRICTS, ESTABLISHMENT_CATEGORIES, NATURE_OF_WORK } from '../utils/constants';
+import { 
+  DISTRICTS, 
+  ESTABLISHMENT_CATEGORIES, 
+  NATURE_OF_WORK,
+  getDistrictLabel,
+  getEstablishmentCategoryLabel,
+  getNatureOfWorkLabel
+} from '../utils/constants';
 
 const EstablishmentRegistration: React.FC = () => {
   const { t } = useLanguage();
@@ -387,14 +394,14 @@ const EstablishmentRegistration: React.FC = () => {
               <div>
                 <h4 className="font-medium text-gray-900">Address</h4>
                 <p className="text-gray-600">
-                  {formData.doorNumber}, {formData.street}, {formData.district}, {formData.pincode}
+                  {formData.doorNumber}, {formData.street}, {getDistrictLabel(formData.district)}, {formData.pincode}
                 </p>
               </div>
               
               <div>
                 <h4 className="font-medium text-gray-900">Business Details</h4>
-                <p className="text-gray-600">Category: {formData.establishmentCategory}</p>
-                <p className="text-gray-600">Nature of Work: {formData.natureOfWork}</p>
+                <p className="text-gray-600">Category: {getEstablishmentCategoryLabel(formData.establishmentCategory)}</p>
+                <p className="text-gray-600">Nature of Work: {getNatureOfWorkLabel(formData.natureOfWork)}</p>
                 <p className="text-gray-600">Commencement: {formData.commencementDate}</p>
               </div>
             </div>

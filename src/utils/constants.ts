@@ -140,3 +140,48 @@ export const GENDERS = [
   { value: 'female', label: 'Female' },
   { value: 'other', label: 'Other' }
 ];
+
+// Helper functions to get display labels
+export const getDistrictLabel = (value: string): string => {
+  const district = DISTRICTS.find(d => d.name.toLowerCase().replace(/\s+/g, '_') === value);
+  return district ? district.name : value.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+};
+
+export const getTradeLabel = (value: string): string => {
+  const trade = TRADES_OF_WORK.find(t => t.toLowerCase().replace(/\s+/g, '_') === value);
+  return trade || value.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+};
+
+export const getWorkerCategoryLabel = (value: string): string => {
+  const category = WORKER_CATEGORIES.find(c => c.toLowerCase().replace(/-/g, '_') === value);
+  return category || value.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+};
+
+export const getEstablishmentCategoryLabel = (value: string): string => {
+  const category = ESTABLISHMENT_CATEGORIES.find(c => c.toLowerCase().replace(/\s+/g, '_') === value);
+  return category || value.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+};
+
+export const getNatureOfWorkLabel = (value: string): string => {
+  const nature = NATURE_OF_WORK.find(n => n.toLowerCase().replace(/\s+/g, '_') === value);
+  return nature || value.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+};
+
+export const getMaritalStatusLabel = (value: string): string => {
+  const status = MARITAL_STATUS.find(s => s.toLowerCase() === value);
+  return status || value.replace(/\b\w/g, l => l.toUpperCase());
+};
+
+export const getRelationshipLabel = (value: string): string => {
+  const relationship = RELATIONSHIPS.find(r => r.toLowerCase() === value);
+  return relationship || value.replace(/\b\w/g, l => l.toUpperCase());
+};
+
+export const getGenderLabel = (value: string): string => {
+  const gender = GENDERS.find(g => g.value === value);
+  return gender ? gender.label : value.replace(/\b\w/g, l => l.toUpperCase());
+};
+
+export const getYesNoLabel = (value: string): string => {
+  return value === 'yes' ? 'Yes' : value === 'no' ? 'No' : value;
+};

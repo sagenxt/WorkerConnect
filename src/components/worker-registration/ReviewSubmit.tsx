@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { CheckCircle, Eye, Send } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { 
+  getDistrictLabel, 
+  getTradeLabel, 
+  getWorkerCategoryLabel, 
+  getGenderLabel, 
+  getMaritalStatusLabel,
+  getYesNoLabel 
+} from '../../utils/constants';
 
 interface ReviewSubmitProps {
   formData: any;
@@ -62,10 +70,10 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
         {/* Personal Information */}
         {renderSection('Personal Information', {
           'Full Name': `${formData.firstName} ${formData.middleName || ''} ${formData.lastName}`.trim(),
-          'Gender': formData.gender,
+          'Gender': getGenderLabel(formData.gender),
           'Date of Birth': formData.dateOfBirth,
           'Age': formData.age,
-          'Marital Status': formData.maritalStatus,
+          'Marital Status': getMaritalStatusLabel(formData.maritalStatus),
           'Father/Husband Name': formData.fatherHusbandName,
           'Caste': formData.caste,
           'Sub Caste': formData.subCaste
@@ -75,15 +83,15 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
         {renderSection('Workplace Details', {
           'Employer Name': formData.employerName,
           'Construction Organisation': formData.constructionOrg,
-          'Trade of Work': formData.tradeOfWork,
-          'Worker Category': formData.workerCategory
+          'Trade of Work': getTradeLabel(formData.tradeOfWork),
+          'Worker Category': getWorkerCategoryLabel(formData.workerCategory)
         })}
 
         {/* Address Details */}
         {renderSection('Present Address', {
           'Door Number': formData.presentAddress?.doorNumber,
           'Street': formData.presentAddress?.street,
-          'District': formData.presentAddress?.district,
+          'District': getDistrictLabel(formData.presentAddress?.district),
           'Mandal': formData.presentAddress?.mandal,
           'Village': formData.presentAddress?.village,
           'Pincode': formData.presentAddress?.pincode
@@ -99,8 +107,8 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 
         {/* Other Details */}
         {renderSection('Other Details', {
-          'NRES Worker': formData.isNresWorker,
-          'Trade Union Member': formData.isTradeUnionMember
+          'NRES Worker': getYesNoLabel(formData.isNresWorker),
+          'Trade Union Member': getYesNoLabel(formData.isTradeUnionMember)
         })}
 
         {/* Documents */}
