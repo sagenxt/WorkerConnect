@@ -1,5 +1,5 @@
-import React from 'react';
-import { useLanguage } from '../contexts/LanguageContext';
+import React from "react";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface FormSelectProps {
   label: string;
@@ -22,7 +22,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
   required = false,
   error,
   disabled = false,
-  className = ''
+  className = "",
 }) => {
   const { t } = useLanguage();
 
@@ -31,22 +31,22 @@ const FormSelect: React.FC<FormSelectProps> = ({
       <label className="block text-sm font-medium text-gray-700 mb-2">
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
-        {!required && (
+        {/* {!required && (
           <span className="text-gray-400 ml-1 text-xs">
             ({t('forms.placeholders.optional')})
           </span>
-        )}
+        )} */}
       </label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
         className={`input-mobile w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-          error ? 'border-red-500' : ''
-        } ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+          error ? "border-red-500" : ""
+        } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""}`}
       >
         <option value="">
-          {placeholder || t('forms.placeholders.selectOption')}
+          {placeholder || t("forms.placeholders.selectOption")}
         </option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -54,9 +54,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
           </option>
         ))}
       </select>
-      {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
-      )}
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
 };

@@ -1,6 +1,13 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  outline: none;
+  font-family: "Inter", sans-serif;
+}
 
 /* Mobile-first responsive design */
 @layer base {
@@ -9,23 +16,33 @@
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
   }
-  
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+      "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+      "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior: none;
   }
-  
+
   /* Prevent zoom on input focus for iOS */
   @media screen and (-webkit-min-device-pixel-ratio: 0) {
-    select, textarea, input[type="text"], input[type="password"], 
-    input[type="datetime"], input[type="datetime-local"], 
-    input[type="date"], input[type="month"], input[type="time"], 
-    input[type="week"], input[type="number"], input[type="email"], 
-    input[type="url"], input[type="search"], input[type="tel"], 
+    select,
+    textarea,
+    input[type="text"],
+    input[type="password"],
+    input[type="datetime"],
+    input[type="datetime-local"],
+    input[type="date"],
+    input[type="month"],
+    input[type="time"],
+    input[type="week"],
+    input[type="number"],
+    input[type="email"],
+    input[type="url"],
+    input[type="search"],
+    input[type="tel"],
     input[type="color"] {
       font-size: 16px !important;
     }
@@ -38,45 +55,45 @@
     @apply min-h-[44px] px-4 py-3 text-base font-medium rounded-lg transition-all duration-200;
     touch-action: manipulation;
   }
-  
+
   .btn-mobile:active {
     transform: scale(0.98);
   }
-  
+
   /* Mobile-optimized input styles */
   .input-mobile {
     @apply min-h-[44px] px-4 py-3 text-base border border-gray-300 rounded-lg;
     -webkit-appearance: none;
     appearance: none;
   }
-  
+
   /* Card styles for mobile */
   .card-mobile {
     @apply bg-white rounded-xl shadow-lg border border-gray-200 p-4 md:p-6;
   }
-  
+
   /* Safe area utilities */
   .safe-top {
     padding-top: env(safe-area-inset-top);
   }
-  
+
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
-  
+
   .safe-left {
     padding-left: env(safe-area-inset-left);
   }
-  
+
   .safe-right {
     padding-right: env(safe-area-inset-right);
   }
-  
+
   /* Touch-friendly spacing */
   .touch-spacing {
     @apply space-y-4 md:space-y-6;
   }
-  
+
   /* Mobile navigation spacing */
   .mobile-nav-spacing {
     @apply pb-20 md:pb-0;
@@ -105,63 +122,63 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-  
+
   /* Smooth scrolling */
   .scroll-smooth {
     scroll-behavior: smooth;
   }
-  
+
   /* Touch action utilities */
   .touch-pan-x {
     touch-action: pan-x;
   }
-  
+
   .touch-pan-y {
     touch-action: pan-y;
   }
-  
+
   .touch-manipulation {
     touch-action: manipulation;
   }
-  
+
   /* Mobile-specific utilities */
   .mobile-only {
     @apply block md:hidden;
   }
-  
+
   .desktop-only {
     @apply hidden md:block;
   }
-  
+
   /* Responsive text sizes */
   .text-responsive-xs {
     @apply text-xs md:text-sm;
   }
-  
+
   .text-responsive-sm {
     @apply text-sm md:text-base;
   }
-  
+
   .text-responsive-base {
     @apply text-base md:text-lg;
   }
-  
+
   .text-responsive-lg {
     @apply text-lg md:text-xl;
   }
-  
+
   .text-responsive-xl {
     @apply text-xl md:text-2xl;
   }
-  
+
   .text-responsive-2xl {
     @apply text-2xl md:text-3xl;
   }
-  
+
   .text-responsive-3xl {
     @apply text-3xl md:text-4xl;
   }
@@ -173,7 +190,7 @@
     user-select: none;
     -webkit-user-select: none;
   }
-  
+
   /* Hide address bar on PWA */
   .pwa-header {
     position: fixed;
@@ -215,7 +232,7 @@
   .no-print {
     display: none !important;
   }
-  
+
   body {
     background: white !important;
     color: black !important;

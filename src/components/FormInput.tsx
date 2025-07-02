@@ -1,5 +1,5 @@
-import React from 'react';
-import { useLanguage } from '../contexts/LanguageContext';
+import React from "react";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface FormInputProps {
   label: string;
@@ -17,7 +17,7 @@ interface FormInputProps {
 
 const FormInput: React.FC<FormInputProps> = ({
   label,
-  type = 'text',
+  type = "text",
   value,
   onChange,
   placeholder,
@@ -26,7 +26,7 @@ const FormInput: React.FC<FormInputProps> = ({
   maxLength,
   pattern,
   disabled = false,
-  className = ''
+  className = "",
 }) => {
   const { t } = useLanguage();
 
@@ -35,11 +35,11 @@ const FormInput: React.FC<FormInputProps> = ({
       <label className="block text-sm font-medium text-gray-700 mb-2">
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
-        {!required && (
-          <span className="text-gray-400 ml-1 text-xs">
-            ({t('forms.placeholders.optional')})
-          </span>
-        )}
+        {/* {!required && (
+            <span className="text-gray-400 ml-1 text-xs">
+              ({t('forms.placeholders.optional')})
+            </span>
+          )} */}
       </label>
       <input
         type={type}
@@ -50,12 +50,10 @@ const FormInput: React.FC<FormInputProps> = ({
         pattern={pattern}
         disabled={disabled}
         className={`input-mobile w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-          error ? 'border-red-500' : ''
-        } ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''} ${className}`}
+          error ? "border-red-500" : ""
+        } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} ${className}`}
       />
-      {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
-      )}
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
 };
