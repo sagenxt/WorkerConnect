@@ -428,6 +428,7 @@ const WorkerRegistration: React.FC = () => {
     <div className="relative min-h-screen py-8">
       <Toaster position="top-center" />
       {/* Loading Overlay */}
+
       {isSubmitting && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
