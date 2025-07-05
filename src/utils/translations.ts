@@ -1293,7 +1293,7 @@ export const translations = {
       iosGuide: "iOS ఇన్‌స్టాలేషన్ గైడ్",
       downloadNow: "ఇప్పుడే డౌన్‌లోడ్ చేయండి",
       getStarted: "మొబైల్ యాప్‌తో ప్రారంభించండి"
-    }
+    },
       downloadApk: "Android APK డౌన్‌లోడ్ చేయండి",
       downloadIpa: "iOS IPA డౌన్‌లోడ్ చేయండి",
       installInstructions: "ఇన్‌స్టాలేషన్ సూచనలు",
