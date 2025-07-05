@@ -26,10 +26,10 @@ const MobileAppPrompt: React.FC = () => {
   const handleDownload = () => {
     if (isIOS()) {
       // Redirect to App Store
-      window.location.href = '/mobile';
+      window.location.href = '/downloads/WorkerConnect.ipa';
     } else if (isAndroid()) {
       // Redirect to Play Store
-      window.location.href = '/mobile';
+      window.location.href = '/downloads/WorkerConnect.apk';
     }
     handleDismiss();
   };

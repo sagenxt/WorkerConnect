@@ -61,12 +61,11 @@ const MobileDownload: React.FC = () => {
 
   const handleDownload = (platform: 'android' | 'ios') => {
     // In a real implementation, these would be actual download links
-    const downloadUrl = platform === 'android' 
-      ? `${window.location.origin}/downloads/WorkerConnect.apk` 
-      : `${window.location.origin}/downloads/WorkerConnect.ipa`;
-    
-    // Open in a new tab to handle the download
-    window.open(downloadUrl, '_blank');
+    if (platform === 'android') {
+      window.location.href = '/downloads/WorkerConnect.apk';
+    } else {
+      window.location.href = '/downloads/WorkerConnect.ipa';
+    }
     
     // Show a message to the user
     alert(`Downloading WorkerConnect for ${platform === 'android' ? 'Android' : 'iOS'}. If the download doesn't start automatically, please check your browser settings.`);
