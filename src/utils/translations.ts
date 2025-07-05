@@ -629,8 +629,8 @@ export const translations = {
       iosGuide: "iOS Installation Guide",
       downloadNow: "Download Now",
       getStarted: "Get Started with Mobile App"
-    }
-      downloadApk: "Download Android APK",
+    },
+    downloadApk: "Download Android APK",
       downloadIpa: "Download iOS IPA",
       installInstructions: "Installation Instructions",
       androidInstructions: "1. Download the APK file\n2. Enable 'Unknown Sources' in Settings\n3. Install the APK file\n4. Open WorkerConnect app",
