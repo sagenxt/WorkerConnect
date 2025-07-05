@@ -694,6 +694,26 @@ export const translations = {
       installSteps: "Installation Steps",
       troubleshooting: "Troubleshooting",
       support: "Need help? Contact support",
+      mobile: {
+        downloadApp: "Download App",
+        getStarted: "Get the mobile app for the best experience",
+        downloadNow: "Download Now",
+        version: "Version",
+        fileSize: "File Size",
+        lastUpdated: "Last Updated",
+        requirements: "Requirements",
+        features: "App Features",
+        installSteps: "Installation Steps",
+        troubleshooting: "Troubleshooting",
+        support: "Need Help?",
+        downloadApk: "Download APK",
+        downloadIpa: "Download IPA",
+        offlineAccess: "Offline access to your data",
+        pushNotifications: "Real-time push notifications",
+        locationTracking: "Accurate location tracking for attendance",
+        cameraIntegration: "Camera integration for document uploads",
+        biometricAuth: "Biometric authentication for security"
+      }
     },
   },
   te: {
@@ -1387,6 +1407,26 @@ export const translations = {
       installSteps: "ఇన్‌స్టాలేషన్ దశలు",
       troubleshooting: "సమస్య పరిష్కారం",
       support: "సహాయం కావాలా? మద్దతును సంప్రదించండి",
+      mobile: {
+        downloadApp: "యాప్ డౌన్‌లోడ్ చేయండి",
+        getStarted: "ఉత్తమ అనుభవం కోసం మొబైల్ యాప్‌ని పొందండి",
+        downloadNow: "ఇప్పుడే డౌన్‌లోడ్ చేయండి",
+        version: "వెర్షన్",
+        fileSize: "ఫైల్ పరిమాణం",
+        lastUpdated: "చివరిగా నవీకరించబడింది",
+        requirements: "అవసరాలు",
+        features: "యాప్ ఫీచర్లు",
+        installSteps: "ఇన్‌స్టాలేషన్ దశలు",
+        troubleshooting: "సమస్య పరిష్కారం",
+        support: "సహాయం కావాలా?",
+        downloadApk: "APK డౌన్‌లోడ్ చేయండి",
+        downloadIpa: "IPA డౌన్‌లోడ్ చేయండి",
+        offlineAccess: "మీ డేటాకు ఆఫ్‌లైన్ యాక్సెస్",
+        pushNotifications: "రియల్-టైమ్ పుష్ నోటిఫికేషన్లు",
+        locationTracking: "హాజరు కోసం ఖచ్చితమైన స్థాన ట్రాకింగ్",
+        cameraIntegration: "డాక్యుమెంట్ అప్‌లోడ్‌ల కోసం కెమెరా ఇంటిగ్రేషన్",
+        biometricAuth: "భద్రత కోసం బయోమెట్రిక్ ప్రమాణీకరణ"
+      }
     },
   },
 };
