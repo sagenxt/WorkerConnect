@@ -10,7 +10,16 @@
     "preview": "vite preview",
     "build:pwa": "vite build --mode production",
     "serve:pwa": "vite preview --port 4173",
-    "generate:icons": "node scripts/generate-icons.js"
+    "generate:icons": "node scripts/generate-icons.js",
+    "build:mobile": "npm run build && npx cap sync",
+    "build:android": "npm run build:mobile && npx cap build android",
+    "build:ios": "npm run build:mobile && npx cap build ios",
+    "open:android": "npx cap open android",
+    "open:ios": "npx cap open ios",
+    "sync": "npx cap sync",
+    "copy": "npx cap copy",
+    "run:android": "npx cap run android",
+    "run:ios": "npx cap run ios"
   },
   "dependencies": {
     "lucide-react": "^0.344.0",

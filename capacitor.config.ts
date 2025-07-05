@@ -5,18 +5,25 @@ const config: CapacitorConfig = {
   appName: 'WorkerConnect',
   webDir: 'dist',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    allowNavigation: ['*']
   },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 2000,
+      launchShowDuration: 3000,
       backgroundColor: '#2563eb',
       showSpinner: true,
-      spinnerColor: '#ffffff'
+      spinnerColor: '#ffffff',
+      androidSpinnerStyle: 'large',
+      iosSpinnerStyle: 'small',
+      androidScaleType: 'CENTER_CROP',
+      splashFullScreen: true,
+      splashImmersive: true
     },
     StatusBar: {
       style: 'default',
-      backgroundColor: '#2563eb'
+      backgroundColor: '#2563eb',
+      overlaysWebView: false
     },
     Keyboard: {
       resize: 'body',
@@ -25,17 +32,53 @@ const config: CapacitorConfig = {
     },
     PushNotifications: {
       presentationOptions: ['badge', 'sound', 'alert']
+    },
+    App: {
+      appendUserAgent: 'WorkerConnect/1.0.0'
+    },
+    Device: {},
+    Geolocation: {
+      permissions: {
+        location: 'always'
+      }
+    },
+    Camera: {
+      permissions: {
+        camera: 'required',
+        photos: 'required'
+      }
+    },
+    LocalNotifications: {
+      smallIcon: 'ic_stat_icon_config_sample',
+      iconColor: '#2563eb'
     }
   },
   android: {
     allowMixedContent: true,
     captureInput: true,
-    webContentsDebuggingEnabled: true
+    webContentsDebuggingEnabled: false,
+    appendUserAgent: 'WorkerConnect Android',
+    backgroundColor: '#2563eb',
+    buildOptions: {
+      keystorePath: undefined,
+      keystorePassword: undefined,
+      keystoreAlias: undefined,
+      keystoreAliasPassword: undefined,
+      releaseType: 'APK',
+      signingType: 'apksigner'
+    }
   },
   ios: {
     contentInset: 'automatic',
     scrollEnabled: true,
-    allowsLinkPreview: false
+    allowsLinkPreview: false,
+    backgroundColor: '#2563eb',
+    appendUserAgent: 'WorkerConnect iOS',
+    preferredContentMode: 'mobile',
+    buildOptions: {
+      developmentTeam: undefined,
+      packageType: 'app-store'
+    }
   }
 };
 
