@@ -765,7 +765,10 @@ export const translations = {
       status: "స్థితి",
     },
     },
-    navigation: {
+
+    }
+  }
+}    navigation: {
       home: "హోమ్",
       login: "లాగిన్",
       register: "నమోదు",
