@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, Clock, CheckCircle, XCircle, AlertTriangle, Loader } from 'lucide-react';
 import { useGeolocation, isWithinWorkLocation } from '../hooks/useGeolocation';
 import { useLanguage } from '../contexts/LanguageContext';
-import { hapticFeedback } from '../utils/pwa';
+import { useCapacitorFeatures } from '../hooks/useCapacitorFeatures';
 
 interface LocationCheckInProps {
   workLocation?: {
@@ -27,6 +27,7 @@ const LocationCheckIn: React.FC<LocationCheckInProps> = ({
   const { t } = useLanguage();
   const { coordinates, error, loading, getCurrentPosition, isLocationEnabled } = useGeolocation();
   const [isProcessing, setIsProcessing] = useState(false);
+  const { vibrate, isNative } = useCapacitorFeatures();
   const [locationStatus, setLocationStatus] = useState<'unknown' | 'allowed' | 'restricted'>('unknown');
 
   // Check location status when coordinates change
@@ -50,12 +51,12 @@ const LocationCheckIn: React.FC<LocationCheckInProps> = ({
     }
 
     if (workLocation && locationStatus === 'restricted') {
-      hapticFeedback('heavy');
+      vibrate('heavy');
       return;
     }
 
     setIsProcessing(true);
-    hapticFeedback('medium');
+    vibrate('medium');
 
     try {
       await onCheckIn({
@@ -77,7 +78,7 @@ const LocationCheckIn: React.FC<LocationCheckInProps> = ({
     }
 
     setIsProcessing(true);
-    hapticFeedback('medium');
+    vibrate('medium');
 
     try {
       await onCheckOut({
@@ -143,8 +144,9 @@ const LocationCheckIn: React.FC<LocationCheckInProps> = ({
       {/* Location Status */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-gray-700 flex items-center">
             {t('worker.locationStatus')}
+            {isNative && <span className="ml-2 text-xs text-green-600 bg-green-100 px-2 py-0.5 rounded-full">Native GPS</span>}
           </span>
           {loading && <Loader className="h-4 w-4 animate-spin text-blue-500" />}
         </div>

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Upload, Eye, Trash2, FileText, AlertCircle } from 'lucide-react';
+import { Upload, Eye, Trash2, FileText, AlertCircle, Camera, Smartphone } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { Capacitor } from '@capacitor/core';
+import CameraCapture from '../CameraCapture';
+import DocumentScanner from '../DocumentScanner';
 
 interface DocumentUploadProps {
   formData: any;
@@ -17,6 +20,9 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
 }) => {
   const { t } = useLanguage();
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showCamera, setShowCamera] = useState<string | null>(null);
+  const [showScanner, setShowScanner] = useState<string | null>(null);
+  const isNative = Capacitor.isNativePlatform();
 
   const documentTypes = [
     {
@@ -110,6 +116,73 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
     }
   };
 
+  // If camera or scanner is active, show that UI instead
+  if (showCamera) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg w-full max-w-md">
+          <CameraCapture
+            onCapture={(imageData) => handleCameraCapture(showCamera, imageData)}
+            onCancel={() => setShowCamera(null)}
+            label={`Take photo for ${docType.label}`}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (showScanner) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg w-full max-w-md">
+          <DocumentScanner
+            onScan={(imageData) => handleDocumentScan(showScanner, imageData)}
+            onCancel={() => setShowScanner(null)}
+            documentType={documentTypes.find(d => d.key === showScanner)?.label || 'Document'}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  const handleCameraCapture = (documentKey: string, imageData: string) => {
+    // Create a file object from the image data
+    const byteString = atob(imageData.split(',')[1]);
+    const mimeString = imageData.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    
+    const blob = new Blob([ab], { type: mimeString });
+    const file = new File([blob], `camera_${Date.now()}.jpg`, { type: 'image/jpeg' });
+    
+    // Process the file
+    handleFileUpload(documentKey, file, 100);
+    setShowCamera(null);
+  };
+
+  const handleDocumentScan = (documentKey: string, imageData: string) => {
+    // Similar to camera capture but for document scanning
+    const byteString = atob(imageData.split(',')[1]);
+    const mimeString = imageData.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    
+    const blob = new Blob([ab], { type: mimeString });
+    const file = new File([blob], `scan_${Date.now()}.jpg`, { type: 'image/jpeg' });
+    
+    // Process the file
+    handleFileUpload(documentKey, file, 100);
+    setShowScanner(null);
+  };
+
   const renderDocumentUpload = (docType: any) => {
     const document = formData.documents?.[docType.key];
     const hasError = errors[docType.key];
@@ -149,6 +222,27 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
               <p className="text-xs text-gray-500 mt-1">
                 Supported formats: {docType.accept} (Max {docType.maxSize}MB)
               </p>
+              
+              {isNative && (
+                <div className="flex mt-3 space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowCamera(docType.key)}
+                    className="flex-1 flex items-center justify-center px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200"
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    Camera
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowScanner(docType.key)}
+                    className="flex-1 flex items-center justify-center px-3 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200"
+                  >
+                    <Smartphone className="h-4 w-4 mr-2" />
+                    Scan
+                  </button>
+                </div>
+              )}
             </label>
             {hasError && (
               <p className="mt-2 text-sm text-red-600 flex items-center">
@@ -216,11 +310,32 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
         <h3 className="font-medium text-yellow-900 mb-2">Document Guidelines</h3>
         <ul className="text-yellow-800 text-sm space-y-1">
-          <li>• Ensure documents are clear and readable</li>
-          <li>• Upload original documents only</li>
-          <li>• File names should not contain special characters</li>
-          <li>• All documents will be verified by the department</li>
-          <li>• Keep physical copies ready for verification if required</li>
+          <li className="flex items-start">
+            <span className="mr-2">•</span>
+            <span>Ensure documents are clear and readable</span>
+          </li>
+          <li className="flex items-start">
+            <span className="mr-2">•</span>
+            <span>Upload original documents only</span>
+          </li>
+          <li className="flex items-start">
+            <span className="mr-2">•</span>
+            <span>File names should not contain special characters</span>
+          </li>
+          <li className="flex items-start">
+            <span className="mr-2">•</span>
+            <span>All documents will be verified by the department</span>
+          </li>
+          <li className="flex items-start">
+            <span className="mr-2">•</span>
+            <span>Keep physical copies ready for verification if required</span>
+          </li>
+          {isNative && (
+            <li className="flex items-start">
+              <span className="mr-2">•</span>
+              <span className="text-blue-700 font-medium">Use camera or document scanner for better results</span>
+            </li>
+          )}
         </ul>
       </div>
 

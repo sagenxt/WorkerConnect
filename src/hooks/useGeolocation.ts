@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useCapacitorFeatures } from './useCapacitorFeatures';
+import { Capacitor } from '@capacitor/core';
 
 interface GeolocationState {
   coordinates: {
@@ -18,6 +20,7 @@ interface GeolocationOptions {
 }
 
 export const useGeolocation = (options: GeolocationOptions = {}) => {
+  const { getCurrentPosition: getNativePosition, isNative } = useCapacitorFeatures();
   const [state, setState] = useState<GeolocationState>({
     coordinates: null,
     error: null,
@@ -32,8 +35,8 @@ export const useGeolocation = (options: GeolocationOptions = {}) => {
     ...options
   };
 
-  const getCurrentPosition = useCallback(() => {
-    if (!navigator.geolocation) {
+  const getCurrentPosition = useCallback(async () => {
+    if (!navigator.geolocation && !isNative) {
       setState(prev => ({
         ...prev,
         error: 'Geolocation is not supported by this browser',
@@ -43,6 +46,33 @@ export const useGeolocation = (options: GeolocationOptions = {}) => {
     }
 
     setState(prev => ({ ...prev, loading: true, error: null }));
+
+    // Use Capacitor Geolocation if available
+    if (Capacitor.isNativePlatform() && isNative) {
+      try {
+        const position = await getNativePosition();
+        if (position) {
+          setState({
+            coordinates: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              accuracy: position.coords.accuracy
+            },
+            error: null,
+            loading: false,
+            isLocationEnabled: true
+          });
+        }
+        return;
+      } catch (error) {
+        setState({
+          coordinates: null,
+          error: 'Failed to get location. Please check permissions.',
+          loading: false,
+          isLocationEnabled: false
+        });
+      }
+    }
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -81,10 +111,10 @@ export const useGeolocation = (options: GeolocationOptions = {}) => {
       },
       defaultOptions
     );
-  }, [defaultOptions]);
+  }, [defaultOptions, isNative, getNativePosition]);
 
   const watchPosition = useCallback(() => {
-    if (!navigator.geolocation) {
+    if (!navigator.geolocation && !isNative) {
       setState(prev => ({
         ...prev,
         error: 'Geolocation is not supported by this browser'
@@ -125,10 +155,10 @@ export const useGeolocation = (options: GeolocationOptions = {}) => {
 
   useEffect(() => {
     // Check if location services are available
-    if ('geolocation' in navigator) {
+    if ('geolocation' in navigator || isNative) {
       setState(prev => ({ ...prev, isLocationEnabled: true }));
     }
-  }, []);
+  }, [isNative]);
 
   return {
     ...state,

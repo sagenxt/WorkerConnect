@@ -1,4 +1,6 @@
 // PWA utilities
+import { Capacitor } from '@capacitor/core';
+
 export const registerServiceWorker = async () => {
   if ('serviceWorker' in navigator) {
     try {
@@ -47,7 +49,8 @@ export const showInstallPrompt = (deferredPrompt: any) => {
 
 // Haptic feedback for mobile devices
 export const hapticFeedback = (type: 'light' | 'medium' | 'heavy' = 'light') => {
-  if ('vibrate' in navigator) {
+  // This is now handled by useCapacitorFeatures
+  if (!Capacitor.isNativePlatform() && 'vibrate' in navigator) {
     const patterns = {
       light: [10],
       medium: [20],
@@ -59,14 +62,15 @@ export const hapticFeedback = (type: 'light' | 'medium' | 'heavy' = 'light') => 
 
 // Check if app is installed
 export const isAppInstalled = () => {
-  return isStandalone();
+  return Capacitor.isNativePlatform() || isStandalone();
 };
 
 // Get device info
 export const getDeviceInfo = () => {
   return {
+    isCapacitor: Capacitor.isNativePlatform(),
+    platform: Capacitor.getPlatform(),
     userAgent: navigator.userAgent,
-    platform: navigator.platform,
     language: navigator.language,
     cookieEnabled: navigator.cookieEnabled,
     onLine: navigator.onLine,

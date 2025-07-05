@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthContext';
 import Header from './components/Header';
+import OfflineIndicator from './components/OfflineIndicator';
 import LandingPage from './pages/LandingPage';
 import RegistrationChoice from './pages/RegistrationChoice';
 import WorkerLogin from './pages/WorkerLogin';
@@ -43,6 +44,7 @@ function App() {
         <Router>
           <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 safe-area-top safe-area-bottom">
             <NetworkStatus />
+            <OfflineIndicator />
             <Header />
             <main className="pb-16 md:pb-0">
               <Routes>

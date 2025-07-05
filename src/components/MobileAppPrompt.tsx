@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Smartphone, Download, X, Apple, Play } from 'lucide-react';
-import { isMobile, isIOS, isAndroid } from '../utils/pwa';
+import { isIOS, isAndroid } from '../utils/pwa';
 import { Link } from 'react-router-dom';
+import { Capacitor } from '@capacitor/core';
 
 const MobileAppPrompt: React.FC = () => {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
     // Only show on mobile browsers, not in standalone mode
-    if (isMobile() && !window.matchMedia('(display-mode: standalone)').matches) {
+    if (!Capacitor.isNativePlatform() && 
+        (isIOS() || isAndroid()) && 
+        !window.matchMedia('(display-mode: standalone)').matches) {
       // Check if user has already dismissed the prompt
       const dismissed = localStorage.getItem('mobileAppPromptDismissed');
       if (!dismissed) {

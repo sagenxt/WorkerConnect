@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Smartphone, Phone, Apple, FileText, CheckCircle, AlertCircle, HelpCircle } from 'lucide-react';
+import { Download, Smartphone, Phone, Apple, FileText, CheckCircle, AlertCircle, HelpCircle, MapPin, Bell, Camera, Fingerprint, WifiOff } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const MobileDownload: React.FC = () => {
@@ -8,19 +8,19 @@ const MobileDownload: React.FC = () => {
 
   const appInfo = {
     version: '1.0.0',
-    androidSize: '25 MB',
-    iosSize: '28 MB',
-    lastUpdated: '2024-01-15',
+    androidSize: '15 MB',
+    iosSize: '18 MB',
+    lastUpdated: '2024-06-15',
     androidMinVersion: 'Android 7.0 (API 24)',
     iosMinVersion: 'iOS 12.0'
   };
 
   const features = [
-    { icon: CheckCircle, text: t('mobile.offlineAccess') },
-    { icon: CheckCircle, text: t('mobile.pushNotifications') },
-    { icon: CheckCircle, text: t('mobile.locationTracking') },
-    { icon: CheckCircle, text: t('mobile.cameraIntegration') },
-    { icon: CheckCircle, text: t('mobile.biometricAuth') }
+    { icon: WifiOff, text: t('mobile.offlineAccess'), description: 'Access your data even without internet connection' },
+    { icon: Bell, text: t('mobile.pushNotifications'), description: 'Get real-time alerts for important updates' },
+    { icon: MapPin, text: t('mobile.locationTracking'), description: 'Accurate GPS-based attendance tracking' },
+    { icon: Camera, text: t('mobile.cameraIntegration'), description: 'Scan documents and take photos directly in the app' },
+    { icon: Fingerprint, text: t('mobile.biometricAuth'), description: 'Secure login with fingerprint or face recognition' }
   ];
 
   const androidSteps = [
@@ -169,18 +169,49 @@ const MobileDownload: React.FC = () => {
           </div>
 
           {/* Features */}
-          <div className="card-mobile">
+          <div className="card-mobile space-y-6">
             <h3 className="text-xl font-bold text-gray-900 mb-6">{t('mobile.features')}</h3>
-            <div className="space-y-4">
+            <div className="space-y-6">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
-                  <div key={index} className="flex items-center space-x-3">
-                    <Icon className="h-5 w-5 text-green-600" />
-                    <span className="text-gray-700">{feature.text}</span>
+                  <div key={index} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="bg-blue-100 p-2 rounded-lg">
+                      <Icon className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900">{feature.text}</h4>
+                      <p className="text-sm text-gray-600 mt-1">{feature.description}</p>
+                    </div>
                   </div>
                 );
               })}
+            </div>
+            
+            <div className="mt-6 bg-blue-50 p-4 rounded-lg">
+              <h4 className="font-medium text-blue-900 mb-2">Mobile App Advantages</h4>
+              <ul className="space-y-2 text-sm text-blue-800">
+                <li className="flex items-start">
+                  <CheckCircle className="h-4 w-4 mr-2 mt-0.5 text-blue-600" />
+                  <span>Faster performance than web version</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-4 w-4 mr-2 mt-0.5 text-blue-600" />
+                  <span>Works without internet connection</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-4 w-4 mr-2 mt-0.5 text-blue-600" />
+                  <span>Enhanced security with biometric authentication</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-4 w-4 mr-2 mt-0.5 text-blue-600" />
+                  <span>Direct access to device features (camera, GPS)</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-4 w-4 mr-2 mt-0.5 text-blue-600" />
+                  <span>Reduced data usage and battery optimization</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>

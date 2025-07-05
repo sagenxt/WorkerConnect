@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { HardHat, Phone, Lock, Eye, EyeOff } from 'lucide-react';
+import { HardHat, Phone, Lock, Eye, EyeOff, Fingerprint } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import FormInput from '../components/FormInput';
+import BiometricAuth from '../components/BiometricAuth';
+import { Capacitor } from '@capacitor/core';
 
 const WorkerLogin: React.FC = () => {
   const { t } = useLanguage();
@@ -16,6 +18,8 @@ const WorkerLogin: React.FC = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [showBiometric, setShowBiometric] = useState(false);
+  const isNative = Capacitor.isNativePlatform();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -55,6 +59,34 @@ const WorkerLogin: React.FC = () => {
       navigate('/dashboard/worker');
     }, 1000);
   };
+
+  const handleBiometricAuth = () => {
+    setShowBiometric(true);
+  };
+
+  const handleBiometricSuccess = () => {
+    // Simulate successful biometric login
+    login({
+      id: '1',
+      type: 'worker',
+      name: 'John Doe',
+      mobile: '9876543210'
+    });
+    
+    navigate('/dashboard/worker');
+  };
+
+  // If biometric auth is showing, render that component
+  if (showBiometric) {
+    return (
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <BiometricAuth
+          onAuthenticated={handleBiometricSuccess}
+          onCancel={() => setShowBiometric(false)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -128,6 +160,17 @@ const WorkerLogin: React.FC = () => {
             >
               {isLoading ? t('auth.signingIn') : t('auth.signIn')}
             </button>
+            
+            {isNative && (
+              <button
+                type="button"
+                onClick={handleBiometricAuth}
+                className="w-full mt-3 flex justify-center py-3 px-4 border border-green-600 rounded-lg shadow-sm text-sm font-medium text-green-600 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+              >
+                <Fingerprint className="h-5 w-5 mr-2" />
+                Use Biometric Login
+              </button>
+            )}
           </div>
         </form>
 
