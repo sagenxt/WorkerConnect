@@ -10,6 +10,8 @@ console.log('🎨 Generating mobile app assets...');
 const publicDir = path.join(process.cwd(), 'public');
 const downloadsDir = path.join(publicDir, 'downloads');
 const iconsDir = path.join(publicDir, 'icons');
+const distDir = path.join(process.cwd(), 'dist');
+const distDownloadsDir = path.join(distDir, 'downloads');
 
 if (!fs.existsSync(downloadsDir)) {
   fs.mkdirSync(downloadsDir, { recursive: true });
@@ -19,93 +21,63 @@ if (!fs.existsSync(iconsDir)) {
   fs.mkdirSync(iconsDir, { recursive: true });
 }
 
+if (!fs.existsSync(distDownloadsDir)) {
+  fs.mkdirSync(distDownloadsDir, { recursive: true });
+}
+
 // Create a placeholder APK file
 const createPlaceholderApk = () => {
   const apkPath = path.join(downloadsDir, 'WorkerConnect.apk');
-  const distDownloadsDir = path.join(process.cwd(), 'dist', 'downloads');
-  
-  // Create dist/downloads directory if it doesn't exist
-  if (!fs.existsSync(distDownloadsDir)) {
-    fs.mkdirSync(distDownloadsDir, { recursive: true });
-  }
-  
   const distApkPath = path.join(distDownloadsDir, 'WorkerConnect.apk');
   
-  // Create a simple ZIP file with .apk extension
+  // Create a simple text file with .apk extension
   try {
     // Create a dummy file
-    const dummyFilePath = path.join(downloadsDir, 'dummy.txt');
-    fs.writeFileSync(dummyFilePath, 'This is a placeholder APK file for demonstration purposes.');
+    const dummyContent = 'This is a placeholder APK file for demonstration purposes.';
+    fs.writeFileSync(apkPath, dummyContent);
     
-    // On Unix-like systems, try to create a zip file
-    if (process.platform !== 'win32') {
-      try {
-        execSync(`zip -j "${apkPath}" "${dummyFilePath}"`, { stdio: 'inherit' });
-        // Copy to dist folder
-        fs.copyFileSync(apkPath, distApkPath);
-        console.log('✅ Created placeholder APK file');
-      } catch (error) {
-        // If zip command fails, just copy the text file
-        fs.copyFileSync(dummyFilePath, apkPath);
-        fs.copyFileSync(dummyFilePath, distApkPath);
-      }
-    } else {
-      // On Windows, just copy the text file
-      fs.copyFileSync(dummyFilePath, apkPath);
-      fs.copyFileSync(dummyFilePath, distApkPath);
+    // Ensure dist directory exists
+    if (!fs.existsSync(distDir)) {
+      fs.mkdirSync(distDir, { recursive: true });
     }
     
-    // Clean up
-    fs.unlinkSync(dummyFilePath);
+    // Copy to dist folder
+    if (!fs.existsSync(distDownloadsDir)) {
+      fs.mkdirSync(distDownloadsDir, { recursive: true });
+    }
+    
+    fs.writeFileSync(distApkPath, dummyContent);
+    console.log('✅ Created placeholder APK file');
   } catch (error) {
     console.error('❌ Failed to create placeholder APK:', error.message);
-    // Create an empty file as fallback
-    fs.writeFileSync(apkPath, 'Placeholder APK');
   }
 };
 
 // Create a placeholder IPA file
 const createPlaceholderIpa = () => {
   const ipaPath = path.join(downloadsDir, 'WorkerConnect.ipa');
-  const distDownloadsDir = path.join(process.cwd(), 'dist', 'downloads');
-  
-  // Create dist/downloads directory if it doesn't exist
-  if (!fs.existsSync(distDownloadsDir)) {
-    fs.mkdirSync(distDownloadsDir, { recursive: true });
-  }
-  
   const distIpaPath = path.join(distDownloadsDir, 'WorkerConnect.ipa');
   
-  // Create a simple ZIP file with .ipa extension
+  // Create a simple text file with .ipa extension
   try {
     // Create a dummy file
-    const dummyFilePath = path.join(downloadsDir, 'dummy.txt');
-    fs.writeFileSync(dummyFilePath, 'This is a placeholder IPA file for demonstration purposes.');
+    const dummyContent = 'This is a placeholder IPA file for demonstration purposes.';
+    fs.writeFileSync(ipaPath, dummyContent);
     
-    // On Unix-like systems, try to create a zip file
-    if (process.platform !== 'win32') {
-      try {
-        execSync(`zip -j "${ipaPath}" "${dummyFilePath}"`, { stdio: 'inherit' });
-        // Copy to dist folder
-        fs.copyFileSync(ipaPath, distIpaPath);
-        console.log('✅ Created placeholder IPA file');
-      } catch (error) {
-        // If zip command fails, just copy the text file
-        fs.copyFileSync(dummyFilePath, ipaPath);
-        fs.copyFileSync(dummyFilePath, distIpaPath);
-      }
-    } else {
-      // On Windows, just copy the text file
-      fs.copyFileSync(dummyFilePath, ipaPath);
-      fs.copyFileSync(dummyFilePath, distIpaPath);
+    // Ensure dist directory exists
+    if (!fs.existsSync(distDir)) {
+      fs.mkdirSync(distDir, { recursive: true });
     }
     
-    // Clean up
-    fs.unlinkSync(dummyFilePath);
+    // Copy to dist folder
+    if (!fs.existsSync(distDownloadsDir)) {
+      fs.mkdirSync(distDownloadsDir, { recursive: true });
+    }
+    
+    fs.writeFileSync(distIpaPath, dummyContent);
+    console.log('✅ Created placeholder IPA file');
   } catch (error) {
     console.error('❌ Failed to create placeholder IPA:', error.message);
-    // Create an empty file as fallback
-    fs.writeFileSync(ipaPath, 'Placeholder IPA');
   }
 };
 
@@ -168,7 +140,23 @@ support@workerconnect.gov.in
 © 2024 WorkerConnect. All rights reserved.
 `;
   fs.writeFileSync(readmePath, readmeContent);
+  
+  // Copy to dist folder
+  const distReadmePath = path.join(distDownloadsDir, 'README.txt');
+  fs.writeFileSync(distReadmePath, readmeContent);
+  
   console.log('✅ Created README file');
+};
+
+// Copy downloads index.html to dist
+const copyDownloadsIndex = () => {
+  const sourceIndexPath = path.join(downloadsDir, 'index.html');
+  const distIndexPath = path.join(distDownloadsDir, 'index.html');
+  
+  if (fs.existsSync(sourceIndexPath)) {
+    fs.copyFileSync(sourceIndexPath, distIndexPath);
+    console.log('✅ Copied downloads index.html to dist');
+  }
 };
 
 // Execute all asset generation functions
@@ -176,5 +164,6 @@ createPlaceholderApk();
 createPlaceholderIpa();
 createSvgIcons();
 createReadme();
+copyDownloadsIndex();
 
 console.log('🎉 Mobile assets generation completed!');
