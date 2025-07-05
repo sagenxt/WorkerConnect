@@ -1307,7 +1307,7 @@ export const translations = {
       pushNotifications: "పుష్ నోటిఫికేషన్లు",
       locationTracking: "లొకేషన్ ట్రాకింగ్",
       cameraIntegration: "కెమెరా ఇంటిగ్రేషన్",
-      biometricAuth: "బయోమెట్రిక్ ప్రమాణీకరణ"
+      biometricAuth: "బయోమెట్రిక్ ప్రమాణీకరణ",
       downloadApp: "మొబైల్ యాప్ డౌన్‌లోడ్ చేయండి",
     mobile: {
       downloadApp: "మొబైల్ యాప్‌ను డౌన్‌లోడ్ చేయండి",
