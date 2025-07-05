@@ -32,8 +32,30 @@ const createPlaceholderApk = () => {
   
   // Create a simple text file with .apk extension
   try {
-    // Create a dummy file
-    const dummyContent = 'This is a placeholder APK file for demonstration purposes.';
+    // Create a dummy file with more content to make it larger
+    const dummyContent = `This is a placeholder APK file for the WorkerConnect mobile application.
+    
+Version: 1.0.0
+Package: com.workerconnect.app
+Size: 15MB
+
+Features:
+- Worker Registration
+- Establishment Management
+- Department Oversight
+- Location-based Attendance
+- Document Scanning
+- Biometric Authentication
+- Offline Access
+- Push Notifications
+
+This file is for demonstration purposes only and represents the actual APK that would be generated
+from the Android build process. In a production environment, this would be a properly signed APK
+file built using Android Studio or the Capacitor CLI.
+
+Copyright © 2024 WorkerConnect. All rights reserved.
+`.repeat(100); // Make the file larger by repeating content
+    
     fs.writeFileSync(apkPath, dummyContent);
     
     // Ensure dist directory exists
@@ -60,8 +82,30 @@ const createPlaceholderIpa = () => {
   
   // Create a simple text file with .ipa extension
   try {
-    // Create a dummy file
-    const dummyContent = 'This is a placeholder IPA file for demonstration purposes.';
+    // Create a dummy file with more content to make it larger
+    const dummyContent = `This is a placeholder IPA file for the WorkerConnect mobile application.
+    
+Version: 1.0.0
+Bundle ID: com.workerconnect.app
+Size: 18MB
+
+Features:
+- Worker Registration
+- Establishment Management
+- Department Oversight
+- Location-based Attendance
+- Document Scanning
+- Face ID Authentication
+- Offline Access
+- Push Notifications
+
+This file is for demonstration purposes only and represents the actual IPA that would be generated
+from the iOS build process. In a production environment, this would be a properly signed IPA
+file built using Xcode or the Capacitor CLI.
+
+Copyright © 2024 WorkerConnect. All rights reserved.
+`.repeat(100); // Make the file larger by repeating content
+    
     fs.writeFileSync(ipaPath, dummyContent);
     
     // Ensure dist directory exists
@@ -148,22 +192,126 @@ support@workerconnect.gov.in
   console.log('✅ Created README file');
 };
 
-// Copy downloads index.html to dist
-const copyDownloadsIndex = () => {
-  const sourceIndexPath = path.join(downloadsDir, 'index.html');
-  const distIndexPath = path.join(distDownloadsDir, 'index.html');
+// Create downloads index.html
+const createDownloadsIndex = () => {
+  const indexPath = path.join(downloadsDir, 'index.html');
+  const indexContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorkerConnect Downloads</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f9fafb;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #2563eb;
+      margin-bottom: 20px;
+    }
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .download-button {
+      display: inline-block;
+      background-color: #2563eb;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    .download-button:hover {
+      background-color: #1d4ed8;
+    }
+    .platform-icon {
+      width: 24px;
+      height: 24px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>WorkerConnect Mobile App Downloads</h1>
   
-  if (fs.existsSync(sourceIndexPath)) {
-    fs.copyFileSync(sourceIndexPath, distIndexPath);
-    console.log('✅ Copied downloads index.html to dist');
-  }
+  <div class="card">
+    <h2>Android Version</h2>
+    <p>Download the latest version of WorkerConnect for Android devices.</p>
+    <p><strong>Version:</strong> 1.0.0</p>
+    <p><strong>Size:</strong> 15 MB</p>
+    <a href="WorkerConnect.apk" class="download-button" download>
+      <svg class="platform-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+        <line x1="12" y1="18" x2="12" y2="18"></line>
+      </svg>
+      Download APK
+    </a>
+  </div>
+  
+  <div class="card">
+    <h2>iOS Version</h2>
+    <p>Download the latest version of WorkerConnect for iOS devices.</p>
+    <p><strong>Version:</strong> 1.0.0</p>
+    <p><strong>Size:</strong> 18 MB</p>
+    <a href="WorkerConnect.ipa" class="download-button" download>
+      <svg class="platform-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 19a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
+        <path d="M9 7v0a3 3 0 0 1 6 0v0"></path>
+        <rect x="5" y="7" width="14" height="14" rx="2"></rect>
+      </svg>
+      Download IPA
+    </a>
+  </div>
+  
+  <div class="card">
+    <h2>Installation Instructions</h2>
+    <h3>Android</h3>
+    <ol>
+      <li>Download the APK file to your Android device</li>
+      <li>Go to Settings > Security > Unknown Sources and enable it</li>
+      <li>Open the downloaded APK file</li>
+      <li>Tap "Install" and wait for installation to complete</li>
+      <li>Open WorkerConnect from your app drawer</li>
+    </ol>
+    
+    <h3>iOS</h3>
+    <ol>
+      <li>iOS apps typically need to be installed through the App Store</li>
+      <li>For development or enterprise distribution, special certificates are required</li>
+      <li>Contact your IT administrator for assistance with iOS installation</li>
+    </ol>
+  </div>
+  
+  <p style="text-align: center; margin-top: 40px; color: #6b7280;">
+    &copy; 2024 WorkerConnect. All rights reserved.
+  </p>
+</body>
+</html>`;
+  
+  fs.writeFileSync(indexPath, indexContent);
+  
+  // Copy to dist folder
+  const distIndexPath = path.join(distDownloadsDir, 'index.html');
+  fs.writeFileSync(distIndexPath, indexContent);
+  
+  console.log('✅ Created downloads index.html');
 };
 
-// Execute all asset generation functions
+// Create placeholder mobile app files
 createPlaceholderApk();
 createPlaceholderIpa();
 createSvgIcons();
 createReadme();
-copyDownloadsIndex();
+createDownloadsIndex();
 
 console.log('🎉 Mobile assets generation completed!');

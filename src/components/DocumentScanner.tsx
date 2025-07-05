@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
-import { ScanLine, FileText, Check, X, RotateCcw, Upload } from 'lucide-react';
+import { ScanLine, FileText, Check, X, RotateCcw } from 'lucide-react';
 import { useCapacitorFeatures } from '../hooks/useCapacitorFeatures';
 import { Capacitor } from '@capacitor/core';
 
 interface DocumentScannerProps {
   onScan: (documentData: string) => void;
   onCancel: () => void;
-  label?: string;
   documentType?: string;
 }
 
 const DocumentScanner: React.FC<DocumentScannerProps> = ({
   onScan,
   onCancel,
-  label = 'Scan Document',
   documentType = 'Document'
 }) => {
   const { isNative, takePicture } = useCapacitorFeatures();
@@ -76,9 +74,9 @@ const DocumentScanner: React.FC<DocumentScannerProps> = ({
   return (
     <div className="w-full">
       <div className="mb-2">
-        <h3 className="text-lg font-semibold text-gray-900">{label}</h3>
+        <h3 className="text-lg font-semibold text-gray-900">Scan {documentType}</h3>
         <p className="text-sm text-gray-600">
-          {documentType} should be clear and all text must be readable
+          Document should be clear and all text must be readable
         </p>
       </div>
       

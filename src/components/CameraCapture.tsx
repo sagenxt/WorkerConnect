@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Camera, Image, X, Check, RotateCcw } from 'lucide-react';
+import { Camera, X, Check, RotateCcw } from 'lucide-react';
 import { useCapacitorFeatures } from '../hooks/useCapacitorFeatures';
 import { Capacitor } from '@capacitor/core';
 

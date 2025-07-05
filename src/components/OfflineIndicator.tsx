@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { WifiOff, Wifi, AlertTriangle } from 'lucide-react';
+import { WifiOff, Wifi } from 'lucide-react';
 import { useCapacitorFeatures } from '../hooks/useCapacitorFeatures';
 
 const OfflineIndicator: React.FC = () => {
