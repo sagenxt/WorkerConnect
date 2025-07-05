@@ -741,9 +741,6 @@ export const translations = {
       create: "సృష్టించు",
       add: "జోడించు",
       remove: "తొలగించు",
-    }
-  }
-}
       clear: "క్లియర్",
       apply: "వర్తింపజేయు",
       approve: "ఆమోదించు",
@@ -766,6 +763,7 @@ export const translations = {
       or: "లేదా",
       date: "తేదీ",
       status: "స్థితి",
+    },
     },
     navigation: {
       home: "హోమ్",
@@ -1391,5 +1389,6 @@ export const translations = {
       troubleshooting: "సమస్య పరిష్కారం",
       support: "సహాయం కావాలా? మద్దతును సంప్రదించండి",
     },
+  },
   },
 };
