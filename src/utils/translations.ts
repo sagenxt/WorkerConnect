@@ -624,7 +624,7 @@ export const translations = {
       pushNotifications: "Push Notifications",
       locationTracking: "Location Tracking",
       cameraIntegration: "Camera Integration",
-      biometricAuth: "Biometric Authentication"
+      biometricAuth: "Biometric Authentication",
       downloadApp: "Download Mobile App",
     mobile: {
       downloadApp: "Download Mobile App",
