@@ -22,6 +22,14 @@ if (!fs.existsSync(iconsDir)) {
 // Create a placeholder APK file
 const createPlaceholderApk = () => {
   const apkPath = path.join(downloadsDir, 'WorkerConnect.apk');
+  const distDownloadsDir = path.join(process.cwd(), 'dist', 'downloads');
+  
+  // Create dist/downloads directory if it doesn't exist
+  if (!fs.existsSync(distDownloadsDir)) {
+    fs.mkdirSync(distDownloadsDir, { recursive: true });
+  }
+  
+  const distApkPath = path.join(distDownloadsDir, 'WorkerConnect.apk');
   
   // Create a simple ZIP file with .apk extension
   try {
@@ -32,15 +40,19 @@ const createPlaceholderApk = () => {
     // On Unix-like systems, try to create a zip file
     if (process.platform !== 'win32') {
       try {
-        execSync(`zip -j "${apkPath}" "${dummyFilePath}"`, { stdio: 'ignore' });
+        execSync(`zip -j "${apkPath}" "${dummyFilePath}"`, { stdio: 'inherit' });
+        // Copy to dist folder
+        fs.copyFileSync(apkPath, distApkPath);
         console.log('✅ Created placeholder APK file');
       } catch (error) {
         // If zip command fails, just copy the text file
         fs.copyFileSync(dummyFilePath, apkPath);
+        fs.copyFileSync(dummyFilePath, distApkPath);
       }
     } else {
       // On Windows, just copy the text file
       fs.copyFileSync(dummyFilePath, apkPath);
+      fs.copyFileSync(dummyFilePath, distApkPath);
     }
     
     // Clean up
@@ -55,6 +67,14 @@ const createPlaceholderApk = () => {
 // Create a placeholder IPA file
 const createPlaceholderIpa = () => {
   const ipaPath = path.join(downloadsDir, 'WorkerConnect.ipa');
+  const distDownloadsDir = path.join(process.cwd(), 'dist', 'downloads');
+  
+  // Create dist/downloads directory if it doesn't exist
+  if (!fs.existsSync(distDownloadsDir)) {
+    fs.mkdirSync(distDownloadsDir, { recursive: true });
+  }
+  
+  const distIpaPath = path.join(distDownloadsDir, 'WorkerConnect.ipa');
   
   // Create a simple ZIP file with .ipa extension
   try {
@@ -65,15 +85,19 @@ const createPlaceholderIpa = () => {
     // On Unix-like systems, try to create a zip file
     if (process.platform !== 'win32') {
       try {
-        execSync(`zip -j "${ipaPath}" "${dummyFilePath}"`, { stdio: 'ignore' });
+        execSync(`zip -j "${ipaPath}" "${dummyFilePath}"`, { stdio: 'inherit' });
+        // Copy to dist folder
+        fs.copyFileSync(ipaPath, distIpaPath);
         console.log('✅ Created placeholder IPA file');
       } catch (error) {
         // If zip command fails, just copy the text file
         fs.copyFileSync(dummyFilePath, ipaPath);
+        fs.copyFileSync(dummyFilePath, distIpaPath);
       }
     } else {
       // On Windows, just copy the text file
       fs.copyFileSync(dummyFilePath, ipaPath);
+      fs.copyFileSync(dummyFilePath, distIpaPath);
     }
     
     // Clean up

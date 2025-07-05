@@ -62,16 +62,14 @@ const MobileDownload: React.FC = () => {
   const handleDownload = (platform: 'android' | 'ios') => {
     // In a real implementation, these would be actual download links
     const downloadUrl = platform === 'android' 
-      ? '/downloads/WorkerConnect.apk' 
-      : '/downloads/WorkerConnect.ipa';
+      ? `${window.location.origin}/downloads/WorkerConnect.apk` 
+      : `${window.location.origin}/downloads/WorkerConnect.ipa`;
     
-    // Create a temporary link and trigger download
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = `WorkerConnect.${platform === 'android' ? 'apk' : 'ipa'}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Open in a new tab to handle the download
+    window.open(downloadUrl, '_blank');
+    
+    // Show a message to the user
+    alert(`Downloading WorkerConnect for ${platform === 'android' ? 'Android' : 'iOS'}. If the download doesn't start automatically, please check your browser settings.`);
   };
 
   return (
@@ -156,9 +154,9 @@ const MobileDownload: React.FC = () => {
             <button
               onClick={() => handleDownload(selectedPlatform)}
               className={`w-full flex items-center justify-center px-6 py-4 rounded-lg text-white font-semibold text-lg transition-colors ${
-                selectedPlatform === 'android'
-                  ? 'bg-green-600 hover:bg-green-700'
-                  : 'bg-blue-600 hover:bg-blue-700'
+                selectedPlatform === 'android' 
+                ? 'bg-green-600 hover:bg-green-700' 
+                : 'bg-blue-600 hover:bg-blue-700'
               }`}
             >
               <Download className="h-5 w-5 mr-2" />
