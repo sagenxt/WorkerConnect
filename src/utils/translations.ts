@@ -764,11 +764,7 @@ export const translations = {
       date: "తేదీ",
       status: "స్థితి",
     },
-    },
-
-    }
-  }
-}    navigation: {
+    navigation: {
       home: "హోమ్",
       login: "లాగిన్",
       register: "నమోదు",
