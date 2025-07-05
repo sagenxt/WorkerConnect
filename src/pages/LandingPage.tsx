@@ -148,7 +148,7 @@ const LandingPage: React.FC = () => {
 
             {/* Mobile App Download */}
             <Link
-              to="/mobile-download"
+              to="/mobile"
               className="card-mobile hover:shadow-xl transition-shadow group touch-manipulation"
             >
               <div className="flex items-center mb-4">

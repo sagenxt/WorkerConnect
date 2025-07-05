@@ -23,10 +23,10 @@ const MobileAppPrompt: React.FC = () => {
   const handleDownload = () => {
     if (isIOS()) {
       // Redirect to App Store
-      window.location.href = '/mobile-download';
+      window.location.href = '/mobile';
     } else if (isAndroid()) {
       // Redirect to Play Store
-      window.location.href = '/mobile-download';
+      window.location.href = '/mobile';
     }
     handleDismiss();
   };
@@ -71,7 +71,7 @@ const MobileAppPrompt: React.FC = () => {
 
         <div className="space-y-3">
           <Link
-            to="/mobile-download"
+            to="/mobile"
             onClick={() => setShowPrompt(false)}
             className="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium"
           >
