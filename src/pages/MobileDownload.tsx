@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Smartphone, Android, Apple, FileText, CheckCircle, AlertCircle, HelpCircle } from 'lucide-react';
+import { Download, Smartphone, Phone, Apple, FileText, CheckCircle, AlertCircle, HelpCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const MobileDownload: React.FC = () => {
@@ -100,7 +100,7 @@ const MobileDownload: React.FC = () => {
                   : 'text-gray-600 hover:text-green-600'
               }`}
             >
-              <Android className="h-5 w-5 mr-2" />
+              <Phone className="h-5 w-5 mr-2" />
               Android
             </button>
             <button
@@ -122,7 +122,7 @@ const MobileDownload: React.FC = () => {
           <div className="card-mobile">
             <div className="text-center mb-6">
               {selectedPlatform === 'android' ? (
-                <Android className="h-16 w-16 text-green-600 mx-auto mb-4" />
+                <Phone className="h-16 w-16 text-green-600 mx-auto mb-4" />
               ) : (
                 <Apple className="h-16 w-16 text-blue-600 mx-auto mb-4" />
               )}
