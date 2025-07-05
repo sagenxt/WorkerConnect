@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Building2, Shield, ArrowRight, CheckCircle } from 'lucide-react';
+import { Users, Building2, Shield, ArrowRight, CheckCircle, Smartphone } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const LandingPage: React.FC = () => {
@@ -142,6 +142,26 @@ const LandingPage: React.FC = () => {
               </p>
               <div className="flex items-center text-orange-600 group-hover:text-orange-700">
                 <span className="text-sm font-medium">{t('common.start')}</span>
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </div>
+            </Link>
+
+            {/* Mobile App Download */}
+            <Link
+              to="/mobile-download"
+              className="card-mobile hover:shadow-xl transition-shadow group touch-manipulation"
+            >
+              <div className="flex items-center mb-4">
+                <Smartphone className="h-6 w-6 md:h-8 md:w-8 text-purple-600 mr-3" />
+                <h3 className="text-lg md:text-xl font-semibold text-gray-900">
+                  {t('mobile.downloadApp')}
+                </h3>
+              </div>
+              <p className="text-sm md:text-base text-gray-600 mb-4">
+                {t('mobile.getStarted')}
+              </p>
+              <div className="flex items-center text-purple-600 group-hover:text-purple-700">
+                <span className="text-sm font-medium">{t('mobile.downloadNow')}</span>
                 <ArrowRight className="ml-2 h-4 w-4" />
               </div>
             </Link>

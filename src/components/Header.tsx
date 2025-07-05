@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Users, Globe, LogOut } from 'lucide-react';
+import { Users, Globe, LogOut, Smartphone } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -30,6 +30,15 @@ const Header: React.FC = () => {
           </Link>
 
           <div className="flex items-center space-x-2 md:space-x-4">
+            <Link
+              to="/mobile-download"
+              className="flex items-center space-x-1 px-2 md:px-3 py-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 transition-colors touch-manipulation"
+            >
+              <Smartphone className="h-4 w-4" />
+              <span className="text-sm font-medium hidden md:inline">
+                {t('mobile.downloadApp')}
+              </span>
+            </Link>
             <button
               onClick={handleLanguageToggle}
               className="flex items-center space-x-1 px-2 md:px-3 py-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 transition-colors touch-manipulation"

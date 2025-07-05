@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Smartphone, Download, X, Apple, Play } from 'lucide-react';
 import { isMobile, isIOS, isAndroid } from '../utils/pwa';
+import { Link } from 'react-router-dom';
 
 const MobileAppPrompt: React.FC = () => {
   const [showPrompt, setShowPrompt] = useState(false);
@@ -22,10 +23,10 @@ const MobileAppPrompt: React.FC = () => {
   const handleDownload = () => {
     if (isIOS()) {
       // Redirect to App Store
-      window.open('https://apps.apple.com/app/workerconnect/id123456789', '_blank');
+      window.location.href = '/mobile-download';
     } else if (isAndroid()) {
       // Redirect to Play Store
-      window.open('https://play.google.com/store/apps/details?id=com.workerconnect.app', '_blank');
+      window.location.href = '/mobile-download';
     }
     handleDismiss();
   };
@@ -69,8 +70,9 @@ const MobileAppPrompt: React.FC = () => {
         </p>
 
         <div className="space-y-3">
-          <button
-            onClick={handleDownload}
+          <Link
+            to="/mobile-download"
+            onClick={() => setShowPrompt(false)}
             className="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium"
           >
             <Download className="h-5 w-5 mr-2" />
@@ -85,7 +87,7 @@ const MobileAppPrompt: React.FC = () => {
                 Get it on Google Play
               </>
             )}
-          </button>
+          </Link>
           
           <button
             onClick={handleDismiss}
