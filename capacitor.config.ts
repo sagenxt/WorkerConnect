@@ -6,7 +6,8 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   server: {
     androidScheme: 'http',
-    allowNavigation: ['*']
+    allowNavigation: ['*'],
+    cleartext: true
   },
   plugins: {
     SplashScreen: {
@@ -59,6 +60,7 @@ const config: CapacitorConfig = {
     webContentsDebuggingEnabled: true,
     appendUserAgent: 'WorkerConnect Android',
     backgroundColor: '#2563eb',
+    initialFocus: true
     initialFocus: true,
     buildOptions: {
       keystorePath: undefined,
@@ -72,10 +74,11 @@ const config: CapacitorConfig = {
   ios: {
     contentInset: 'automatic',
     scrollEnabled: true,
-    allowsLinkPreview: false,
+    allowsLinkPreview: true,
     backgroundColor: '#2563eb',
     appendUserAgent: 'WorkerConnect iOS',
     preferredContentMode: 'mobile',
+    limitsNavigationsToAppBoundDomains: false
     limitsNavigationsToAppBoundDomains: false,
     buildOptions: {
       developmentTeam: undefined,

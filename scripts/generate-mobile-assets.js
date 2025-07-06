@@ -32,29 +32,12 @@ const createPlaceholderApk = () => {
   
   // Create a simple text file with .apk extension
   try {
-    // Create a dummy file with more content to make it larger
-    const dummyContent = `This is a placeholder APK file for the WorkerConnect mobile application.
-    
-Version: 1.0.0
-Package: com.workerconnect.app
-Size: 15MB
-
-Features:
-- Worker Registration
-- Establishment Management
-- Department Oversight
-- Location-based Attendance
-- Document Scanning
-- Biometric Authentication
-- Offline Access
-- Push Notifications
-
-This file is for demonstration purposes only and represents the actual APK that would be generated
-from the Android build process. In a production environment, this would be a properly signed APK
-file built using Android Studio or the Capacitor CLI.
-
-Copyright © 2024 WorkerConnect. All rights reserved.
-`.repeat(100); // Make the file larger by repeating content
+  // Create a binary-like file instead of text
+  const buffer = Buffer.alloc(1024 * 1024 * 5); // 5MB file
+  buffer.fill(0);
+  // Add some header text to identify it as a placeholder
+  const header = "PLACEHOLDER APK FILE - NOT A REAL APK - FOR DEMONSTRATION ONLY";
+  buffer.write(header, 0, header.length, 'utf8');
     
     fs.writeFileSync(apkPath, dummyContent);
     
@@ -67,8 +50,8 @@ Copyright © 2024 WorkerConnect. All rights reserved.
     if (!fs.existsSync(distDownloadsDir)) {
       fs.mkdirSync(distDownloadsDir, { recursive: true });
     }
-    
-    fs.writeFileSync(distApkPath, dummyContent);
+  fs.writeFileSync(apkPath, buffer);
+  fs.writeFileSync(distApkPath, buffer);
     console.log('✅ Created placeholder APK file');
   } catch (error) {
     console.error('❌ Failed to create placeholder APK:', error.message);
@@ -80,31 +63,14 @@ const createPlaceholderIpa = () => {
   const ipaPath = path.join(downloadsDir, 'WorkerConnect.ipa');
   const distIpaPath = path.join(distDownloadsDir, 'WorkerConnect.ipa');
   
-  // Create a simple text file with .ipa extension
+  // Create a binary-like file instead of text
   try {
-    // Create a dummy file with more content to make it larger - using a different format to avoid issues
-    const dummyContent = `WorkerConnect Mobile Application Package for iOS
-Version: 1.0.0
-Build Date: ${new Date().toISOString()}
-Bundle ID: com.workerconnect.app
-
-This file is a placeholder for the actual IPA that would be generated from a proper build process.
-In a production environment, this would be replaced with a signed IPA file.
-
-Features:
-- Worker Registration
-- Establishment Management
-- Department Oversight
-- Location-based Attendance
-- Document Scanning
-- Face ID Authentication
-- Offline Access
-- Push Notifications
-
-Copyright © 2024 WorkerConnect. All rights reserved.
-`.repeat(1000);
-    
-    fs.writeFileSync(ipaPath, dummyContent);
+    // Create a binary-like file
+    const buffer = Buffer.alloc(1024 * 1024 * 5); // 5MB file
+    buffer.fill(0);
+    // Add some header text to identify it as a placeholder
+    const header = "PLACEHOLDER IPA FILE - NOT A REAL IPA - FOR DEMONSTRATION ONLY";
+    fs.writeFileSync(ipaPath, buffer);
     
     // Ensure dist directory exists
     if (!fs.existsSync(distDir)) {
@@ -116,7 +82,7 @@ Copyright © 2024 WorkerConnect. All rights reserved.
       fs.mkdirSync(distDownloadsDir, { recursive: true });
     }
     
-    fs.writeFileSync(distIpaPath, dummyContent);
+    fs.writeFileSync(distIpaPath, buffer);
     console.log('✅ Created placeholder IPA file');
   } catch (error) {
     console.error('❌ Failed to create placeholder IPA:', error.message);
