@@ -1,21 +1,12 @@
 #!/usr/bin/env node
 
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
-const JSZip = require('jszip');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
+import JSZip from 'jszip';
 
 console.log('🚀 Starting Android APK build process...\n');
-
-// Install JSZip if not already installed
-try {
-  require.resolve('jszip');
-} catch (e) {
-  console.log('📦 Installing JSZip package...');
-  execSync('npm add jszip@latest --save-dev', { stdio: 'inherit' });
-  console.log('✅ JSZip installed\n');
-}
 
 // Build the web app first
 console.log('📦 Building web application...');
