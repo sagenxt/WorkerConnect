@@ -82,12 +82,14 @@ const createPlaceholderIpa = () => {
   
   // Create a simple text file with .ipa extension
   try {
-    // Create a dummy file with more content to make it larger
-    const dummyContent = `This is a placeholder IPA file for the WorkerConnect mobile application.
-    
+    // Create a dummy file with more content to make it larger - using a different format to avoid issues
+    const dummyContent = `WorkerConnect Mobile Application Package for iOS
 Version: 1.0.0
+Build Date: ${new Date().toISOString()}
 Bundle ID: com.workerconnect.app
-Size: 18MB
+
+This file is a placeholder for the actual IPA that would be generated from a proper build process.
+In a production environment, this would be replaced with a signed IPA file.
 
 Features:
 - Worker Registration
@@ -99,12 +101,8 @@ Features:
 - Offline Access
 - Push Notifications
 
-This file is for demonstration purposes only and represents the actual IPA that would be generated
-from the iOS build process. In a production environment, this would be a properly signed IPA
-file built using Xcode or the Capacitor CLI.
-
 Copyright © 2024 WorkerConnect. All rights reserved.
-`.repeat(100); // Make the file larger by repeating content
+`.repeat(1000);
     
     fs.writeFileSync(ipaPath, dummyContent);
     

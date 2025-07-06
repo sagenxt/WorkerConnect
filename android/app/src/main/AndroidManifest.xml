@@ -46,10 +46,13 @@
         android:hardwareAccelerated="true"
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true">
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:hardwareAccelerated="true">
 
         <activity
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBarLaunch"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
-</manifest>
+            android:theme="@style/AppTheme.NoActionBarLaunch"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
+            android:hardwareAccelerated="true">
