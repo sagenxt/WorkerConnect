@@ -60,7 +60,6 @@ const config: CapacitorConfig = {
     webContentsDebuggingEnabled: true,
     appendUserAgent: 'WorkerConnect Android',
     backgroundColor: '#2563eb',
-    initialFocus: true
     initialFocus: true,
     buildOptions: {
       keystorePath: undefined,
@@ -78,7 +77,6 @@ const config: CapacitorConfig = {
     backgroundColor: '#2563eb',
     appendUserAgent: 'WorkerConnect iOS',
     preferredContentMode: 'mobile',
-    limitsNavigationsToAppBoundDomains: false
     limitsNavigationsToAppBoundDomains: false,
     buildOptions: {
       developmentTeam: undefined,

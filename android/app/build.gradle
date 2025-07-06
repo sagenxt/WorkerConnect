@@ -11,11 +11,6 @@ android {
         versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-        multiDexEnabled true
-        aaptOptions {
-             // Files and dirs to omit from the packaged APK
-             ignoreAssetsPattern "!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~"
-        }
         aaptOptions {
              // Files and dirs to omit from the packaged APK
              ignoreAssetsPattern "!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~"
@@ -24,8 +19,8 @@ android {
     
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug // Remove this line for production
         }
@@ -34,17 +29,11 @@ android {
             minifyEnabled false
             shrinkResources false
         }
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+    }
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
-    }
-    
-    packagingOptions {
-        resources {
-            excludes += ['META-INF/DEPENDENCIES', 'META-INF/LICENSE', 'META-INF/LICENSE.txt', 'META-INF/license.txt', 'META-INF/NOTICE', 'META-INF/NOTICE.txt', 'META-INF/notice.txt', 'META-INF/ASL2.0', 'META-INF/*.kotlin_module']
-        }
     }
     
     packagingOptions {
@@ -66,7 +55,6 @@ dependencies {
     implementation "androidx.webkit:webkit:1.6.1"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
-    implementation "androidx.webkit:webkit:1.6.1"
     implementation project(':capacitor-android')
     implementation "androidx.multidex:multidex:2.0.1"
     testImplementation "junit:junit:$junitVersion"
