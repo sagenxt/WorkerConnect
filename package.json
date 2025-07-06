@@ -20,11 +20,14 @@
     "build:android": "npm run build:mobile && npx cap build android",
     "build:ios": "npm run build:mobile && npx cap build ios",
     "open:android": "npx cap open android",
-    "open:ios": "npx cap open ios",
+    "open:ios": "npx cap open ios", 
     "sync": "npx cap sync",
-    "copy": "npx cap copy",
+    "copy": "npx cap copy", 
+    "update": "npx cap update",
     "run:android": "npx cap run android",
-    "run:ios": "npx cap run ios"
+    "run:ios": "npx cap run ios",
+    "build:apk": "node scripts/build-android.js",
+    "build:ipa": "node scripts/build-ios.js"
   },
   "dependencies": {
     "@capacitor/camera": "^7.0.1",

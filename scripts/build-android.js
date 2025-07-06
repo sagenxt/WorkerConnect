@@ -41,13 +41,35 @@ try {
     fs.mkdirSync(distDownloadsDir, { recursive: true });
   }
   
-  // Create a placeholder APK file with more content
-  const apkPath = path.join(downloadsDir, 'WorkerConnect.apk');
-  const distApkPath = path.join(distDownloadsDir, 'WorkerConnect.apk');
-  
-  // Create a dummy file with more content to make it larger
-  const dummyContent = `This is a placeholder APK file for the WorkerConnect mobile application.
-  
+  // Try to build the actual APK
+  try {
+    console.log('🔨 Attempting to build actual APK...');
+    execSync('cd android && ./gradlew assembleDebug', { stdio: 'inherit' });
+    
+    // Check if APK was created
+    const apkPath = path.join(process.cwd(), 'android', 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk');
+    const targetApkPath = path.join(downloadsDir, 'WorkerConnect.apk');
+    const distApkPath = path.join(distDownloadsDir, 'WorkerConnect.apk');
+    
+    if (fs.existsSync(apkPath)) {
+      // Copy the APK to the downloads directory
+      fs.copyFileSync(apkPath, targetApkPath);
+      fs.copyFileSync(apkPath, distApkPath);
+      console.log('✅ Real APK built and copied successfully');
+    } else {
+      throw new Error('APK not found after build');
+    }
+  } catch (buildError) {
+    console.error('⚠️ Could not build real APK:', buildError.message);
+    console.log('Creating placeholder APK instead...');
+    
+    // Create a placeholder APK file with more content to make it larger
+    const apkPath = path.join(downloadsDir, 'WorkerConnect.apk');
+    const distApkPath = path.join(distDownloadsDir, 'WorkerConnect.apk');
+    
+    // Create a dummy file with more content to make it larger
+    const dummyContent = `This is a placeholder APK file for the WorkerConnect mobile application.
+    
 Version: 1.0.0
 Package: com.workerconnect.app
 Size: 15MB
@@ -68,13 +90,15 @@ file built using Android Studio or the Capacitor CLI.
 
 Copyright © 2024 WorkerConnect. All rights reserved.
 `.repeat(1000); // Make the file larger by repeating content
+    
+    fs.writeFileSync(apkPath, dummyContent);
+    fs.writeFileSync(distApkPath, dummyContent);
+    
+    console.log('✅ Placeholder APK file created successfully');
+  }
   
-  fs.writeFileSync(apkPath, dummyContent);
-  fs.writeFileSync(distApkPath, dummyContent);
-  
-  console.log('✅ APK file created successfully');
-  console.log(`📱 APK file location: ${apkPath}`);
-  console.log(`📱 APK file also copied to: ${distApkPath}`);
+  console.log(`📱 APK file location: ${path.join(downloadsDir, 'WorkerConnect.apk')}`);
+  console.log(`📱 APK file also copied to: ${path.join(distDownloadsDir, 'WorkerConnect.apk')}`);
 } catch (error) {
   console.error('❌ APK creation failed:', error.message);
 }
