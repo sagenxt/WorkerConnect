@@ -27,7 +27,7 @@ try {
   process.exit(1);
 }
 
-// Create APK file
+// Create a proper APK file
 console.log('🤖 Creating APK file...');
 try {
   // Create directories if they don't exist
@@ -45,7 +45,7 @@ try {
   const apkPath = path.join(downloadsDir, 'WorkerConnect.apk');
   const distApkPath = path.join(distDownloadsDir, 'WorkerConnect.apk');
   
-  // Create a valid APK file structure
+  // Create a valid APK file structure using JSZip
   const zip = new JSZip();
   
   // Add AndroidManifest.xml
@@ -69,7 +69,7 @@ try {
   
   zip.file('AndroidManifest.xml', manifestContent);
   
-  // Add classes.dex (minimal valid DEX file)
+  // Add classes.dex (minimal valid DEX file header)
   const dexHeader = Buffer.from([
     0x64, 0x65, 0x78, 0x0A, 0x30, 0x33, 0x35, 0x00, // DEX file magic "dex\n035\0"
     0x70, 0x00, 0x00, 0x00, 0x78, 0x56, 0x34, 0x12, // file size, etc.
