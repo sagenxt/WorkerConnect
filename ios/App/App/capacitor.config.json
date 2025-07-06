@@ -62,7 +62,8 @@
 		"captureInput": true,
 		"webContentsDebuggingEnabled": true,
 		"appendUserAgent": "WorkerConnect Android",
-		"backgroundColor": "#2563eb"
+		"backgroundColor": "#2563eb",
+		"initialFocus": true
 	},
 	"ios": {
 		"contentInset": "automatic",
@@ -70,7 +71,8 @@
 		"allowsLinkPreview": false,
 		"backgroundColor": "#2563eb",
 		"appendUserAgent": "WorkerConnect iOS",
-		"preferredContentMode": "mobile"
+		"preferredContentMode": "mobile",
+		"limitsNavigationsToAppBoundDomains": false
 	},
 	"packageClassList": [
 		"CAPCameraPlugin",
