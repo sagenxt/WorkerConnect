@@ -6,7 +6,8 @@
 		"androidScheme": "http",
 		"allowNavigation": [
 			"*"
-		]
+		],
+		"cleartext": true
 	},
 	"plugins": {
 		"SplashScreen": {
@@ -68,7 +69,7 @@
 	"ios": {
 		"contentInset": "automatic",
 		"scrollEnabled": true,
-		"allowsLinkPreview": false,
+		"allowsLinkPreview": true,
 		"backgroundColor": "#2563eb",
 		"appendUserAgent": "WorkerConnect iOS",
 		"preferredContentMode": "mobile",
