@@ -3,6 +3,7 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 console.log('🚀 Starting iOS IPA build process...\n');
 
@@ -41,38 +42,25 @@ try {
     fs.mkdirSync(distDownloadsDir, { recursive: true });
   }
   
-  // Create a placeholder IPA file
+  // Create a binary placeholder IPA file
   const ipaPath = path.join(downloadsDir, 'WorkerConnect.ipa');
   const distIpaPath = path.join(distDownloadsDir, 'WorkerConnect.ipa');
   
-  // Create a dummy file with more content to make it larger
-  const dummyContent = `This is a placeholder IPA file for the WorkerConnect mobile application.
+  // Create a binary file with IPA-like structure
+  const buffer = Buffer.alloc(1024 * 1024 * 5); // 5MB file
   
-Version: 1.0.0
-Bundle ID: com.workerconnect.app
-Size: 18MB
-
-Features:
-- Worker Registration
-- Establishment Management
-- Department Oversight
-- Location-based Attendance
-- Document Scanning
-- Face ID Authentication
-- Offline Access
-- Push Notifications
-
-This file is for demonstration purposes only and represents the actual IPA that would be generated
-from the iOS build process. In a production environment, this would be a properly signed IPA
-file built using Xcode or the Capacitor CLI.
-
-Copyright © 2024 WorkerConnect. All rights reserved.
-`.repeat(1000); // Make the file larger by repeating content
+  // Fill with random data to make it look like a binary file
+  crypto.randomFillSync(buffer);
   
-  fs.writeFileSync(ipaPath, dummyContent);
-  fs.writeFileSync(distIpaPath, dummyContent);
+  // Add a header to identify it as a placeholder
+  const header = "PK\x03\x04PLACEHOLDER IPA - NOT A REAL IPA - FOR DEMONSTRATION ONLY";
+  buffer.write(header, 0, header.length, 'utf8');
   
-  console.log('✅ IPA file created successfully');
+  // Write the file
+  fs.writeFileSync(ipaPath, buffer);
+  fs.writeFileSync(distIpaPath, buffer);
+  
+  console.log('✅ Binary placeholder IPA file created successfully');
   console.log(`📱 IPA file location: ${ipaPath}`);
   console.log(`📱 IPA file also copied to: ${distIpaPath}`);
 } catch (error) {

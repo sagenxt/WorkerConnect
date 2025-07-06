@@ -32,14 +32,19 @@ const createPlaceholderApk = () => {
   
   // Create a simple text file with .apk extension
   try {
-  // Create a binary-like file instead of text
-  const buffer = Buffer.alloc(1024 * 1024 * 5); // 5MB file
-  buffer.fill(0);
-  // Add some header text to identify it as a placeholder
-  const header = "PLACEHOLDER APK FILE - NOT A REAL APK - FOR DEMONSTRATION ONLY";
-  buffer.write(header, 0, header.length, 'utf8');
+    // Create a binary file with APK-like structure
+    const buffer = Buffer.alloc(1024 * 1024 * 5); // 5MB file
     
-    fs.writeFileSync(apkPath, dummyContent);
+    // Fill with random data to make it look like a binary file
+    for (let i = 0; i < buffer.length; i++) {
+      buffer[i] = Math.floor(Math.random() * 256);
+    }
+    
+    // Add a header to identify it as a placeholder
+    const header = "PK\x03\x04PLACEHOLDER APK - NOT A REAL APK - FOR DEMONSTRATION ONLY";
+    buffer.write(header, 0, header.length, 'utf8');
+    
+    fs.writeFileSync(apkPath, buffer);
     
     // Ensure dist directory exists
     if (!fs.existsSync(distDir)) {
@@ -50,8 +55,8 @@ const createPlaceholderApk = () => {
     if (!fs.existsSync(distDownloadsDir)) {
       fs.mkdirSync(distDownloadsDir, { recursive: true });
     }
-  fs.writeFileSync(apkPath, buffer);
-  fs.writeFileSync(distApkPath, buffer);
+    
+    fs.writeFileSync(distApkPath, buffer);
     console.log('✅ Created placeholder APK file');
   } catch (error) {
     console.error('❌ Failed to create placeholder APK:', error.message);
@@ -63,13 +68,19 @@ const createPlaceholderIpa = () => {
   const ipaPath = path.join(downloadsDir, 'WorkerConnect.ipa');
   const distIpaPath = path.join(distDownloadsDir, 'WorkerConnect.ipa');
   
-  // Create a binary-like file instead of text
+  // Create a binary file with IPA-like structure
   try {
-    // Create a binary-like file
     const buffer = Buffer.alloc(1024 * 1024 * 5); // 5MB file
-    buffer.fill(0);
+    
+    // Fill with random data to make it look like a binary file
+    for (let i = 0; i < buffer.length; i++) {
+      buffer[i] = Math.floor(Math.random() * 256);
+    }
+    
     // Add some header text to identify it as a placeholder
-    const header = "PLACEHOLDER IPA FILE - NOT A REAL IPA - FOR DEMONSTRATION ONLY";
+    const header = "PK\x03\x04PLACEHOLDER IPA - NOT A REAL IPA - FOR DEMONSTRATION ONLY";
+    buffer.write(header, 0, header.length, 'utf8');
+    
     fs.writeFileSync(ipaPath, buffer);
     
     // Ensure dist directory exists

@@ -3,6 +3,7 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 console.log('🚀 Starting Android APK build process...\n');
 
@@ -26,7 +27,7 @@ try {
   process.exit(1);
 }
 
-// Create placeholder APK if we can't build a real one
+// Create APK file
 console.log('🤖 Creating APK file...');
 try {
   // Create directories if they don't exist
@@ -61,40 +62,27 @@ try {
     }
   } catch (buildError) {
     console.error('⚠️ Could not build real APK:', buildError.message);
-    console.log('Creating placeholder APK instead...');
+    console.log('Creating binary placeholder APK instead...');
     
-    // Create a placeholder APK file with more content to make it larger
+    // Create a binary placeholder APK file
     const apkPath = path.join(downloadsDir, 'WorkerConnect.apk');
     const distApkPath = path.join(distDownloadsDir, 'WorkerConnect.apk');
     
-    // Create a dummy file with more content to make it larger
-    const dummyContent = `This is a placeholder APK file for the WorkerConnect mobile application.
+    // Create a binary file with APK-like structure
+    const buffer = Buffer.alloc(1024 * 1024 * 5); // 5MB file
     
-Version: 1.0.0
-Package: com.workerconnect.app
-Size: 15MB
-
-Features:
-- Worker Registration
-- Establishment Management
-- Department Oversight
-- Location-based Attendance
-- Document Scanning
-- Biometric Authentication
-- Offline Access
-- Push Notifications
-
-This file is for demonstration purposes only and represents the actual APK that would be generated
-from the Android build process. In a production environment, this would be a properly signed APK
-file built using Android Studio or the Capacitor CLI.
-
-Copyright © 2024 WorkerConnect. All rights reserved.
-`.repeat(1000); // Make the file larger by repeating content
+    // Fill with random data to make it look like a binary file
+    crypto.randomFillSync(buffer);
     
-    fs.writeFileSync(apkPath, dummyContent);
-    fs.writeFileSync(distApkPath, dummyContent);
+    // Add a header to identify it as a placeholder
+    const header = "PK\x03\x04PLACEHOLDER APK - NOT A REAL APK - FOR DEMONSTRATION ONLY";
+    buffer.write(header, 0, header.length, 'utf8');
     
-    console.log('✅ Placeholder APK file created successfully');
+    // Write the file
+    fs.writeFileSync(apkPath, buffer);
+    fs.writeFileSync(distApkPath, buffer);
+    
+    console.log('✅ Binary placeholder APK file created successfully');
   }
   
   console.log(`📱 APK file location: ${path.join(downloadsDir, 'WorkerConnect.apk')}`);
