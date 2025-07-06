@@ -14,6 +14,10 @@ android {
              // Files and dirs to omit from the packaged APK
              ignoreAssetsPattern "!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~"
         }
+        aaptOptions {
+             // Files and dirs to omit from the packaged APK
+             ignoreAssetsPattern "!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~"
+        }
     }
     
     buildTypes {

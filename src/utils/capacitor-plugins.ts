@@ -18,19 +18,47 @@ export const initializeCapacitorPlugins = async () => {
 
   try {
     console.log('Initializing Capacitor plugins...');
+
+    // Add error handling for each plugin initialization
+    try {
+      // Request permissions
+      await Geolocation.requestPermissions();
+      console.log('Geolocation permissions requested');
+    } catch (error) {
+      console.error('Error requesting Geolocation permissions:', error);
+    }
     
-    // Request permissions
-    await Geolocation.requestPermissions();
-    await Camera.requestPermissions();
-    await LocalNotifications.requestPermissions();
+    try {
+      await Camera.requestPermissions();
+      console.log('Camera permissions requested');
+    } catch (error) {
+      console.error('Error requesting Camera permissions:', error);
+    }
     
-    // Set up push notifications
-    await PushNotifications.requestPermissions();
-    await PushNotifications.register();
+    try {
+      await LocalNotifications.requestPermissions();
+      console.log('LocalNotifications permissions requested');
+    } catch (error) {
+      console.error('Error requesting LocalNotifications permissions:', error);
+    }
     
-    // Set up status bar
-    if (Capacitor.getPlatform() === 'android') {
-      StatusBar.setBackgroundColor({ color: '#2563eb' });
+    try {
+      // Set up push notifications
+      await PushNotifications.requestPermissions();
+      await PushNotifications.register();
+      console.log('Push notifications registered');
+    } catch (error) {
+      console.error('Error setting up push notifications:', error);
+    }
+    
+    try {
+      // Set up status bar
+      if (Capacitor.getPlatform() === 'android') {
+        await StatusBar.setBackgroundColor({ color: '#2563eb' });
+        console.log('Status bar color set');
+      }
+    } catch (error) {
+      console.error('Error setting status bar color:', error);
     }
     
     console.log('Capacitor plugins initialized successfully');

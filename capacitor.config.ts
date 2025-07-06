@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'WorkerConnect',
   webDir: 'dist',
   server: {
-    androidScheme: 'https',
+    androidScheme: 'http',
     allowNavigation: ['*']
   },
   plugins: {
@@ -56,7 +56,7 @@ const config: CapacitorConfig = {
   android: {
     allowMixedContent: true,
     captureInput: true,
-    webContentsDebuggingEnabled: false,
+    webContentsDebuggingEnabled: true,
     appendUserAgent: 'WorkerConnect Android',
     backgroundColor: '#2563eb',
     buildOptions: {

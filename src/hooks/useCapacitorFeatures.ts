@@ -23,30 +23,57 @@ export const useCapacitorFeatures = () => {
       
       if (Capacitor.isNativePlatform()) {
         try {
-          // Get device info
-          const info = await Device.getInfo();
-          const battery = await Device.getBatteryInfo();
-          const id = await Device.getId();
-          
-          setDeviceInfo({
-            ...info,
-            battery,
-            id: id.identifier
-          });
-          
-          // Set up network status listener
-          const status = await Network.getStatus();
-          setNetworkStatus(status);
-          
-          Network.addListener('networkStatusChange', (status) => {
-            setNetworkStatus(status);
-          });
-          
-          // Set up status bar
-          if (Capacitor.getPlatform() === 'android') {
-            StatusBar.setBackgroundColor({ color: '#2563eb' });
+          try {
+            // Get device info
+            const info = await Device.getInfo();
+            const battery = await Device.getBatteryInfo();
+            const id = await Device.getId();
+            
+            setDeviceInfo({
+              ...info,
+              battery,
+              id: id.identifier
+            });
+          } catch (error) {
+            console.error('Error getting device info:', error);
+            setDeviceInfo({
+              platform: 'android',
+              model: 'Unknown',
+              operatingSystem: 'Unknown',
+              osVersion: 'Unknown',
+              manufacturer: 'Unknown',
+              isVirtual: false,
+              webViewVersion: 'Unknown',
+              battery: { batteryLevel: 1, isCharging: false },
+              id: 'unknown'
+            });
           }
-          StatusBar.setStyle({ style: Style.Default });
+
+          try {
+            // Set up network status listener
+            const status = await Network.getStatus();
+            setNetworkStatus(status);
+            
+            Network.addListener('networkStatusChange', (status) => {
+              setNetworkStatus(status);
+            });
+          } catch (error) {
+            console.error('Error setting up network status:', error);
+            setNetworkStatus({
+              connected: true,
+              connectionType: 'unknown'
+            });
+          }
+
+          try {
+            // Set up status bar
+            if (Capacitor.getPlatform() === 'android') {
+              await StatusBar.setBackgroundColor({ color: '#2563eb' });
+            }
+            await StatusBar.setStyle({ style: Style.Default });
+          } catch (error) {
+            console.error('Error setting up status bar:', error);
+          }
           
           // Request permissions
           await requestPermissions();
@@ -68,14 +95,26 @@ export const useCapacitorFeatures = () => {
   const requestPermissions = async () => {
     if (Capacitor.isNativePlatform()) {
       try {
-        // Request geolocation permission
-        await Geolocation.requestPermissions();
-        
-        // Request camera permission
-        await Camera.requestPermissions();
-        
-        // Set up local notifications
-        await LocalNotifications.requestPermissions();
+        try {
+          // Request geolocation permission
+          await Geolocation.requestPermissions();
+        } catch (error) {
+          console.error('Error requesting geolocation permissions:', error);
+        }
+
+        try {
+          // Request camera permission
+          await Camera.requestPermissions();
+        } catch (error) {
+          console.error('Error requesting camera permissions:', error);
+        }
+
+        try {
+          // Set up local notifications
+          await LocalNotifications.requestPermissions();
+        } catch (error) {
+          console.error('Error requesting notification permissions:', error);
+        }
       } catch (error) {
         console.error('Error requesting permissions:', error);
       }

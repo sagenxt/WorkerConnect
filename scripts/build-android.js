@@ -19,7 +19,7 @@ try {
 // Sync with Capacitor
 console.log('🔄 Syncing with Capacitor...');
 try {
-  execSync('npx cap sync android', { stdio: 'inherit' });
+  execSync('npx cap copy android && npx cap update android', { stdio: 'inherit' });
   console.log('✅ Capacitor sync completed\n');
 } catch (error) {
   console.error('❌ Capacitor sync failed:', error.message);
