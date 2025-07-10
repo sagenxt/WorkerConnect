@@ -1,202 +1,135 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { HardHat, Phone, Lock, Eye, EyeOff, Fingerprint } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
-import FormInput from '../components/FormInput';
-import BiometricAuth from '../components/BiometricAuth';
-import { Capacitor } from '@capacitor/core';
 
 const WorkerLogin: React.FC = () => {
-  const { t } = useLanguage();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    mobile: '',
-    password: ''
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [showBiometric, setShowBiometric] = useState(false);
-  const isNative = Capacitor.isNativePlatform();
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.mobile.trim()) {
-      newErrors.mobile = t('forms.validation.mobile');
-    } else if (!/^\d{10}$/.test(formData.mobile.trim())) {
-      newErrors.mobile = t('forms.validation.mobile');
-    }
-
-    if (!formData.password.trim()) {
-      newErrors.password = t('forms.validation.required');
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!validateForm()) return;
-
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       // Mock successful login
       login({
         id: '1',
         type: 'worker',
         name: 'John Doe',
-        mobile: formData.mobile
+        email: email
       });
       
-      setIsLoading(false);
       navigate('/dashboard/worker');
-    }, 1000);
+    } catch (error) {
+      console.error('Login failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
-
-  const handleBiometricAuth = () => {
-    setShowBiometric(true);
-  };
-
-  const handleBiometricSuccess = () => {
-    // Simulate successful biometric login
-    login({
-      id: '1',
-      type: 'worker',
-      name: 'John Doe',
-      mobile: '9876543210'
-    });
-    
-    navigate('/dashboard/worker');
-  };
-
-  // If biometric auth is showing, render that component
-  if (showBiometric) {
-    return (
-      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <BiometricAuth
-          onAuthenticated={handleBiometricSuccess}
-          onCancel={() => setShowBiometric(false)}
-        />
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <HardHat className="h-8 w-8 text-green-600" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">
-            {t('landing.loginAsWorker')}
-          </h2>
-          <p className="mt-2 text-gray-600">
-            {t('worker.login')}
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Worker Login
+          </h1>
+          <p className="text-gray-600">
+            Sign in to your WorkerConnect account
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-            <div className="space-y-4">
-              <div className="relative">
-                <Phone className="absolute left-3 top-10 h-5 w-5 text-gray-400" />
-                <FormInput
-                  label={t('worker.mobileNumber')}
-                  type="tel"
-                  value={formData.mobile}
-                  onChange={(value) => setFormData(prev => ({ ...prev, mobile: value }))}
-                  placeholder={t('forms.placeholders.enterMobile')}
-                  required
-                  maxLength={10}
-                  pattern="[0-9]*"
-                  error={errors.mobile}
-                  className="pl-10"
-                />
-              </div>
-
-              <div className="relative">
-                <Lock className="absolute left-3 top-10 h-5 w-5 text-gray-400" />
-                <FormInput
-                  label={t('auth.password')}
-                  type={showPassword ? 'text' : 'password'}
-                  value={formData.password}
-                  onChange={(value) => setFormData(prev => ({ ...prev, password: value }))}
-                  placeholder={t('auth.password')}
-                  required
-                  error={errors.password}
-                  className="pl-10 pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-10 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between mt-6">
-              <Link
-                to="/forgot-password"
-                className="text-sm text-blue-600 hover:text-blue-700"
-              >
-                {t('auth.forgotPassword')}
-              </Link>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full mt-6 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {isLoading ? t('auth.signingIn') : t('auth.signIn')}
-            </button>
-            
-            {isNative && (
-              <button
-                type="button"
-                onClick={handleBiometricAuth}
-                className="w-full mt-3 flex justify-center py-3 px-4 border border-green-600 rounded-lg shadow-sm text-sm font-medium text-green-600 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
-              >
-                <Fingerprint className="h-5 w-5 mr-2" />
-                Use Biometric Login
-              </button>
-            )}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter your email"
+              required
+            />
           </div>
+
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                Remember me
+              </label>
+            </div>
+            <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700">
+              Forgot password?
+            </Link>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+          >
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Signing in...
+              </div>
+            ) : (
+              'Sign In'
+            )}
+          </button>
         </form>
 
-        <div className="text-center">
+        <div className="mt-8 text-center">
           <p className="text-gray-600">
-            {t('auth.dontHaveAccount')}{' '}
-            <Link
-              to="/register/worker"
-              className="font-medium text-green-600 hover:text-green-700"
-            >
-              {t('landing.registerAsWorker')}
+            Don't have an account?{' '}
+            <Link to="/register/worker" className="text-blue-600 hover:text-blue-700 font-medium">
+              Register here
             </Link>
           </p>
         </div>
 
-        <div className="text-center">
-          <p className="text-sm text-gray-500">
-            {t('navigation.login')} {t('common.as')}{' '}
-            <Link to="/login/establishment" className="text-orange-600 hover:text-orange-700">
-              {t('establishment.establishment')}
-            </Link>
-            {' '}{t('common.or')}{' '}
-            <Link to="/login/department" className="text-blue-600 hover:text-blue-700">
-              {t('department.department')}
-            </Link>
-          </p>
+        <div className="mt-6 text-center">
+          <Link to="/" className="text-gray-500 hover:text-gray-700 text-sm">
+            ← Back to Home
+          </Link>
         </div>
       </div>
     </div>

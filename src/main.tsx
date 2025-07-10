@@ -1,39 +1,58 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Capacitor } from '@capacitor/core';
 import App from './App.tsx';
 import './index.css';
-import { registerServiceWorker, requestNotificationPermission } from './utils/pwa';
-import { initializeCapacitorPlugins } from './utils/capacitor-plugins';
 
-// Add error handling for initialization
-const initApp = async () => {
+// Simple initialization without complex logging
+const initApp = () => {
   try {
-    // Only register service worker for PWA functionality in web context
-    if (!Capacitor.isNativePlatform()) {
-      await registerServiceWorker();
-    } else {
-      // Initialize Capacitor plugins for native platforms
-      await initializeCapacitorPlugins();
+    console.log('Starting WorkerConnect app...');
+    
+    // Render the app
+    const rootElement = document.getElementById('root');
+    if (!rootElement) {
+      throw new Error('Root element not found');
     }
 
-    // Request notification permission
-    await requestNotificationPermission();
-
-    // Render the app
-    createRoot(document.getElementById('root')!).render(
+    createRoot(rootElement).render(
       <StrictMode>
         <App />
       </StrictMode>
     );
-  } catch (error) {
-    console.error('Error initializing app:', error);
-    // Render the app anyway to avoid blank screen
-    createRoot(document.getElementById('root')!).render(
-      <StrictMode>
-        <App />
-      </StrictMode>
-    );
+    
+    console.log('App rendered successfully');
+  } catch (err) {
+    console.error('Critical error initializing app:', err);
+    
+    // Show error in the DOM
+    const rootElement = document.getElementById('root');
+    if (rootElement) {
+      rootElement.innerHTML = `
+        <div style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+          color: white;
+          text-align: center;
+          padding: 20px;
+        ">
+          <h1 style="font-size: 24px; margin-bottom: 20px;">WorkerConnect</h1>
+          <p style="margin-bottom: 20px;">Sorry, the app failed to load.</p>
+          <button onclick="window.location.reload()" style="
+            background: white;
+            color: #2563eb;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+          ">Retry</button>
+        </div>
+      `;
+    }
   }
 };
 

@@ -4,6 +4,10 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import JSZip from 'jszip';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 console.log('🚀 Starting Android APK build process...\n');
 
@@ -132,6 +136,32 @@ try {
   });
 } catch (error) {
   console.error('❌ APK creation failed:', error.message);
+}
+
+function getNextAvailableFileName(basePath, baseName, ext) {
+  let counter = 1;
+  let fileName = `${baseName}${ext}`;
+  let filePath = path.join(basePath, fileName);
+  while (fs.existsSync(filePath)) {
+    fileName = `${baseName}-${counter}${ext}`;
+    filePath = path.join(basePath, fileName);
+    counter++;
+  }
+  return filePath;
+}
+
+// Path to the generated APK
+const apkPath = path.resolve(__dirname, '../android/app/build/outputs/apk/debug/app-debug.apk');
+const downloadsDir = path.join(process.env.HOME || process.env.USERPROFILE, 'Downloads');
+const baseName = 'WorkerConnect';
+const ext = '.apk';
+
+if (fs.existsSync(apkPath)) {
+  const destPath = getNextAvailableFileName(downloadsDir, baseName, ext);
+  fs.copyFileSync(apkPath, destPath);
+  console.log(`✅ APK copied to: ${destPath}`);
+} else {
+  console.error('❌ APK not found at expected location:', apkPath);
 }
 
 console.log('\n🎉 Android build process completed!');

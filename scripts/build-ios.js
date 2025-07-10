@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
 
 console.log('🚀 Starting iOS IPA build process...\n');
 

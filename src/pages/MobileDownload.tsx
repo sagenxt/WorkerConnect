@@ -1,282 +1,283 @@
-import React, { useState } from 'react';
-import { Download, Smartphone, Phone, Apple, FileText, CheckCircle, AlertCircle, HelpCircle, MapPin, Bell, Camera, Fingerprint, WifiOff } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 const MobileDownload: React.FC = () => {
-  const { t } = useLanguage();
-  const [selectedPlatform, setSelectedPlatform] = useState<'android' | 'ios'>('android');
-
-  const appInfo = {
-    version: '1.0.0',
-    androidSize: '15 MB',
-    iosSize: '18 MB',
-    lastUpdated: '2024-06-15',
-    androidMinVersion: 'Android 7.0 (API 24)',
-    iosMinVersion: 'iOS 12.0'
-  };
-
-  const features = [
-    { icon: WifiOff, text: t('mobile.offlineAccess'), description: 'Access your data even without internet connection' },
-    { icon: Bell, text: t('mobile.pushNotifications'), description: 'Get real-time alerts for important updates' },
-    { icon: MapPin, text: t('mobile.locationTracking'), description: 'Accurate GPS-based attendance tracking' },
-    { icon: Camera, text: t('mobile.cameraIntegration'), description: 'Scan documents and take photos directly in the app' },
-    { icon: Fingerprint, text: t('mobile.biometricAuth'), description: 'Secure login with fingerprint or face recognition' }
-  ];
-
-  const androidSteps = [
-    'Download the APK file from the link below',
-    'Go to Settings > Security > Unknown Sources and enable it',
-    'Open the downloaded APK file',
-    'Tap "Install" and wait for installation to complete',
-    'Open WorkerConnect from your app drawer'
-  ];
-
-  const iosSteps = [
-    'Download the IPA file from the link below',
-    'Install AltStore or similar sideloading tool',
-    'Use the tool to install the IPA file',
-    'Go to Settings > General > Device Management',
-    'Trust the developer certificate',
-    'Open WorkerConnect from your home screen'
-  ];
-
-  const troubleshooting = [
-    {
-      problem: 'Installation blocked by security settings',
-      solution: 'Enable "Unknown Sources" in Android settings or trust the developer certificate on iOS'
-    },
-    {
-      problem: 'App crashes on startup',
-      solution: 'Ensure your device meets the minimum system requirements and restart your device'
-    },
-    {
-      problem: 'Location features not working',
-      solution: 'Grant location permissions in app settings and ensure GPS is enabled'
-    },
-    {
-      problem: 'Cannot download files',
-      solution: 'Check your internet connection and ensure you have sufficient storage space'
-    }
-  ];
-
   const handleDownload = (platform: 'android' | 'ios') => {
-    // In a real implementation, these would be actual download links
     if (platform === 'android') {
-      window.location.href = '/downloads/WorkerConnect.apk';
+      // In a real app, this would link to Google Play Store or direct APK download
+      window.open('/downloads/WorkerConnect.apk', '_blank');
     } else {
-      window.location.href = '/downloads/WorkerConnect.ipa';
+      // In a real app, this would link to App Store
+      alert('iOS app will be available on the App Store soon!');
     }
-    
-    // Show a message to the user
-    alert(`Downloading WorkerConnect for ${platform === 'android' ? 'Android' : 'iOS'}. If the download doesn't start automatically, please check your browser settings.`);
   };
 
   return (
-    <div className="min-h-screen py-8 mobile-nav-spacing">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <Smartphone className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {t('mobile.downloadApp')}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Hero Section */}
+      <div className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Download WorkerConnect Mobile App
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Get the full WorkerConnect experience with our native mobile apps. 
-            Available for Android and iOS devices.
+          <p className="text-xl md:text-2xl mb-8 text-blue-100">
+            Access all features on the go with our mobile application
+          </p>
+          <p className="text-lg mb-12 text-blue-200 max-w-3xl mx-auto">
+            Manage your workforce, track attendance, submit documents, and monitor compliance 
+            from anywhere with our powerful mobile app.
           </p>
         </div>
+      </div>
 
-        {/* Platform Selection */}
-        <div className="flex justify-center mb-8">
-          <div className="bg-white rounded-lg p-1 shadow-md">
-            <button
-              onClick={() => setSelectedPlatform('android')}
-              className={`flex items-center px-6 py-3 rounded-md transition-colors ${
-                selectedPlatform === 'android'
-                  ? 'bg-green-600 text-white'
-                  : 'text-gray-600 hover:text-green-600'
-              }`}
-            >
-              <Phone className="h-5 w-5 mr-2" />
-              Android
-            </button>
-            <button
-              onClick={() => setSelectedPlatform('ios')}
-              className={`flex items-center px-6 py-3 rounded-md transition-colors ${
-                selectedPlatform === 'ios'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 hover:text-blue-600'
-              }`}
-            >
-              <Apple className="h-5 w-5 mr-2" />
-              iOS
-            </button>
+      {/* Download Section */}
+      <div className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Choose Your Platform
+            </h2>
+            <p className="text-lg text-gray-600">
+              Download the app for your preferred platform
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Android Download */}
+            <div className="bg-gradient-to-br from-green-50 to-emerald-100 rounded-xl p-8 text-center hover:shadow-lg transition-shadow">
+              <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-semibold text-gray-900 mb-4">Android App</h3>
+              <p className="text-gray-600 mb-6">
+                Download the APK file directly or get it from Google Play Store
+              </p>
+              <div className="space-y-3">
+                <button
+                  onClick={() => handleDownload('android')}
+                  className="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold"
+                >
+                  Download APK
+                </button>
+                <button
+                  onClick={() => window.open('https://play.google.com/store', '_blank')}
+                  className="w-full px-6 py-3 border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition-colors font-semibold"
+                >
+                  Google Play Store
+                </button>
+              </div>
+              <div className="mt-6 text-sm text-gray-500">
+                <p>Version: 1.0.0</p>
+                <p>Size: ~15 MB</p>
+                <p>Requires: Android 6.0+</p>
+              </div>
+            </div>
+
+            {/* iOS Download */}
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-100 rounded-xl p-8 text-center hover:shadow-lg transition-shadow">
+              <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-semibold text-gray-900 mb-4">iOS App</h3>
+              <p className="text-gray-600 mb-6">
+                Available on the App Store for iPhone and iPad
+              </p>
+              <div className="space-y-3">
+                <button
+                  onClick={() => handleDownload('ios')}
+                  className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+                >
+                  App Store
+                </button>
+                <button
+                  onClick={() => window.open('https://apps.apple.com', '_blank')}
+                  className="w-full px-6 py-3 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold"
+                >
+                  Coming Soon
+                </button>
+              </div>
+              <div className="mt-6 text-sm text-gray-500">
+                <p>Version: Coming Soon</p>
+                <p>Size: ~20 MB</p>
+                <p>Requires: iOS 12.0+</p>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Download Section */}
-          <div className="card-mobile">
-            <div className="text-center mb-6">
-              {selectedPlatform === 'android' ? (
-                <Phone className="h-16 w-16 text-green-600 mx-auto mb-4" />
-              ) : (
-                <Apple className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-              )}
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                WorkerConnect for {selectedPlatform === 'android' ? 'Android' : 'iOS'}
-              </h2>
+      {/* Features Section */}
+      <div className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Mobile App Features
+            </h2>
+            <p className="text-lg text-gray-600">
+              Everything you need, optimized for mobile
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Attendance Tracking</h3>
               <p className="text-gray-600">
-                {t('mobile.version')}: {appInfo.version}
+                Clock in/out with GPS verification and biometric authentication
               </p>
             </div>
 
-            <div className="space-y-4 mb-6">
-              <div className="flex justify-between">
-                <span className="text-gray-600">{t('mobile.fileSize')}:</span>
-                <span className="font-medium">
-                  {selectedPlatform === 'android' ? appInfo.androidSize : appInfo.iosSize}
-                </span>
+            {/* Feature 2 */}
+            <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">{t('mobile.lastUpdated')}:</span>
-                <span className="font-medium">{appInfo.lastUpdated}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">{t('mobile.requirements')}:</span>
-                <span className="font-medium text-sm">
-                  {selectedPlatform === 'android' ? appInfo.androidMinVersion : appInfo.iosMinVersion}
-                </span>
-              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Document Upload</h3>
+              <p className="text-gray-600">
+                Scan and upload documents directly from your phone camera
+              </p>
             </div>
 
-            <button
-              onClick={() => handleDownload(selectedPlatform)}
-              className={`w-full flex items-center justify-center px-6 py-4 rounded-lg text-white font-semibold text-lg transition-colors ${
-                selectedPlatform === 'android' 
-                ? 'bg-green-600 hover:bg-green-700' 
-                : 'bg-blue-600 hover:bg-blue-700'
-              }`}
-            >
-              <Download className="h-5 w-5 mr-2" />
-              {selectedPlatform === 'android' ? t('mobile.downloadApk') : t('mobile.downloadIpa')}
-            </button>
+            {/* Feature 3 */}
+            <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4 19h6v-2H4v2zM4 15h6v-2H4v2zM4 11h6V9H4v2zM4 7h6V5H4v2zM10 7h10V5H10v2zM10 11h10V9H10v2zM10 15h10v-2H10v2zM10 19h10v-2H10v2z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Real-time Reports</h3>
+              <p className="text-gray-600">
+                View attendance reports and compliance status on the go
+              </p>
+            </div>
 
-            <p className="text-xs text-gray-500 text-center mt-4">
-              By downloading, you agree to our Terms of Service and Privacy Policy
+            {/* Feature 4 */}
+            <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4 19h6v-2H4v2zM4 15h6v-2H4v2zM4 11h6V9H4v2zM4 7h6V5H4v2zM10 7h10V5H10v2zM10 11h10V9H10v2zM10 15h10v-2H10v2zM10 19h10v-2H10v2z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Offline Support</h3>
+              <p className="text-gray-600">
+                Work without internet - data syncs when connection is restored
+              </p>
+            </div>
+
+            {/* Feature 5 */}
+            <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Push Notifications</h3>
+              <p className="text-gray-600">
+                Get instant alerts for important updates and reminders
+              </p>
+            </div>
+
+            {/* Feature 6 */}
+            <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Secure & Private</h3>
+              <p className="text-gray-600">
+                Enterprise-grade security with biometric authentication
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Installation Instructions */}
+      <div className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Installation Instructions
+            </h2>
+            <p className="text-lg text-gray-600">
+              Follow these steps to install the mobile app
             </p>
           </div>
 
-          {/* Features */}
-          <div className="card-mobile space-y-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-6">{t('mobile.features')}</h3>
-            <div className="space-y-6">
-              {features.map((feature, index) => {
-                const Icon = feature.icon;
-                return (
-                  <div key={index} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className="bg-blue-100 p-2 rounded-lg">
-                      <Icon className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900">{feature.text}</h4>
-                      <p className="text-sm text-gray-600 mt-1">{feature.description}</p>
-                    </div>
-                  </div>
-                );
-              })}
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Android Instructions */}
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Android Installation</h3>
+              <ol className="space-y-3 text-gray-600">
+                <li className="flex items-start">
+                  <span className="flex-shrink-0 w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 mt-0.5">1</span>
+                  <span>Download the APK file from the link above</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="flex-shrink-0 w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 mt-0.5">2</span>
+                  <span>Enable "Install from Unknown Sources" in your device settings</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="flex-shrink-0 w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 mt-0.5">3</span>
+                  <span>Open the downloaded APK file and tap "Install"</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="flex-shrink-0 w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 mt-0.5">4</span>
+                  <span>Launch the app and sign in with your credentials</span>
+                </li>
+              </ol>
             </div>
-            
-            <div className="mt-6 bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-medium text-blue-900 mb-2">Mobile App Advantages</h4>
-              <ul className="space-y-2 text-sm text-blue-800">
+
+            {/* iOS Instructions */}
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">iOS Installation</h3>
+              <ol className="space-y-3 text-gray-600">
                 <li className="flex items-start">
-                  <CheckCircle className="h-4 w-4 mr-2 mt-0.5 text-blue-600" />
-                  <span>Faster performance than web version</span>
+                  <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 mt-0.5">1</span>
+                  <span>Open the App Store on your iPhone or iPad</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle className="h-4 w-4 mr-2 mt-0.5 text-blue-600" />
-                  <span>Works without internet connection</span>
+                  <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 mt-0.5">2</span>
+                  <span>Search for "WorkerConnect" in the App Store</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle className="h-4 w-4 mr-2 mt-0.5 text-blue-600" />
-                  <span>Enhanced security with biometric authentication</span>
+                  <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 mt-0.5">3</span>
+                  <span>Tap "Get" or "Install" to download the app</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle className="h-4 w-4 mr-2 mt-0.5 text-blue-600" />
-                  <span>Direct access to device features (camera, GPS)</span>
+                  <span className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 mt-0.5">4</span>
+                  <span>Open the app and sign in with your credentials</span>
                 </li>
-                <li className="flex items-start">
-                  <CheckCircle className="h-4 w-4 mr-2 mt-0.5 text-blue-600" />
-                  <span>Reduced data usage and battery optimization</span>
-                </li>
-              </ul>
+              </ol>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Installation Instructions */}
-        <div className="card-mobile mt-8">
-          <h3 className="text-xl font-bold text-gray-900 mb-6">
-            {t('mobile.installSteps')} - {selectedPlatform === 'android' ? 'Android' : 'iOS'}
-          </h3>
-          <div className="space-y-4">
-            {(selectedPlatform === 'android' ? androidSteps : iosSteps).map((step, index) => (
-              <div key={index} className="flex items-start space-x-3">
-                <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
-                  {index + 1}
-                </div>
-                <p className="text-gray-700">{step}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Troubleshooting */}
-        <div className="card-mobile mt-8">
-          <h3 className="text-xl font-bold text-gray-900 mb-6">
-            <HelpCircle className="h-6 w-6 inline mr-2" />
-            {t('mobile.troubleshooting')}
-          </h3>
-          <div className="space-y-6">
-            {troubleshooting.map((item, index) => (
-              <div key={index} className="border-l-4 border-yellow-400 pl-4">
-                <h4 className="font-semibold text-gray-900 mb-2">
-                  <AlertCircle className="h-4 w-4 inline mr-1 text-yellow-600" />
-                  {item.problem}
-                </h4>
-                <p className="text-gray-600">{item.solution}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Support */}
-        <div className="card-mobile mt-8 bg-blue-50 border-blue-200">
-          <div className="text-center">
-            <h3 className="text-xl font-bold text-blue-900 mb-4">
-              {t('mobile.support')}
-            </h3>
-            <p className="text-blue-800 mb-6">
-              Having trouble with installation or need technical assistance?
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="mailto:support@workerconnect.gov.in"
-                className="flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <FileText className="h-4 w-4 mr-2" />
-                Email Support
-              </a>
-              <a
-                href="tel:1800-123-4567"
-                className="flex items-center justify-center px-6 py-3 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
-              >
-                <Smartphone className="h-4 w-4 mr-2" />
-                Call Support
-              </a>
-            </div>
-          </div>
+      {/* Back to Home */}
+      <div className="py-8 bg-gray-50">
+        <div className="text-center">
+          <Link
+            to="/"
+            className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Home
+          </Link>
         </div>
       </div>
     </div>

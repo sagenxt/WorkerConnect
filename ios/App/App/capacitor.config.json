@@ -85,6 +85,7 @@
 		"LocalNotificationsPlugin",
 		"CAPNetworkPlugin",
 		"PushNotificationsPlugin",
+		"SharePlugin",
 		"StatusBarPlugin"
 	]
 }
