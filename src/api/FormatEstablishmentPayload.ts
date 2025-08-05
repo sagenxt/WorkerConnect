@@ -1,43 +1,74 @@
 import { DISTRICTS } from '../utils/constants';
 
-export function formatEstablishmentPayload(formData: any) {
-  const selectedDistrict = DISTRICTS.find(
-    (d) => d.name.toLowerCase().replace(/\s+/g, "_") === formData.district
+
+export function formatWorkerPayload(formData: any) {
+  const preDistrict = DISTRICTS.find(
+    (d) => d.name.toLowerCase().replace(/\s+/g, "_") === formData.presentAddress?.district
+  );
+
+  const perDistrict = DISTRICTS.find(
+    (d) => d.name.toLowerCase().replace(/\s+/g, "_") === formData.permanentAddress?.district
   );
 
   return {
-    establishmentName: formData.establishmentName,
-    contactPerson: formData.ownerName,
-    emailId: formData.emailAddress,
-    mobileNumber: formData.mobileNumber,
-    doorNo: formData.doorNumber,
-    street: formData.street,
-    districtId: selectedDistrict?.id,
-    districtCode: selectedDistrict?.name, // adjust if needed
-    cityId: Number(formData.mandal),
-    cityCode: formData.mandalLabel || '', // If you store label elsewhere
-    villageId: Number(formData.village),
-    villageCode: formData.villageLabel || '',
+    workerId: 0,
+    aadhaarNumber: formData.aadhaarNumber,
+    eCardId: formData.eCardId || '',
+    eSharmId: formData.eSharmId || '',
+    boCWId: formData.boCWId || '',
+    accessCardId: formData.accessCardId || '',
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    middleName: formData.middleName || '',
+    gender: formData.gender,
+    maritalStatus: formData.maritalStatus,
+    dateOfBirth: formData.dateOfBirth,
+    age: formData.age || '',
+    relativeName: formData.relativeName,
+    caste: formData.caste,
+    subCaste: formData.subCaste || '',
+    mobileNumber: Number(formData.mobileNumber),
+    emailId: formData.emailId,
+    password: formData.password || '123456',
 
-    isPlanApprovalId: formData.hasPlanApproval === 'yes',
-    planApprovalId: formData.planApprovalId || null,
-    establishmentCategory: formData.establishmentCategory,
-    natureOfWork: formData.natureOfWork,
-    commencementDate: formData.commencementDate,
-    completionDate: formData.completionDate || null,
-    noOfContractors: Number(formData.contractorsWorking || 0),
-    contractorsList: formData.contractors || [],
+    // Permanent Address (flattened)
+    perDoorNumber: formData.permanentAddress?.doorNumber,
+    perStreet: formData.permanentAddress?.street,
+    perStateId: 1,
+    perStateCode: 'AP',
+    perDistrictId: perDistrict?.id || 0,
+    perDistrictCode: perDistrict?.name || '',
+    perCityId: Number(formData.permanentAddress?.mandal || 0),
+    perCityCode: formData.permanentAddress?.mandalLabel || '',
+    perVillageOrAreaId: Number(formData.permanentAddress?.village || 0),
+    perPincode: Number(formData.permanentAddress?.pincode || 0),
 
-    constructionEstimatedCost: Number(formData.estimatedCost || 0),
-    constructionArea: formData.constructionArea,
-    builtUpArea: formData.builtUpArea,
-    basicEstimationCost: Number(formData.basicEstimationCost || 0),
-    noOfMaleWorkers: Number(formData.maleWorkers || 0),
-    noOfFemaleWorkers: Number(formData.femaleWorkers || 0),
+    isSameAsPerAddr: formData.sameAsPresent || false,
 
-    isAcceptedTermsAndConditions: formData.declaration === true,
-    pincode: formData.pincode,
-    stateId: 1,
-    stateCode: 'AP',
+    // Present Address (flattened)
+    preDoorNumber: formData.presentAddress?.doorNumber,
+    preStreet: formData.presentAddress?.street,
+    preStateId: 1,
+    preStateCode: 'AP',
+    preDistrictId: preDistrict?.id || 0,
+    preDistrictCode: preDistrict?.name || '',
+    preCityId: Number(formData.presentAddress?.mandal || 0),
+    preCityCode: formData.presentAddress?.mandalLabel || '',
+    preVillageOrAreaId: Number(formData.presentAddress?.village || 0),
+    prePincode: Number(formData.presentAddress?.pincode || 0),
+
+    // Memberships
+    isNRESMember: formData.isNRESMember || 'N',
+    isTradeUnion: formData.isTradeUnion || 'N',
+    tradeUnionNumber: Number(formData.tradeUnionNumber || 0),
+
+    // Dependents
+    workerDependents: formData.dependents?.map((d: any) => ({
+      dependentName: d.name,
+      dateOfBirth: d.dateOfBirth,
+      relationship: d.relationship,
+      isNomineeSelected: d.isNominee === 'yes',  // convert string to boolean
+      percentageOfBenifits: Number(d.benefitPercentage),
+    })) || [],
   };
 }

@@ -1,4 +1,3 @@
-// src/lib/api.ts
 const BASE_URL = "http://108.181.164.242:8085/labourms/v1/services/adapter";
 
 
@@ -28,16 +27,31 @@ export async function api<T>(
 }
 
 
-// export const loginEstablishment = (payload: {
-//   mobileNumber: number;
-//   password: string;
-// }) => {
-//   return api("/establishment/login", "POST", payload);
-// };
-
 export const registerEstablishment = (payload: any) => {
   return api("/establishment/registration", "POST", payload);
 };
+
+
+export const registerWorker = (payload: any) => {
+  return api("/worker/registration", "POST", payload);
+};
+
+export async function submitApiRequest(url: string, payload: any) {
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+    return { success: response.ok, data };
+  } catch (err) {
+    console.error(err);
+    return { success: false, error: err };
+  }
+}
+
 
 export interface EstablishmentLoginPayload {
   mobileNumber: number;

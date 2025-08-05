@@ -20,8 +20,8 @@
 //     aadharNumber: "",
 //     otp: "",
 //     isOtpVerified: false,
-//     eshramId: "",
-//     bocwId: "",
+//     eSharmId: "",
+//     boCWId: "",
 
 //     // Personal Info
 //     firstName: "",
@@ -226,6 +226,8 @@ import OtherDetails from "../components/worker-registration/OtherDetails";
 import DocumentUpload from "../components/worker-registration/DocumentUpload";
 import ReviewSubmit from "../components/worker-registration/ReviewSubmit";
 import { Loader2Icon } from "lucide-react";
+import { formatWorkerPayload } from "../api/FormatEstablishmentPayload";
+import { api } from "../api/api";
 
 const WorkerRegistration: React.FC = () => {
   const { t } = useLanguage();
@@ -234,11 +236,11 @@ const WorkerRegistration: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     // Identity
-    aadharNumber: "",
+    aadhaarNumber: "",
     otp: "",
     isOtpVerified: false,
-    eshramId: "",
-    bocwId: "",
+    eSharmId: "",
+    boCWId: "",
 
     // Personal Info
     firstName: "",
@@ -323,21 +325,46 @@ const WorkerRegistration: React.FC = () => {
     }
   };
 
+  interface WorkerRegisterResponse {
+    correlationId: string;
+    data: {
+      statusCode: number;
+      message: string;
+    } | null;
+    error?: {
+      code: string;
+      message: string;
+      target?: string;
+      details?: string[];
+    };
+  }
+
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      // Simulate form submission (replace with actual API call)
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Mock API delay
-      console.log("Form submitted:", formData);
-      toast.success("Registration submitted successfully!", {
-        duration: 4000,
-        position: "top-center",
-      });
-      // Redirect to confirmation page after a short delay to show toast
-      setTimeout(() => {
-        navigate("/");
-        setIsSubmitting(false);
-      }, 2000);
+      console.log("Submitting form data:", formData);
+      let payload = formatWorkerPayload(formData)
+      console.log("Formatted Payload:", payload);
+
+      const response = await api("/worker/register", "POST", payload) as WorkerRegisterResponse;
+      if (response.data && response.data.statusCode === 200) {
+        toast.success("Registration submitted successfully!", {
+          duration: 4000,
+          position: "top-center",
+        });
+        setTimeout(() => {
+          navigate("/");
+          setIsSubmitting(false);
+        }, 2000);
+      } else {
+        toast.error(response.data?.message || "Registration failed. Please try again.", {
+          duration: 4000,
+          position: "top-center",
+        });
+      }
+      console.log("API Response:", response);
+
     } catch (error) {
       toast.error("Submission failed. Please try again.", {
         duration: 4000,

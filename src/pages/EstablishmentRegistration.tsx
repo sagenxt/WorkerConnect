@@ -12,7 +12,6 @@ import {
   getEstablishmentCategoryLabel,
   getNatureOfWorkLabel,
 } from "../utils/constants";
-// import { formatEstablishmentPayload } from "../utils/FormatEstablishmentPayload";
 import {
   fetchCitiesByDistrictId,
   fetchVillagesByCityId,

@@ -29,117 +29,103 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
   const { t } = useLanguage();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const [presentMandalOptions, setPresentMandalOptions] = useState<
-    OptionType[]
-  >([]);
-  const [presentVillageOptions, setPresentVillageOptions] = useState<
-    OptionType[]
-  >([]);
-  const [permanentMandalOptions, setPermanentMandalOptions] = useState<
-    OptionType[]
-  >([]);
-  const [permanentVillageOptions, setPermanentVillageOptions] = useState<
-    OptionType[]
-  >([]);
-  const prevPresentDistrict = useRef<string | null>(null);
-  const prevPermanentDistrict = useRef<string | null>(null);
-  const prevPresentMandal = useRef<string | null>(null);
-  const prevPermanentMandal = useRef<string | null>(null);
 
-  const districtOptions = DISTRICTS.map((district) => ({
-    value: district.name.toLowerCase().replace(/\s+/g, "_"),
-    label: district.name,
+  type AddressKey = "presentAddress" | "permanentAddress";
+
+  // Shared OptionType
+  type OptionType = { value: string; label: string };
+
+  // Combine all mandal/village options into a single state object
+  const [mandalOptions, setMandalOptions] = useState<Record<AddressKey, OptionType[]>>({
+    presentAddress: [],
+    permanentAddress: [],
+  });
+  const [villageOptions, setVillageOptions] = useState<Record<AddressKey, OptionType[]>>({
+    presentAddress: [],
+    permanentAddress: [],
+  });
+
+  // Use object-based refs for previous values
+  const prevDistrict = useRef<Record<AddressKey, string>>({
+    presentAddress: "",
+    permanentAddress: "",
+  });
+  const prevMandal = useRef<Record<AddressKey, string>>({
+    presentAddress: "",
+    permanentAddress: "",
+  });
+
+  const districtOptions = DISTRICTS.map((d) => ({
+    value: d.name.toLowerCase().replace(/\s+/g, "_"),
+    label: d.name,
   }));
 
+
+
   useEffect(() => {
-    const fetchMandals = async (
-      type: "present" | "permanent",
-      district: string
-    ) => {
-      const selectedDistrict = DISTRICTS.find(
-        (d) => d.name.toLowerCase().replace(/\s+/g, "_") === district
+    const fetchMandals = async (type: AddressKey, districtSlug: string) => {
+      const selected = DISTRICTS.find(
+        (d) => d.name.toLowerCase().replace(/\s+/g, "_") === districtSlug
       );
-      const districtId = selectedDistrict?.id;
+      const districtId = selected?.id;
       if (!districtId) return;
 
       try {
         const options = await fetchCitiesByDistrictId(districtId);
-        if (type === "present") {
-          setPresentMandalOptions(options);
-        } else {
-          setPermanentMandalOptions(options);
-        }
+        setMandalOptions((prev) => ({ ...prev, [type]: options }));
 
         setFormData((prev: any) => ({
           ...prev,
-          [`${type}Address`]: {
-            ...prev[`${type}Address`],
+          [type]: {
+            ...prev[type],
             mandal: "",
             village: "",
           },
         }));
       } catch (error) {
-        console.error(`Error fetching mandals for ${type}Address:`, error);
+        console.error(`Error fetching mandals for ${type}:`, error);
       }
     };
 
-    const presentDistrict = formData.presentAddress?.district;
-    const permanentDistrict = formData.permanentAddress?.district;
-
-    if (presentDistrict && presentDistrict !== prevPresentDistrict.current) {
-      fetchMandals("present", presentDistrict);
-      prevPresentDistrict.current = presentDistrict;
-    }
-
-    if (
-      permanentDistrict &&
-      permanentDistrict !== prevPermanentDistrict.current
-    ) {
-      fetchMandals("permanent", permanentDistrict);
-      prevPermanentDistrict.current = permanentDistrict;
-    }
+    (["presentAddress", "permanentAddress"] as AddressKey[]).forEach((type) => {
+      const district = formData[type]?.district;
+      if (district && district !== prevDistrict.current[type]) {
+        fetchMandals(type, district);
+        prevDistrict.current[type] = district;
+      }
+    });
   }, [formData.presentAddress?.district, formData.permanentAddress?.district]);
 
+
   useEffect(() => {
-    const fetchVillages = async (
-      type: "present" | "permanent",
-      mandal: string
-    ) => {
-      if (!mandal) return;
+    const fetchVillages = async (type: AddressKey, mandalId: string) => {
+      if (!mandalId) return;
 
       try {
-        const options = await fetchVillagesByCityId(mandal);
-        if (type === "present") {
-          setPresentVillageOptions(options);
-        } else {
-          setPermanentVillageOptions(options);
-        }
+        const options = await fetchVillagesByCityId(mandalId);
+        setVillageOptions((prev) => ({ ...prev, [type]: options }));
 
         setFormData((prev: any) => ({
           ...prev,
-          [`${type}Address`]: {
-            ...prev[`${type}Address`],
+          [type]: {
+            ...prev[type],
             village: "",
           },
         }));
       } catch (error) {
-        console.error(`Error fetching villages for ${type}Address:`, error);
+        console.error(`Error fetching villages for ${type}:`, error);
       }
     };
 
-    const presentMandal = formData.presentAddress?.mandal;
-    const permanentMandal = formData.permanentAddress?.mandal;
-
-    if (presentMandal && presentMandal !== prevPresentMandal.current) {
-      fetchVillages("present", presentMandal);
-      prevPresentMandal.current = presentMandal;
-    }
-
-    if (permanentMandal && permanentMandal !== prevPermanentMandal.current) {
-      fetchVillages("permanent", permanentMandal);
-      prevPermanentMandal.current = permanentMandal;
-    }
+    (["presentAddress", "permanentAddress"] as AddressKey[]).forEach((type) => {
+      const mandal = formData[type]?.mandal;
+      if (mandal && mandal !== prevMandal.current[type]) {
+        fetchVillages(type, mandal);
+        prevMandal.current[type] = mandal;
+      }
+    });
   }, [formData.presentAddress?.mandal, formData.permanentAddress?.mandal]);
+
 
   const handleSameAsPresent = (checked: boolean) => {
     if (checked) {
@@ -280,9 +266,10 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
               error={errors.presentDistrict}
             />
 
+
             <FormSelect
               label={t("worker.mandal")}
-              value={formData.presentAddress?.mandal}
+              value={formData.presentAddress?.mandal || ""}
               onChange={(value) =>
                 setFormData({
                   ...formData,
@@ -292,10 +279,11 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
                   },
                 })
               }
-              options={presentMandalOptions}
+              options={mandalOptions["presentAddress"]}
               required
               error={errors.presentMandal}
             />
+
             <FormSelect
               label={t("worker.village")}
               value={formData.presentAddress?.village || ""}
@@ -308,10 +296,11 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
                   },
                 })
               }
-              options={presentVillageOptions}
+              options={villageOptions["presentAddress"]}
               required
               error={errors.presentVillage}
             />
+
           </div>
 
           <FormInput
@@ -409,7 +398,6 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
               disabled={formData.sameAsPresent}
               error={errors.permanentDistrict}
             />
-
             <FormSelect
               label={t("worker.mandal")}
               value={formData.permanentAddress?.mandal || ""}
@@ -422,12 +410,11 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
                   },
                 })
               }
-              options={permanentMandalOptions}
+              options={mandalOptions["permanentAddress"]}
               required={!formData.sameAsPresent}
               disabled={formData.sameAsPresent}
               error={errors.permanentMandal}
             />
-
             <FormSelect
               label={t("worker.village")}
               value={formData.permanentAddress?.village || ""}
@@ -440,11 +427,12 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
                   },
                 })
               }
-              options={permanentVillageOptions}
+              options={villageOptions["permanentAddress"]}
               required={!formData.sameAsPresent}
               disabled={formData.sameAsPresent}
               error={errors.permanentVillage}
             />
+
           </div>
 
           <FormInput
