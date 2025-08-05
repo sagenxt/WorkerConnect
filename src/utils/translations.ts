@@ -132,6 +132,7 @@ export const translations = {
       signOut: "Sign Out",
       username: "Username",
       email: "Email Address",
+      mobileNumber:"Phone Number",
       password: "Password",
       confirmPassword: "Confirm Password",
       newPassword: "New Password",
