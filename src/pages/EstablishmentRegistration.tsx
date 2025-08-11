@@ -16,7 +16,7 @@ import {
   fetchCitiesByDistrictId,
   fetchVillagesByCityId,
 } from "../api/location";
-import { api } from "../api/api";
+import { api, fetchEstablishmentCategories, fetchNatureOfWorkByCategory } from "../api/api";
 
 const EstablishmentRegistration: React.FC = () => {
   const { t } = useLanguage();
@@ -60,6 +60,8 @@ const EstablishmentRegistration: React.FC = () => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [establishmentCategoryOptions, setEstablishmentCategoryOptions] = useState<OptionType[]>([]);
+  const [natureOfWorkOptions, setNatureOfWorkOptions] = useState<OptionType[]>([]);
 
   const sections = [
     { id: 1, title: "Establishment Details" },
@@ -74,17 +76,10 @@ const EstablishmentRegistration: React.FC = () => {
     label: district.name,
   }));
 
-  const establishmentCategoryOptions = ESTABLISHMENT_CATEGORIES.map(
-    (category) => ({
-      value: category.toLowerCase().replace(/\s+/g, "_"),
-      label: category,
-    })
-  );
-
-  const natureOfWorkOptions = NATURE_OF_WORK.map((nature) => ({
-    value: nature.toLowerCase().replace(/\s+/g, "_"),
-    label: nature,
-  }));
+  // const natureOfWorkOptions = NATURE_OF_WORK.map((nature) => ({
+  //   value: nature.toLowerCase().replace(/\s+/g, "_"),
+  //   label: nature,
+  // }));
   type OptionType = {
     value: string;
     label: string;
@@ -178,14 +173,14 @@ const EstablishmentRegistration: React.FC = () => {
     };
 
     try {
-    const data = await api("/establishment/register", "POST", payload);
-    console.log("Submitted successfully:", data);
-    // alert("Registration successful!");
-    navigate("/");
-  } catch (error) {
-    console.error("Submission failed:", error);
-    alert("Something went wrong!");
-  }
+      const data = await api("/establishment/register", "POST", payload);
+      console.log("Submitted successfully:", data);
+      // alert("Registration successful!");
+      navigate("/");
+    } catch (error) {
+      console.error("Submission failed:", error);
+      alert("Something went wrong!");
+    }
   };
 
   const handleSubmit = async () => {
@@ -240,6 +235,39 @@ const EstablishmentRegistration: React.FC = () => {
 
     loadVillages();
   }, [formData.mandal]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const options = await fetchEstablishmentCategories();
+        setEstablishmentCategoryOptions(options);
+      } catch (err) {
+        console.error("Error loading establishment categories:", err);
+      }
+    };
+
+    loadCategories();
+  }, [])
+
+  useEffect(() => {
+    if (!formData.establishmentCategory) return;
+
+    const categoryId = Number(formData.establishmentCategory);
+    if (!categoryId) return;
+
+    const loadNatureOfWork = async () => {
+      try {
+        const options = await fetchNatureOfWorkByCategory(categoryId);
+        setNatureOfWorkOptions(options);
+        setFormData((prev) => ({ ...prev, natureOfWork: "" }));
+      } catch (err) {
+        console.error("Failed to fetch nature of work:", err);
+      }
+    };
+
+    loadNatureOfWork();
+  }, [formData.establishmentCategory]);
+
 
   const renderSection = () => {
     switch (currentSection) {
@@ -441,9 +469,8 @@ const EstablishmentRegistration: React.FC = () => {
                       commencementDate: e.target.value,
                     })
                   }
-                  className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.commencementDate ? "border-red-500" : ""
-                  }`}
+                  className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.commencementDate ? "border-red-500" : ""
+                    }`}
                 />
                 {errors.commencementDate && (
                   <p className="mt-1 text-sm text-red-600">
@@ -635,30 +662,27 @@ const EstablishmentRegistration: React.FC = () => {
               {sections.map((section, index) => (
                 <div key={section.id} className="flex items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                      currentSection >= section.id
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${currentSection >= section.id
                         ? "bg-orange-600 text-white"
                         : "bg-gray-200 text-gray-600"
-                    }`}
+                      }`}
                   >
                     {section.id}
                   </div>
                   <span
-                    className={`ml-2 text-sm ${
-                      currentSection >= section.id
+                    className={`ml-2 text-sm ${currentSection >= section.id
                         ? "text-orange-600 font-medium"
                         : "text-gray-500"
-                    }`}
+                      }`}
                   >
                     {section.title}
                   </span>
                   {index < sections.length - 1 && (
                     <div
-                      className={`w-12 h-0.5 mx-4 ${
-                        currentSection > section.id
+                      className={`w-12 h-0.5 mx-4 ${currentSection > section.id
                           ? "bg-orange-600"
                           : "bg-gray-300"
-                      }`}
+                        }`}
                     />
                   )}
                 </div>

@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Building2, Users, UserCheck, UserX, Calendar, TrendingUp, AlertTriangle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
+import { fetchEstablishmentCardDetails } from '../api/api';
 
 const EstablishmentDashboard: React.FC = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const hasFetched = useRef(false);
+
+  const [cardDetails, setCardDetails] = useState<any>(null);
+
   const [stats, setStats] = useState({
     totalWorkers: 45,
     activeWorkers: 38,
@@ -16,6 +21,19 @@ const EstablishmentDashboard: React.FC = () => {
     complianceScore: 92
   });
 
+  
+  useEffect(() => {
+    if (!user?.id || hasFetched.current) return;
+hasFetched.current = true;
+    const loadData = async () => {
+      const data = await fetchEstablishmentCardDetails(Number(user.id));
+      console.log(data, 'cardDetails data');
+      setCardDetails(data);
+    };
+
+    loadData();
+  }, [user?.id]);
+console.log(cardDetails, 'cardDetails');
   const StatCard = ({ icon: Icon, title, value, color, trend, link }: any) => (
     <Link to={link || '#'} className="card-mobile hover:shadow-xl transition-shadow group">
       <div className="flex items-center justify-between">
@@ -58,7 +76,7 @@ const EstablishmentDashboard: React.FC = () => {
           <StatCard
             icon={Users}
             title={t('establishment.totalWorkers')}
-            value={stats.totalWorkers}
+            value={cardDetails?.totalWorkers}
             color="text-blue-600"
             trend={5.2}
             link="/workers/management"
@@ -66,34 +84,34 @@ const EstablishmentDashboard: React.FC = () => {
           <StatCard
             icon={UserCheck}
             title={t('establishment.activeWorkers')}
-            value={stats.activeWorkers}
+            value={cardDetails?.activeWorkers}
             color="text-green-600"
             trend={2.1}
           />
           <StatCard
             icon={Calendar}
             title={t('department.present')}
-            value={stats.presentToday}
+            value={stats?.presentToday}
             color="text-emerald-600"
             trend={3.7}
           />
           <StatCard
             icon={UserX}
             title={t('department.absent')}
-            value={stats.absentToday}
+            value={stats?.absentToday}
             color="text-red-600"
             trend={-1.3}
           />
           <StatCard
             icon={AlertTriangle}
             title={t('establishment.pendingRegistrations')}
-            value={stats.pendingRegistrations}
+            value={stats?.pendingRegistrations}
             color="text-yellow-600"
           />
           <StatCard
             icon={TrendingUp}
             title={t('establishment.complianceScore')}
-            value={`${stats.complianceScore}%`}
+            value={`${stats?.complianceScore}%`}
             color="text-purple-600"
             trend={1.5}
           />

@@ -254,6 +254,7 @@ const WorkerRegistration: React.FC = () => {
     caste: "",
     subCaste: "",
     dependents: [],
+    mobileNumber: "",
 
     // Workplace
     employerName: "",

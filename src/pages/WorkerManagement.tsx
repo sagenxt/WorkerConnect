@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Users, Search, Filter, Plus, Edit, Eye, Trash2, Download, MapPin, Clock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import AddWorkerModal from './AddWorker';
+import { fetchWorkerDetailsByEstablishment } from '../api/api';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Worker {
   id: string;
@@ -11,6 +14,11 @@ interface Worker {
   category: string;
   status: 'active' | 'inactive' | 'suspended';
   lastActive: Date;
+  firstName: string;
+  lastName?: string;
+  aadhaarCardNumber: string;
+  workingFromDate?: string; // yyyy-MM-dd
+  workingToDate?: string; // yyyy-MM-dd
   location?: {
     latitude: number;
     longitude: number;
@@ -26,6 +34,13 @@ interface Worker {
   };
 }
 
+interface WorkerOption {
+  id: number;
+  name: string;
+  aadhaar: string;
+}
+
+
 const WorkerManagement: React.FC = () => {
   const { t } = useLanguage();
   const [workers, setWorkers] = useState<Worker[]>([]);
@@ -36,117 +51,139 @@ const WorkerManagement: React.FC = () => {
   const [attendanceFilter, setAttendanceFilter] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [selectedWorkers, setSelectedWorkers] = useState<string[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user } = useAuth();
+  const hasFetchedRef = useRef(false);
 
   // Mock data
   useEffect(() => {
-    const mockWorkers: Worker[] = [
-      {
-        id: '1',
-        name: 'Ravi Kumar Sharma',
-        registrationId: 'WK2024001234',
-        mobileNumber: '9876543210',
-        trade: 'Mason',
-        category: 'Skilled',
-        status: 'active',
-        lastActive: new Date(Date.now() - 2 * 60 * 60 * 1000),
-        location: {
-          latitude: 17.3850,
-          longitude: 78.4867,
-          address: 'Construction Site - Hitech City'
-        },
-        attendanceStatus: 'checked-in',
-        employer: 'ABC Construction Ltd',
-        joinDate: new Date('2024-01-15'),
-        documents: {
-          aadhar: true,
-          photo: true,
-          bankDetails: true
-        }
-      },
-      {
-        id: '2',
-        name: 'Priya Devi',
-        registrationId: 'WK2024001235',
-        mobileNumber: '9876543211',
-        trade: 'Electrician',
-        category: 'Skilled',
-        status: 'active',
-        lastActive: new Date(Date.now() - 1 * 60 * 60 * 1000),
-        attendanceStatus: 'checked-out',
-        employer: 'XYZ Builders',
-        joinDate: new Date('2024-02-01'),
-        documents: {
-          aadhar: true,
-          photo: true,
-          bankDetails: false
-        }
-      },
-      {
-        id: '3',
-        name: 'Suresh Reddy',
-        registrationId: 'WK2024001236',
-        mobileNumber: '9876543212',
-        trade: 'Carpenter',
-        category: 'Semi-Skilled',
-        status: 'inactive',
-        lastActive: new Date(Date.now() - 24 * 60 * 60 * 1000),
-        attendanceStatus: 'absent',
-        employer: 'PQR Construction',
-        joinDate: new Date('2023-12-10'),
-        documents: {
-          aadhar: true,
-          photo: false,
-          bankDetails: true
-        }
-      },
-      {
-        id: '4',
-        name: 'Anjali Singh',
-        registrationId: 'WK2024001237',
-        mobileNumber: '9876543213',
-        trade: 'Painter',
-        category: 'Semi-Skilled',
-        status: 'active',
-        lastActive: new Date(Date.now() - 30 * 60 * 1000),
-        location: {
-          latitude: 17.3900,
-          longitude: 78.4900,
-          address: 'Residential Complex - Gachibowli'
-        },
-        attendanceStatus: 'checked-in',
-        employer: 'DEF Developers',
-        joinDate: new Date('2024-03-01'),
-        documents: {
-          aadhar: true,
-          photo: true,
-          bankDetails: true
-        }
-      },
-      {
-        id: '5',
-        name: 'Ramesh Yadav',
-        registrationId: 'WK2024001238',
-        mobileNumber: '9876543214',
-        trade: 'Helper',
-        category: 'Unskilled',
-        status: 'suspended',
-        lastActive: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-        attendanceStatus: 'absent',
-        employer: 'GHI Construction',
-        joinDate: new Date('2024-01-20'),
-        documents: {
-          aadhar: false,
-          photo: true,
-          bankDetails: false
-        }
-      }
-    ];
+    // const mockWorkers: Worker[] = [
+    //   {
+    //     id: '1',
+    //     name: 'Ravi Kumar Sharma',
+    //     registrationId: 'WK2024001234',
+    //     mobileNumber: '9876543210',
+    //     trade: 'Mason',
+    //     category: 'Skilled',
+    //     status: 'active',
+    //     lastActive: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    //     location: {
+    //       latitude: 17.3850,
+    //       longitude: 78.4867,
+    //       address: 'Construction Site - Hitech City'
+    //     },
+    //     attendanceStatus: 'checked-in',
+    //     employer: 'ABC Construction Ltd',
+    //     joinDate: new Date('2024-01-15'),
+    //     documents: {
+    //       aadhar: true,
+    //       photo: true,
+    //       bankDetails: true
+    //     }
+    //   },
+    //   {
+    //     id: '2',
+    //     name: 'Priya Devi',
+    //     registrationId: 'WK2024001235',
+    //     mobileNumber: '9876543211',
+    //     trade: 'Electrician',
+    //     category: 'Skilled',
+    //     status: 'active',
+    //     lastActive: new Date(Date.now() - 1 * 60 * 60 * 1000),
+    //     attendanceStatus: 'checked-out',
+    //     employer: 'XYZ Builders',
+    //     joinDate: new Date('2024-02-01'),
+    //     documents: {
+    //       aadhar: true,
+    //       photo: true,
+    //       bankDetails: false
+    //     }
+    //   },
+    //   {
+    //     id: '3',
+    //     name: 'Suresh Reddy',
+    //     registrationId: 'WK2024001236',
+    //     mobileNumber: '9876543212',
+    //     trade: 'Carpenter',
+    //     category: 'Semi-Skilled',
+    //     status: 'inactive',
+    //     lastActive: new Date(Date.now() - 24 * 60 * 60 * 1000),
+    //     attendanceStatus: 'absent',
+    //     employer: 'PQR Construction',
+    //     joinDate: new Date('2023-12-10'),
+    //     documents: {
+    //       aadhar: true,
+    //       photo: false,
+    //       bankDetails: true
+    //     }
+    //   },
+    //   {
+    //     id: '4',
+    //     name: 'Anjali Singh',
+    //     registrationId: 'WK2024001237',
+    //     mobileNumber: '9876543213',
+    //     trade: 'Painter',
+    //     category: 'Semi-Skilled',
+    //     status: 'active',
+    //     lastActive: new Date(Date.now() - 30 * 60 * 1000),
+    //     location: {
+    //       latitude: 17.3900,
+    //       longitude: 78.4900,
+    //       address: 'Residential Complex - Gachibowli'
+    //     },
+    //     attendanceStatus: 'checked-in',
+    //     employer: 'DEF Developers',
+    //     joinDate: new Date('2024-03-01'),
+    //     documents: {
+    //       aadhar: true,
+    //       photo: true,
+    //       bankDetails: true
+    //     }
+    //   },
+    //   {
+    //     id: '5',
+    //     name: 'Ramesh Yadav',
+    //     registrationId: 'WK2024001238',
+    //     mobileNumber: '9876543214',
+    //     trade: 'Helper',
+    //     category: 'Unskilled',
+    //     status: 'suspended',
+    //     lastActive: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+    //     attendanceStatus: 'absent',
+    //     employer: 'GHI Construction',
+    //     joinDate: new Date('2024-01-20'),
+    //     documents: {
+    //       aadhar: false,
+    //       photo: true,
+    //       bankDetails: false
+    //     }
+    //   }
+    // ];
 
     setTimeout(() => {
-      setWorkers(mockWorkers);
-      setFilteredWorkers(mockWorkers);
+      // setWorkers(mockWorkers);
+      // setFilteredWorkers(mockWorkers);
       setLoading(false);
     }, 1000);
+  }, []);
+
+console.log("Workers:", workers);
+console.log("Filtered Workers:", filteredWorkers);
+  const loadWorkerDetails = async () => {
+    if (!user?.id) return;
+    try {
+      const data = await fetchWorkerDetailsByEstablishment(Number(user.id));
+      setWorkers(Array.isArray(data) ? data : [data]); // handle if single object
+    } catch (error) {
+      console.error("Failed to fetch worker details:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!hasFetchedRef.current) {
+      loadWorkerDetails();
+      hasFetchedRef.current = true;
+    }
   }, []);
 
   // Filter workers based on search and filters
@@ -210,7 +247,7 @@ const WorkerManagement: React.FC = () => {
   const formatLastActive = (date: Date) => {
     const now = new Date();
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-    
+
     if (diffInHours < 1) {
       return 'Just now';
     } else if (diffInHours < 24) {
@@ -263,15 +300,23 @@ const WorkerManagement: React.FC = () => {
   };
 
   const getStats = () => {
+    if (workers.length === 0) return { total: 0, active: 0, checkedIn: 0, pendingDocs: 0 };
     const total = workers.length;
     const active = workers.filter(w => w.status === 'active').length;
     const checkedIn = workers.filter(w => w.attendanceStatus === 'checked-in').length;
-    const pendingDocs = workers.filter(w => !w.documents.aadhar || !w.documents.photo || !w.documents.bankDetails).length;
+    // const pendingDocs = workers.filter(w => !w.documents.aadhar || !w.documents.photo || !w.documents.bankDetails).length;
 
-    return { total, active, checkedIn, pendingDocs };
+    return { total, active, checkedIn /*, pendingDocs */ };
   };
 
   const stats = getStats();
+
+  const handleAddWorker = async (worker: WorkerOption) => {
+    console.log("Starting registration for:", worker);
+    await loadWorkerDetails(); // Refresh list after adding worker
+    setIsModalOpen(false);
+    // navigate to worker registration form or call API
+  };
 
   return (
     <div className="min-h-screen py-8 mobile-nav-spacing">
@@ -287,7 +332,7 @@ const WorkerManagement: React.FC = () => {
                 Manage and monitor all registered workers
               </p>
             </div>
-            <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" onClick={() => setIsModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Add Worker
             </button>
@@ -329,7 +374,7 @@ const WorkerManagement: React.FC = () => {
                 />
               </div>
             </div>
-            
+
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -340,7 +385,7 @@ const WorkerManagement: React.FC = () => {
               <option value="inactive">Inactive</option>
               <option value="suspended">Suspended</option>
             </select>
-            
+
             <select
               value={tradeFilter}
               onChange={(e) => setTradeFilter(e.target.value)}
@@ -353,7 +398,7 @@ const WorkerManagement: React.FC = () => {
               <option value="painter">Painter</option>
               <option value="helper">Helper</option>
             </select>
-            
+
             <select
               value={attendanceFilter}
               onChange={(e) => setAttendanceFilter(e.target.value)}
@@ -365,7 +410,7 @@ const WorkerManagement: React.FC = () => {
               <option value="absent">Absent</option>
             </select>
           </div>
-          
+
           <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
             <div className="flex items-center space-x-4">
               <label className="flex items-center">
@@ -380,7 +425,7 @@ const WorkerManagement: React.FC = () => {
                 </span>
               </label>
             </div>
-            
+
             <button
               onClick={exportWorkers}
               className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
@@ -429,12 +474,12 @@ const WorkerManagement: React.FC = () => {
                       />
                     </th>
                     <th className="text-left py-3 px-4 font-medium text-gray-900">Worker</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">Trade & Category</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">Status</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">Attendance</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">working From Date</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">working To Date</th>
+                    {/* <th className="text-left py-3 px-4 font-medium text-gray-900">Attendance</th>
                     <th className="text-left py-3 px-4 font-medium text-gray-900">Location</th>
                     <th className="text-left py-3 px-4 font-medium text-gray-900">Last Active</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">Actions</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">Actions</th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -450,23 +495,21 @@ const WorkerManagement: React.FC = () => {
                       </td>
                       <td className="py-3 px-4">
                         <div>
-                          <p className="font-medium text-gray-900">{worker.name}</p>
-                          <p className="text-sm text-gray-600">{worker.registrationId}</p>
+                          <p className="font-medium text-gray-900">{worker.firstName}</p>
+                          <p className="text-sm text-gray-600">{worker.aadhaarCardNumber}</p>
                           <p className="text-sm text-gray-600">{worker.mobileNumber}</p>
                         </div>
                       </td>
                       <td className="py-3 px-4">
                         <div>
-                          <p className="font-medium text-gray-900">{worker.trade}</p>
-                          <p className="text-sm text-gray-600">{worker.category}</p>
+                          <p className="font-medium text-gray-900">{worker.workingFromDate}</p>
+                          {/* <p className="text-sm text-gray-600">{worker.category}</p> */}
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(worker.status)}`}>
-                          {worker.status.charAt(0).toUpperCase() + worker.status.slice(1)}
-                        </span>
+                          <p className="text-sm text-gray-900">{worker.workingToDate}</p>
                       </td>
-                      <td className="py-3 px-4">
+                      {/* <td className="py-3 px-4">
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${getAttendanceColor(worker.attendanceStatus)}`}>
                           {worker.attendanceStatus.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                         </span>
@@ -480,8 +523,8 @@ const WorkerManagement: React.FC = () => {
                         ) : (
                           <span className="text-sm text-gray-400">Unknown</span>
                         )}
-                      </td>
-                      <td className="py-3 px-4">
+                      </td> */}
+                      {/* <td className="py-3 px-4">
                         <div className="flex items-center text-sm text-gray-600">
                           <Clock className="h-3 w-3 mr-1" />
                           {formatLastActive(worker.lastActive)}
@@ -508,7 +551,7 @@ const WorkerManagement: React.FC = () => {
                             <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>
@@ -517,6 +560,13 @@ const WorkerManagement: React.FC = () => {
           )}
         </div>
       </div>
+
+      <AddWorkerModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleAddWorker}
+      />
+
     </div>
   );
 };

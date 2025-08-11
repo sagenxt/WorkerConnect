@@ -289,7 +289,9 @@ export const translations = {
       notifications: "Notifications",
       quickActions: "Quick Actions",
       viewProfile: "View Profile",
-      updateDocuments: "Update Documents"
+      updateDocuments: "Update Documents",
+      fromDate : "From Date",
+      toDate : "To Date",
     },
     establishment: {
       registration: "Establishment Registration",

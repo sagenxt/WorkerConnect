@@ -35,10 +35,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = (userData: User) => {
     setUser(userData);
+    localStorage.setItem("authUser", JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("authUser");
   };
 
   const isAuthenticated = !!user;

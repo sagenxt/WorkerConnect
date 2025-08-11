@@ -12,7 +12,8 @@ export function formatWorkerPayload(formData: any) {
 
   return {
     workerId: 0,
-    aadhaarNumber: formData.aadhaarNumber,
+    // aadhaarNumber: formData.aadhaarNumber,
+    aadhaarNumber: formData.aadhaarNumber.replace(/\D/g, ""),
     eCardId: formData.eCardId || '',
     eSharmId: formData.eSharmId || '',
     boCWId: formData.boCWId || '',
@@ -29,7 +30,7 @@ export function formatWorkerPayload(formData: any) {
     subCaste: formData.subCaste || '',
     mobileNumber: Number(formData.mobileNumber),
     emailId: formData.emailId,
-    password: formData.password || '123456',
+    password: formData.password || 'Password@123',
 
     // Permanent Address (flattened)
     perDoorNumber: formData.permanentAddress?.doorNumber,

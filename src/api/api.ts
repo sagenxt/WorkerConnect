@@ -53,7 +53,7 @@ export async function submitApiRequest(url: string, payload: any) {
 }
 
 
-export interface EstablishmentLoginPayload {
+export interface loginPayload {
   mobileNumber: number;
   password: string;
 }
@@ -65,6 +65,143 @@ export interface EstablishmentUser {
   // Add other fields if needed
 }
 
-export const loginEstablishment = (payload: EstablishmentLoginPayload) => {
-  return api<EstablishmentUser>("/establishment/login", "POST", payload);
+export const loginEstablishment = async (payload: loginPayload) => {
+  const res : any = await api<EstablishmentUser>("/establishment/login", "POST", payload);
+  return res.data;
+};
+
+interface EstablishmentCategory {
+  categoryId: number;
+  categoryName: string;
+  description: string;
+}
+
+interface EstablishmentCategoryResponse {
+  data: EstablishmentCategory | EstablishmentCategory[]; // handle both single and list
+}
+
+export async function fetchEstablishmentCategories() {
+  const res = await api<EstablishmentCategoryResponse>(
+    "/establishmentcategory/details",
+    "GET"
+  );
+
+  if (!res?.data) return [];
+
+  const categories = Array.isArray(res.data) ? res.data : [res.data];
+
+  return categories.map((cat) => ({
+    value: String(cat.categoryId),
+    label: cat.categoryName,
+  }));
+}
+
+
+export const fetchNatureOfWorkByCategory = async (categoryId: number) => {
+  const res: any = await api(
+    `/establishmentworknature/details?categoryId=${categoryId}`,
+    "GET"
+  );
+
+  const natureData = Array.isArray(res?.data) ? res.data : [res?.data];
+
+  return natureData.map((item: any) => ({
+    value: String(item.workNatureId),
+    label: item.workNatureName,
+  }));
+};
+
+
+export const fetchEstablishmentCardDetails = async (establishmentId: number) => {
+  const res: any = await api(
+    `/establishment/dashboard/carddetails?establishmentId=${establishmentId}`,
+    "GET"
+  );
+  return res?.data || {};
+};
+
+
+interface WorkerUser {
+  id: number;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  fullName: string;
+  mobileNumber: number;
+  emailId?: string;
+  lastLoggedIn: string;
+}
+
+export const loginWorker = async (payload: loginPayload): Promise<WorkerUser> => {
+  const res = await api<{ data: WorkerUser }>("/worker/login", "POST", payload);
+  return res.data; // only return `data` field
+};
+
+interface AadhaarCardDetail {
+  workerId: number;
+  aadhaarCardNumber: string;
+  workerName: string;
+}
+
+interface AadhaarCardDetailsResponse {
+  correlationId: string;
+  data: AadhaarCardDetail[];
+  error: any;
+}
+
+
+export const fetchAvailableAadhaarCardDetails = async () => {
+  const res = await api<AadhaarCardDetailsResponse>(
+    "/establishment/availableaadhaarcarddetails",
+    "GET"
+  );
+
+  const aadhaarList = Array.isArray(res.data) ? res.data : [];
+
+  return aadhaarList.map((item) => ({
+    id: item.workerId,
+    label: `${item.aadhaarCardNumber} - ${item.workerName}`,
+    aadhaarNumber: item.aadhaarCardNumber,
+    workerName: item.workerName,
+  }));
+};
+
+export const persistWorkerDetails = async (payload: {
+  estmtWorkerId: number | null; // can be null if not updating existing worker
+  establishmentId: number;
+  workerId: number;
+  aadhaarCardNumber: string;
+  workingFromDate: string; // yyyy-MM-dd
+  workingToDate: string; // yyyy-MM-dd
+  status: string;
+}) => {
+  try {
+    const response = await api(
+      '/establishment/persistworkerdetailsbyestablishment',
+      'POST',
+      payload
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(`Failed to persist worker details: ${error.message}`);
+  }
+};
+
+
+interface WorkerDetailsResponse {
+  correlationId: string;
+  data: any; // you can replace `any` with the actual worker object type
+  error: {
+    code?: string;
+    message?: string;
+    target?: string;
+    details?: string[];
+  } | null;
+}
+
+export const fetchWorkerDetailsByEstablishment = (establishmentId: number) => {
+  return api<WorkerDetailsResponse>(
+    `/establishment/workerdetails?establishmentId=${establishmentId}`,
+    "GET"
+  ).then((res) => res.data);
 };
