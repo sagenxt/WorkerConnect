@@ -48,9 +48,9 @@ const WorkerProfile: React.FC = () => {
     // Registration Information
     registrationId: 'WK2024001234',
     registrationDate: '2024-01-15',
-    aadharNumber: '1234-5678-9012',
-    eshramId: 'ES12345678901',
-    bocwId: 'BW123456789',
+    aadhaarNumber: '1234-5678-9012',
+    eSharmId: 'ES12345678901',
+    boCWId: 'BW123456789',
     
     // Bank Information
     accountNumber: '1234567890123456',
@@ -375,9 +375,9 @@ const WorkerProfile: React.FC = () => {
             <div className="space-y-1">
               <InfoRow label="Registration ID" value={profileData.registrationId} />
               <InfoRow label="Registration Date" value={profileData.registrationDate} />
-              <InfoRow label="Aadhar Number" value={profileData.aadharNumber} />
-              <InfoRow label="eShram ID" value={profileData.eshramId} />
-              <InfoRow label="BoCW ID" value={profileData.bocwId} />
+              <InfoRow label="Aadhar Number" value={profileData.aadhaarNumber} />
+              <InfoRow label="eShram ID" value={profileData.eSharmId} />
+              <InfoRow label="BoCW ID" value={profileData.boCWId} />
             </div>
           </ProfileSection>
 

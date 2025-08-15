@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import FormInput from '../components/FormInput';
 import BiometricAuth from '../components/BiometricAuth';
 import { Capacitor } from '@capacitor/core';
+import { loginWorker } from '../api/api';
 
 const WorkerLogin: React.FC = () => {
   const { t } = useLanguage();
@@ -13,7 +14,7 @@ const WorkerLogin: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    mobile: '',
+    mobileNumber: '',
     password: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -24,10 +25,10 @@ const WorkerLogin: React.FC = () => {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.mobile.trim()) {
-      newErrors.mobile = t('forms.validation.mobile');
-    } else if (!/^\d{10}$/.test(formData.mobile.trim())) {
-      newErrors.mobile = t('forms.validation.mobile');
+    if (!formData.mobileNumber.trim()) {
+      newErrors.mobileNumber = t('forms.validation.mobile');
+    } else if (!/^\d{10}$/.test(formData.mobileNumber.trim())) {
+      newErrors.mobileNumber = t('forms.validation.mobile');
     }
 
     if (!formData.password.trim()) {
@@ -38,27 +39,56 @@ const WorkerLogin: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   if (!validateForm()) return;
+
+  //   setIsLoading(true);
+
+  //   // Simulate API call
+  //   setTimeout(() => {
+  //     // Mock successful login
+  //     login({
+  //       id: '1',
+  //       type: 'worker',
+  //       name: 'John Doe',
+  //       mobileNumber: formData.mobileNumber
+  //     });
+
+  //     setIsLoading(false);
+  //     navigate('/dashboard/worker');
+  //   }, 1000);
+  // };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      // Mock successful login
-      login({
-        id: '1',
-        type: 'worker',
-        name: 'John Doe',
-        mobile: formData.mobile
+
+    try {
+      const user = await loginWorker({
+        mobileNumber: Number(formData.mobileNumber),
+        password: formData.password,
       });
-      
+
+      login({
+        id: String(user.id),
+        type: "worker",
+        name: user.fullName || `${user.firstName} ${user.lastName}`,
+        mobileNumber: String(user.mobileNumber),
+      });
+
+      navigate("/dashboard/worker");
+    } catch (error: any) {
+      setErrors({ general: error.message || "Something went wrong" });
+    } finally {
       setIsLoading(false);
-      navigate('/dashboard/worker');
-    }, 1000);
+    }
   };
+
 
   const handleBiometricAuth = () => {
     setShowBiometric(true);
@@ -70,9 +100,9 @@ const WorkerLogin: React.FC = () => {
       id: '1',
       type: 'worker',
       name: 'John Doe',
-      mobile: '9876543210'
+      mobileNumber: '9876543210'
     });
-    
+
     navigate('/dashboard/worker');
   };
 
@@ -111,8 +141,8 @@ const WorkerLogin: React.FC = () => {
                 <FormInput
                   label={t('worker.mobileNumber')}
                   type="tel"
-                  value={formData.mobile}
-                  onChange={(value) => setFormData(prev => ({ ...prev, mobile: value }))}
+                  value={formData.mobileNumber}
+                  onChange={(value) => setFormData(prev => ({ ...prev, mobileNumber: value }))}
                   placeholder={t('forms.placeholders.enterMobile')}
                   required
                   maxLength={10}
@@ -160,7 +190,7 @@ const WorkerLogin: React.FC = () => {
             >
               {isLoading ? t('auth.signingIn') : t('auth.signIn')}
             </button>
-            
+
             {isNative && (
               <button
                 type="button"

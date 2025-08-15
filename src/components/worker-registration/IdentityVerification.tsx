@@ -32,17 +32,17 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     const formatted = formatAadhar(value);
     setFormData({
       ...formData,
-      aadharNumber: formatted,
+      aadhaarNumber: formatted,
     });
   };
 
   const handleGenerateOtp = () => {
     if (
-      !formData.aadharNumber ||
-      formData.aadharNumber.replace(/-/g, "").length !== 12
+      !formData.aadhaarNumber ||
+      formData.aadhaarNumber.replace(/-/g, "").length !== 12
     ) {
       setErrors({
-        aadharNumber: "Please enter a valid 12-digit Aadhar number",
+        aadhaarNumber: "Please enter a valid 12-digit Aadhar number",
       });
       return;
     }
@@ -50,7 +50,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
     setErrors({});
     setOtpSent(true);
     // Simulate OTP generation
-    console.log("OTP generated for:", formData.aadharNumber);
+    console.log("OTP generated for:", formData.aadhaarNumber);
   };
 
   const handleVerifyOtp = () => {
@@ -98,21 +98,21 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
           <div className="flex gap-4">
             <div className="flex flex-col md:flex-row md:items-center justify-around items-start w-full">
               <FormInput
-                label={t("worker.aadharNumber")}
-                value={formData.aadharNumber}
+                label={t("worker.aadhaarNumber")}
+                value={formData.aadhaarNumber}
                 onChange={handleAadharChange}
                 placeholder="XXXX-XXXX-XXXX"
                 required
                 maxLength={14}
-                error={errors.aadharNumber}
+                error={errors.aadhaarNumber}
                 className="w-full md:w-[75%]"
               />
               <button
                 type="button"
                 onClick={handleGenerateOtp}
                 disabled={
-                  !formData.aadharNumber ||
-                  formData.aadharNumber.replace(/-/g, "").length !== 12 ||
+                  !formData.aadhaarNumber ||
+                  formData.aadhaarNumber.replace(/-/g, "").length !== 12 ||
                   otpSent
                 }
                 className="w-full md:w-[25%] lg:[20%] mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 h-10"
@@ -168,19 +168,19 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
 
               <div className="grid md:grid-cols-2 gap-4">
                 <FormInput
-                  label={t("worker.eshramId")}
-                  value={formData.eshramId}
+                  label={t("worker.eSharmId")}
+                  value={formData.eSharmId}
                   onChange={(value) =>
-                    setFormData({ ...formData, eshramId: value })
+                    setFormData({ ...formData, eSharmId: value })
                   }
                   placeholder="Enter eShram ID "
                 />
 
                 <FormInput
-                  label={t("worker.bocwId")}
-                  value={formData.bocwId}
+                  label={t("worker.boCWId")}
+                  value={formData.boCWId}
                   onChange={(value) =>
-                    setFormData({ ...formData, bocwId: value })
+                    setFormData({ ...formData, boCWId: value })
                   }
                   placeholder="Enter BoCW ID "
                 />

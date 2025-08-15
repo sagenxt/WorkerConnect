@@ -5,7 +5,7 @@ interface User {
   type: 'worker' | 'establishment' | 'department';
   name: string;
   email?: string;
-  mobile?: string;
+  mobileNumber?: string;
 }
 
 interface AuthContextType {
@@ -19,6 +19,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+  console.log(context,'contenxt')
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
@@ -34,10 +35,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = (userData: User) => {
     setUser(userData);
+    localStorage.setItem("authUser", JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("authUser");
   };
 
   const isAuthenticated = !!user;

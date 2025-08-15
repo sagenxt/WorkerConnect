@@ -18,7 +18,9 @@ const WorkerDashboard: React.FC = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const [isCheckedIn, setIsCheckedIn] = useState(false);
-  const [lastCheckInTime, setLastCheckInTime] = useState<Date | null>(null);
+  // const [lastCheckInTime, setLastCheckInTime] = useState<Date | null>(null);
+  const [lastCheckInTime, setLastCheckInTime] = useState<Date | undefined>(undefined);
+
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
 

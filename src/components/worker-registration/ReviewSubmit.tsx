@@ -60,9 +60,9 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
       <div className="bg-gray-50 p-6 rounded-xl max-h-96 overflow-y-auto">
         {/* Identity Information */}
         {renderSection("Identity Information", {
-          "Aadhar Number": formData.aadharNumber,
-          "eShram ID": formData.eshramId,
-          "BoCW ID": formData.bocwId,
+          "Aadhar Number": formData.aadhaarNumber,
+          "eShram ID": formData.eSharmId,
+          "BoCW ID": formData.boCWId,
         })}
 
         {/* Personal Information */}

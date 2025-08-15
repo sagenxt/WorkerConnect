@@ -243,6 +243,18 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
               setFormData({ ...formData, subCaste: value.toUpperCase() })
             }
           />
+          <FormInput
+            label={t("worker.mobileNumber")}
+            type="tel"
+            value={formData.mobileNumber}
+            onChange={(value) =>
+              setFormData({ ...formData, mobileNumber: value })
+            }
+            required
+            maxLength={10}
+            error={errors.mobileNumber}
+          />
+
         </div>
       </div>
 

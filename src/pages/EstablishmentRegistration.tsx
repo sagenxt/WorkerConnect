@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
-import { Building2 } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useNavigate } from 'react-router-dom';
-import FormInput from '../components/FormInput';
-import FormSelect from '../components/FormSelect';
-import { 
-  DISTRICTS, 
-  ESTABLISHMENT_CATEGORIES, 
+import React, { useEffect, useState } from "react";
+import { Building2 } from "lucide-react";
+import { useLanguage } from "../contexts/LanguageContext";
+import { useNavigate } from "react-router-dom";
+import FormInput from "../components/FormInput";
+import FormSelect from "../components/FormSelect";
+import {
+  DISTRICTS,
+  ESTABLISHMENT_CATEGORIES,
   NATURE_OF_WORK,
   getDistrictLabel,
   getEstablishmentCategoryLabel,
-  getNatureOfWorkLabel
-} from '../utils/constants';
+  getNatureOfWorkLabel,
+} from "../utils/constants";
+import {
+  fetchCitiesByDistrictId,
+  fetchVillagesByCityId,
+} from "../api/location";
+import { api, fetchEstablishmentCategories, fetchNatureOfWorkByCategory } from "../api/api";
 
 const EstablishmentRegistration: React.FC = () => {
   const { t } = useLanguage();
@@ -19,86 +24,98 @@ const EstablishmentRegistration: React.FC = () => {
   const [currentSection, setCurrentSection] = useState(1);
   const [formData, setFormData] = useState({
     // Establishment Details
-    establishmentName: '',
-    ownerName: '',
-    emailAddress: '',
-    mobileNumber: '',
-    
+    establishmentName: "",
+    ownerName: "",
+    emailAddress: "",
+    mobileNumber: "",
+
     // Address Details
-    doorNumber: '',
-    street: '',
-    district: '',
-    mandal: '',
-    village: '',
-    pincode: '',
-    
+    doorNumber: "",
+    street: "",
+    district: "",
+    mandal: "",
+    village: "",
+    pincode: "",
+
     // Business Details
-    hasPlanApproval: '',
-    planApprovalId: '',
-    establishmentCategory: '',
-    natureOfWork: '',
-    commencementDate: '',
-    completionDate: '',
-    contractorsWorking: '',
+    hasPlanApproval: "",
+    planApprovalId: "",
+    establishmentCategory: "",
+    natureOfWork: "",
+    commencementDate: "",
+    completionDate: "",
+    contractorsWorking: "",
     contractors: [],
-    
+
     // Construction Details
-    estimatedCost: '',
-    constructionArea: '',
-    builtUpArea: '',
-    basicEstimationCost: '',
-    maleWorkers: '',
-    femaleWorkers: '',
-    
+    estimatedCost: "",
+    constructionArea: "",
+    builtUpArea: "",
+    basicEstimationCost: "",
+    maleWorkers: "",
+    femaleWorkers: "",
+
     // Declaration
-    declaration: false
+    declaration: false,
   });
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [establishmentCategoryOptions, setEstablishmentCategoryOptions] = useState<OptionType[]>([]);
+  const [natureOfWorkOptions, setNatureOfWorkOptions] = useState<OptionType[]>([]);
 
   const sections = [
-    { id: 1, title: 'Establishment Details' },
-    { id: 2, title: 'Address Details' },
-    { id: 3, title: 'Business Details' },
-    { id: 4, title: 'Construction Details' },
-    { id: 5, title: 'Review & Submit' }
+    { id: 1, title: "Establishment Details" },
+    { id: 2, title: "Address Details" },
+    { id: 3, title: "Business Details" },
+    { id: 4, title: "Construction Details" },
+    { id: 5, title: "Review & Submit" },
   ];
 
-  const districtOptions = DISTRICTS.map(district => ({
-    value: district.name.toLowerCase().replace(/\s+/g, '_'),
-    label: district.name
+  const districtOptions = DISTRICTS.map((district) => ({
+    value: district.name.toLowerCase().replace(/\s+/g, "_"),
+    label: district.name,
   }));
 
-  const establishmentCategoryOptions = ESTABLISHMENT_CATEGORIES.map(category => ({
-    value: category.toLowerCase().replace(/\s+/g, '_'),
-    label: category
-  }));
+  // const natureOfWorkOptions = NATURE_OF_WORK.map((nature) => ({
+  //   value: nature.toLowerCase().replace(/\s+/g, "_"),
+  //   label: nature,
+  // }));
+  type OptionType = {
+    value: string;
+    label: string;
+  };
 
-  const natureOfWorkOptions = NATURE_OF_WORK.map(nature => ({
-    value: nature.toLowerCase().replace(/\s+/g, '_'),
-    label: nature
-  }));
+  const [mandalOptions, setMandalOptions] = useState<OptionType[]>([]);
+  const [villageOptions, setVillageOptions] = useState<OptionType[]>([]);
 
   const validateCurrentSection = () => {
     const newErrors: Record<string, string> = {};
 
     switch (currentSection) {
       case 1:
-        if (!formData.establishmentName.trim()) newErrors.establishmentName = 'Establishment name is required';
-        if (!formData.ownerName.trim()) newErrors.ownerName = 'Owner/Manager name is required';
-        if (!formData.emailAddress.trim()) newErrors.emailAddress = 'Email address is required';
-        if (!formData.mobileNumber.trim()) newErrors.mobileNumber = 'Mobile number is required';
+        if (!formData.establishmentName.trim())
+          newErrors.establishmentName = "Establishment name is required";
+        if (!formData.ownerName.trim())
+          newErrors.ownerName = "Owner/Manager name is required";
+        if (!formData.emailAddress.trim())
+          newErrors.emailAddress = "Email address is required";
+        if (!formData.mobileNumber.trim())
+          newErrors.mobileNumber = "Mobile number is required";
         break;
       case 2:
-        if (!formData.doorNumber.trim()) newErrors.doorNumber = 'Door number is required';
-        if (!formData.street.trim()) newErrors.street = 'Street is required';
-        if (!formData.district) newErrors.district = 'District is required';
-        if (!formData.pincode.trim()) newErrors.pincode = 'Pincode is required';
+        if (!formData.doorNumber.trim())
+          newErrors.doorNumber = "Door number is required";
+        if (!formData.street.trim()) newErrors.street = "Street is required";
+        if (!formData.district) newErrors.district = "District is required";
+        if (!formData.pincode.trim()) newErrors.pincode = "Pincode is required";
         break;
       case 3:
-        if (!formData.establishmentCategory) newErrors.establishmentCategory = 'Category is required';
-        if (!formData.natureOfWork) newErrors.natureOfWork = 'Nature of work is required';
-        if (!formData.commencementDate) newErrors.commencementDate = 'Commencement date is required';
+        if (!formData.establishmentCategory)
+          newErrors.establishmentCategory = "Category is required";
+        if (!formData.natureOfWork)
+          newErrors.natureOfWork = "Nature of work is required";
+        if (!formData.commencementDate)
+          newErrors.commencementDate = "Commencement date is required";
         break;
     }
 
@@ -118,16 +135,139 @@ const EstablishmentRegistration: React.FC = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const submitEstablishment = async () => {
+    const selectedDistrict = DISTRICTS.find(
+      (d) => d.name.toLowerCase().replace(/\s+/g, "_") === formData.district
+    );
+
+    const payload = {
+      establishmentId: 0,
+      establishmentName: formData.establishmentName,
+      contactPerson: formData.ownerName,
+      mobileNumber: Number(formData.mobileNumber),
+      emailId: formData.emailAddress,
+      password: "123456", // or however you're handling password
+      doorNumber: formData.doorNumber,
+      street: formData.street,
+      stateId: 1,
+      stateCode: "AP",
+      districtId: selectedDistrict?.id || 0,
+      districtCode: selectedDistrict?.name || "",
+      cityId: Number(formData.mandal),
+      cityCode: "", // optional if not available
+      villageOrAreaId: Number(formData.village),
+      pincode: Number(formData.pincode),
+      isPlanApprovalId: formData.hasPlanApproval === "yes" ? "Y" : "N",
+      planApprovalId: formData.planApprovalId || "",
+      categoryId: 1, // static or mapped
+      workNatureId: 1, // static or mapped
+      commencementDate: formData.commencementDate,
+      completionDate: formData.completionDate || formData.commencementDate,
+      constructionEstimatedCost: Number(formData.estimatedCost || 0),
+      constructionArea: Number(formData.constructionArea || 0),
+      builtUpArea: Number(formData.builtUpArea || 0),
+      basicEstimatedCost: Number(formData.basicEstimationCost || 0),
+      noOfMaleWorkers: Number(formData.maleWorkers || 0),
+      noOfFemaleWorkers: Number(formData.femaleWorkers || 0),
+      isAcceptedTermsAndConditions: formData.declaration ? "Y" : "N",
+    };
+
+    try {
+      const data = await api("/establishment/register", "POST", payload);
+      console.log("Submitted successfully:", data);
+      // alert("Registration successful!");
+      navigate("/");
+    } catch (error) {
+      console.error("Submission failed:", error);
+      alert("Something went wrong!");
+    }
+  };
+
+  const handleSubmit = async () => {
     if (!formData.declaration) {
-      setErrors({ declaration: 'Please accept the declaration' });
+      setErrors({ declaration: "Please accept the declaration" });
       return;
     }
-    
-    console.log('Establishment registration submitted:', formData);
-    alert('Registration submitted successfully!');
-    navigate('/');
+    submitEstablishment();
   };
+
+  useEffect(() => {
+    if (!formData.district) return;
+
+    const selectedDistrict = DISTRICTS.find(
+      (d) => d.name.toLowerCase().replace(/\s+/g, "_") === formData.district
+    );
+
+    const districtId = selectedDistrict?.id;
+    if (!districtId) return;
+
+    const fetchMandals = async () => {
+      try {
+        const options = await fetchCitiesByDistrictId(districtId);
+        console.log(options, "options");
+        setMandalOptions(options);
+
+        setFormData((prev) => ({
+          ...prev,
+          mandal: "",
+          village: "",
+        }));
+      } catch (error) {
+        console.error("Failed to fetch mandals:", error);
+      }
+    };
+
+    fetchMandals();
+  }, [formData.district]);
+
+  useEffect(() => {
+    if (!formData.mandal) return;
+
+    const loadVillages = async () => {
+      try {
+        const options = await fetchVillagesByCityId(formData.mandal);
+        setVillageOptions(options);
+        setFormData((prev) => ({ ...prev, village: "" }));
+      } catch (err) {
+        console.error("Failed to fetch villages:", err);
+      }
+    };
+
+    loadVillages();
+  }, [formData.mandal]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const options = await fetchEstablishmentCategories();
+        setEstablishmentCategoryOptions(options);
+      } catch (err) {
+        console.error("Error loading establishment categories:", err);
+      }
+    };
+
+    loadCategories();
+  }, [])
+
+  useEffect(() => {
+    if (!formData.establishmentCategory) return;
+
+    const categoryId = Number(formData.establishmentCategory);
+    if (!categoryId) return;
+
+    const loadNatureOfWork = async () => {
+      try {
+        const options = await fetchNatureOfWorkByCategory(categoryId);
+        setNatureOfWorkOptions(options);
+        setFormData((prev) => ({ ...prev, natureOfWork: "" }));
+      } catch (err) {
+        console.error("Failed to fetch nature of work:", err);
+      }
+    };
+
+    loadNatureOfWork();
+  }, [formData.establishmentCategory]);
+
 
   const renderSection = () => {
     switch (currentSection) {
@@ -135,40 +275,48 @@ const EstablishmentRegistration: React.FC = () => {
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              {t('establishment.establishmentDetails')}
+              {t("establishment.establishmentDetails")}
             </h3>
-            
+
             <FormInput
-              label={t('establishment.establishmentName')}
+              label={t("establishment.establishmentName")}
               value={formData.establishmentName}
-              onChange={(value) => setFormData({ ...formData, establishmentName: value })}
+              onChange={(value) =>
+                setFormData({ ...formData, establishmentName: value })
+              }
               required
               error={errors.establishmentName}
             />
-            
+
             <FormInput
-              label={t('establishment.ownerName')}
+              label={t("establishment.ownerName")}
               value={formData.ownerName}
-              onChange={(value) => setFormData({ ...formData, ownerName: value })}
+              onChange={(value) =>
+                setFormData({ ...formData, ownerName: value })
+              }
               required
               error={errors.ownerName}
             />
-            
+
             <div className="grid md:grid-cols-2 gap-4">
               <FormInput
-                label={t('establishment.emailAddress')}
+                label={t("establishment.emailAddress")}
                 type="email"
                 value={formData.emailAddress}
-                onChange={(value) => setFormData({ ...formData, emailAddress: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, emailAddress: value })
+                }
                 required
                 error={errors.emailAddress}
               />
-              
+
               <FormInput
-                label={t('establishment.mobileNumber')}
+                label={t("establishment.mobileNumber")}
                 type="tel"
                 value={formData.mobileNumber}
-                onChange={(value) => setFormData({ ...formData, mobileNumber: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, mobileNumber: value })
+                }
                 required
                 maxLength={10}
                 error={errors.mobileNumber}
@@ -181,52 +329,66 @@ const EstablishmentRegistration: React.FC = () => {
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              {t('worker.addressDetails')}
+              {t("worker.addressDetails")}
             </h3>
-            
+
             <div className="grid md:grid-cols-2 gap-4">
               <FormInput
-                label={t('worker.doorNumber')}
+                label={t("worker.doorNumber")}
                 value={formData.doorNumber}
-                onChange={(value) => setFormData({ ...formData, doorNumber: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, doorNumber: value })
+                }
                 required
                 error={errors.doorNumber}
               />
-              
+
               <FormInput
-                label={t('worker.street')}
+                label={t("worker.street")}
                 value={formData.street}
-                onChange={(value) => setFormData({ ...formData, street: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, street: value })
+                }
                 required
                 error={errors.street}
               />
             </div>
-            
+
             <div className="grid md:grid-cols-3 gap-4">
               <FormSelect
-                label={t('worker.district')}
+                label={t("worker.district")}
                 value={formData.district}
-                onChange={(value) => setFormData({ ...formData, district: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, district: value })
+                }
                 options={districtOptions}
                 required
                 error={errors.district}
               />
-              
-              <FormInput
-                label={t('worker.mandal')}
+              <FormSelect
+                label={t("worker.mandal")}
                 value={formData.mandal}
-                onChange={(value) => setFormData({ ...formData, mandal: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, mandal: value })
+                }
+                options={mandalOptions}
+                required
+                error={errors.district}
               />
-              
-              <FormInput
-                label={t('worker.village')}
+              <FormSelect
+                label={t("worker.village")}
                 value={formData.village}
-                onChange={(value) => setFormData({ ...formData, village: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, village: value })
+                }
+                options={villageOptions}
+                required
+                error={errors.district}
               />
             </div>
-            
+
             <FormInput
-              label={t('worker.pincode')}
+              label={t("worker.pincode")}
               value={formData.pincode}
               onChange={(value) => setFormData({ ...formData, pincode: value })}
               maxLength={6}
@@ -241,76 +403,96 @@ const EstablishmentRegistration: React.FC = () => {
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              {t('establishment.businessDetails')}
+              {t("establishment.businessDetails")}
             </h3>
-            
+
             <div className="grid md:grid-cols-2 gap-4">
               <FormSelect
-                label={t('establishment.planApprovalId')}
+                label={t("establishment.planApprovalId")}
                 value={formData.hasPlanApproval}
-                onChange={(value) => setFormData({ ...formData, hasPlanApproval: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, hasPlanApproval: value })
+                }
                 options={[
-                  { value: 'yes', label: t('common.yes') },
-                  { value: 'no', label: t('common.no') }
+                  { value: "yes", label: t("common.yes") },
+                  { value: "no", label: t("common.no") },
                 ]}
               />
-              
-              {formData.hasPlanApproval === 'yes' && (
+
+              {formData.hasPlanApproval === "yes" && (
                 <FormInput
-                  label={t('establishment.planApprovalIdValue')}
+                  label={t("establishment.planApprovalIdValue")}
                   value={formData.planApprovalId}
-                  onChange={(value) => setFormData({ ...formData, planApprovalId: value })}
+                  onChange={(value) =>
+                    setFormData({ ...formData, planApprovalId: value })
+                  }
                 />
               )}
             </div>
-            
+
             <div className="grid md:grid-cols-2 gap-4">
               <FormSelect
-                label={t('establishment.establishmentCategory')}
+                label={t("establishment.establishmentCategory")}
                 value={formData.establishmentCategory}
-                onChange={(value) => setFormData({ ...formData, establishmentCategory: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, establishmentCategory: value })
+                }
                 options={establishmentCategoryOptions}
                 required
                 error={errors.establishmentCategory}
               />
-              
+
               <FormSelect
-                label={t('establishment.natureOfWork')}
+                label={t("establishment.natureOfWork")}
                 value={formData.natureOfWork}
-                onChange={(value) => setFormData({ ...formData, natureOfWork: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, natureOfWork: value })
+                }
                 options={natureOfWorkOptions}
                 required
                 error={errors.natureOfWork}
               />
             </div>
-            
+
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('establishment.commencementDate')} <span className="text-red-500">*</span>
+                  {t("establishment.commencementDate")}{" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="date"
                   value={formData.commencementDate}
-                  onChange={(e) => setFormData({ ...formData, commencementDate: e.target.value })}
-                  className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.commencementDate ? 'border-red-500' : ''
-                  }`}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      commencementDate: e.target.value,
+                    })
+                  }
+                  className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.commencementDate ? "border-red-500" : ""
+                    }`}
                 />
                 {errors.commencementDate && (
-                  <p className="mt-1 text-sm text-red-600">{errors.commencementDate}</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.commencementDate}
+                  </p>
                 )}
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('establishment.completionDate')}
+                  {t("establishment.completionDate")}
                 </label>
                 <input
                   type="date"
                   value={formData.completionDate}
-                  onChange={(e) => setFormData({ ...formData, completionDate: e.target.value })}
-                  min={formData.commencementDate || new Date().toISOString().split('T')[0]}
+                  onChange={(e) =>
+                    setFormData({ ...formData, completionDate: e.target.value })
+                  }
+                  min={
+                    formData.commencementDate ||
+                    new Date().toISOString().split("T")[0]
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
@@ -324,51 +506,63 @@ const EstablishmentRegistration: React.FC = () => {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Construction Details
             </h3>
-            
+
             <div className="grid md:grid-cols-2 gap-4">
               <FormInput
-                label={t('establishment.estimatedCost')}
+                label={t("establishment.estimatedCost")}
                 value={formData.estimatedCost}
-                onChange={(value) => setFormData({ ...formData, estimatedCost: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, estimatedCost: value })
+                }
                 placeholder="e.g., 10,00,00,000"
               />
-              
+
               <FormInput
-                label={t('establishment.constructionArea')}
+                label={t("establishment.constructionArea")}
                 value={formData.constructionArea}
-                onChange={(value) => setFormData({ ...formData, constructionArea: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, constructionArea: value })
+                }
               />
             </div>
-            
+
             <div className="grid md:grid-cols-2 gap-4">
               <FormInput
-                label={t('establishment.builtUpArea')}
+                label={t("establishment.builtUpArea")}
                 value={formData.builtUpArea}
-                onChange={(value) => setFormData({ ...formData, builtUpArea: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, builtUpArea: value })
+                }
                 placeholder="Area in sq ft"
               />
-              
+
               <FormInput
-                label={t('establishment.basicEstimationCost')}
+                label={t("establishment.basicEstimationCost")}
                 value={formData.basicEstimationCost}
-                onChange={(value) => setFormData({ ...formData, basicEstimationCost: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, basicEstimationCost: value })
+                }
               />
             </div>
-            
+
             <div className="grid md:grid-cols-2 gap-4">
               <FormInput
-                label={t('establishment.maleWorkers')}
+                label={t("establishment.maleWorkers")}
                 type="number"
                 value={formData.maleWorkers}
-                onChange={(value) => setFormData({ ...formData, maleWorkers: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, maleWorkers: value })
+                }
                 placeholder="Number of male workers"
               />
-              
+
               <FormInput
-                label={t('establishment.femaleWorkers')}
+                label={t("establishment.femaleWorkers")}
                 type="number"
                 value={formData.femaleWorkers}
-                onChange={(value) => setFormData({ ...formData, femaleWorkers: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, femaleWorkers: value })
+                }
                 placeholder="Number of female workers"
               />
             </div>
@@ -381,46 +575,64 @@ const EstablishmentRegistration: React.FC = () => {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Review & Submit
             </h3>
-            
+
             <div className="bg-gray-50 p-6 rounded-xl space-y-4">
               <div>
-                <h4 className="font-medium text-gray-900">Establishment Details</h4>
-                <p className="text-gray-600">Name: {formData.establishmentName}</p>
+                <h4 className="font-medium text-gray-900">
+                  Establishment Details
+                </h4>
+                <p className="text-gray-600">
+                  Name: {formData.establishmentName}
+                </p>
                 <p className="text-gray-600">Owner: {formData.ownerName}</p>
                 <p className="text-gray-600">Email: {formData.emailAddress}</p>
                 <p className="text-gray-600">Mobile: {formData.mobileNumber}</p>
               </div>
-              
+
               <div>
                 <h4 className="font-medium text-gray-900">Address</h4>
                 <p className="text-gray-600">
-                  {formData.doorNumber}, {formData.street}, {getDistrictLabel(formData.district)}, {formData.pincode}
+                  {formData.doorNumber}, {formData.street},{" "}
+                  {getDistrictLabel(formData.district)}, {formData.pincode}
                 </p>
               </div>
-              
+
               <div>
                 <h4 className="font-medium text-gray-900">Business Details</h4>
-                <p className="text-gray-600">Category: {getEstablishmentCategoryLabel(formData.establishmentCategory)}</p>
-                <p className="text-gray-600">Nature of Work: {getNatureOfWorkLabel(formData.natureOfWork)}</p>
-                <p className="text-gray-600">Commencement: {formData.commencementDate}</p>
+                <p className="text-gray-600">
+                  Category:{" "}
+                  {getEstablishmentCategoryLabel(
+                    formData.establishmentCategory
+                  )}
+                </p>
+                <p className="text-gray-600">
+                  Nature of Work: {getNatureOfWorkLabel(formData.natureOfWork)}
+                </p>
+                <p className="text-gray-600">
+                  Commencement: {formData.commencementDate}
+                </p>
               </div>
             </div>
-            
+
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div className="flex items-start space-x-3">
                 <input
                   type="checkbox"
                   id="declaration"
                   checked={formData.declaration}
-                  onChange={(e) => setFormData({ ...formData, declaration: e.target.checked })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, declaration: e.target.checked })
+                  }
                   className="mt-1"
                 />
                 <label htmlFor="declaration" className="text-sm text-blue-900">
-                  {t('establishment.declarationText')}
+                  {t("establishment.declarationText")}
                 </label>
               </div>
               {errors.declaration && (
-                <p className="mt-2 text-sm text-red-600">{errors.declaration}</p>
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.declaration}
+                </p>
               )}
             </div>
           </div>
@@ -439,66 +651,71 @@ const EstablishmentRegistration: React.FC = () => {
             <div className="flex items-center space-x-3">
               <Building2 className="h-8 w-8 text-white" />
               <h1 className="text-2xl font-bold text-white">
-                {t('establishment.registration')}
+                {t("establishment.registration")}
               </h1>
             </div>
           </div>
-          
+
           {/* Progress Indicator */}
           <div className="bg-gray-50 px-6 py-4">
             <div className="flex items-center justify-between">
               {sections.map((section, index) => (
                 <div key={section.id} className="flex items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                      currentSection >= section.id
-                        ? 'bg-orange-600 text-white'
-                        : 'bg-gray-200 text-gray-600'
-                    }`}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${currentSection >= section.id
+                        ? "bg-orange-600 text-white"
+                        : "bg-gray-200 text-gray-600"
+                      }`}
                   >
                     {section.id}
                   </div>
-                  <span className={`ml-2 text-sm ${
-                    currentSection >= section.id ? 'text-orange-600 font-medium' : 'text-gray-500'
-                  }`}>
+                  <span
+                    className={`ml-2 text-sm ${currentSection >= section.id
+                        ? "text-orange-600 font-medium"
+                        : "text-gray-500"
+                      }`}
+                  >
                     {section.title}
                   </span>
                   {index < sections.length - 1 && (
-                    <div className={`w-12 h-0.5 mx-4 ${
-                      currentSection > section.id ? 'bg-orange-600' : 'bg-gray-300'
-                    }`} />
+                    <div
+                      className={`w-12 h-0.5 mx-4 ${currentSection > section.id
+                          ? "bg-orange-600"
+                          : "bg-gray-300"
+                        }`}
+                    />
                   )}
                 </div>
               ))}
             </div>
           </div>
-          
+
           <div className="p-6">
             {renderSection()}
-            
+
             <div className="flex justify-between mt-8">
               {currentSection > 1 && (
                 <button
                   onClick={handlePrevious}
                   className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
                 >
-                  {t('common.previous')}
+                  {t("common.previous")}
                 </button>
               )}
-              
+
               {currentSection < 5 ? (
                 <button
                   onClick={handleNext}
                   className="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 font-medium ml-auto"
                 >
-                  {t('common.next')}
+                  {t("common.next")}
                 </button>
               ) : (
                 <button
                   onClick={handleSubmit}
                   className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium ml-auto"
                 >
-                  {t('common.submit')}
+                  {t("common.submit")}
                 </button>
               )}
             </div>
