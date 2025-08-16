@@ -65,7 +65,7 @@ export interface EstablishmentUser {
   // Add other fields if needed
 }
 
-export const loginEstablishment = async (payload: loginPayload) => {
+export const loginEstablishmentApi = async (payload: loginPayload) => {
   const res : any = await api<EstablishmentUser>("/establishment/login", "POST", payload);
   return res.data;
 };
@@ -205,3 +205,102 @@ export const fetchWorkerDetailsByEstablishment = (establishmentId: number) => {
     "GET"
   ).then((res) => res.data);
 };
+
+
+// types.ts
+export interface DepartmentCardDetailsData {
+  totalWorkers: number;
+  presentWorkers: number;
+  absentWorkers: number;
+  loggedInWorkers: number;
+  loggedOutWorkers: number;
+  newEstablishmentWorkers: number;
+  newRegistrationWorkers: number;
+}
+
+export interface DepartmentCardDetailsResponse {
+  correlationId: string;
+  data: DepartmentCardDetailsData;
+  error?: {
+    code: string;
+    message: string;
+    target: string;
+    details: string[];
+  };
+}
+
+export const fetchDepartmentCardDetails = async () => {
+  const res = await api<DepartmentCardDetailsResponse>(
+    "/department/dashboard/carddetails",
+    "GET"
+  );
+  return res.data;
+};
+
+interface DepartmentLoginPayload {
+  emailId: string;
+  password: string;
+}
+
+interface DepartmentLoginResponse {
+  correlationId: string;
+  data: {
+    departmentRoleId: number;
+    roleName: string;
+    roleDescription: string;
+    departmentUserId: number;
+    emailId: string;
+    contactNumber: number;
+    lastLoggedIn: string;
+  };
+  error?: {
+    code: string;
+    message: string;
+    target: string;
+    details: string[];
+  };
+}
+
+export const departmentLogin = async (payload: DepartmentLoginPayload) => {
+  const res = await api<DepartmentLoginResponse>(
+    "/department/login",
+    "POST",
+    payload
+  );
+  return res.data;
+};
+
+
+export interface CheckInOutPayload {
+  attendanceId: number | null;   // 0 if new, else update
+  establishmentId: number;
+  workerId: number;
+  estmtWorkerId: number;
+  workLocation: string;
+  checkInDateTime?: string | null;
+  checkOutDateTime?: string | null;
+  status: "i" | "o"; // simplify instead of generic string
+}
+
+export interface CheckInOutResponse {
+  correlationId: string;
+  data: {
+    statusCode: number;
+    message: string;
+  };
+  error: {
+    code: string;
+    message: string;
+    target: string;
+    details: string[];
+  } | null;
+}
+
+export const checkInOrOut = async (payload: CheckInOutPayload) => {
+  return await api<CheckInOutResponse>(
+    "/worker/checkinorout",
+    "POST",
+    payload
+  );
+};
+

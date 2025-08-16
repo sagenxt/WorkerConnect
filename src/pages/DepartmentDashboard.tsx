@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, Users, UserCheck, UserX, Calendar, Filter, Download, MapPin } from 'lucide-react';
+import { BarChart3, Users, UserCheck, UserX, Calendar, Filter, Download, MapPin,FilterIcon } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import LocationMap from '../components/LocationMap';
+import LastLoggedIn from './LastloggedIn';
+import { fetchDepartmentCardDetails } from '../api/api';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LocationData {
   id: string;
@@ -23,6 +26,7 @@ const DepartmentDashboard: React.FC = () => {
     district: '',
     workerType: ''
   });
+    const { user } = useAuth();
   const [locations, setLocations] = useState<LocationData[]>([]);
   const [selectedView, setSelectedView] = useState<'stats' | 'map'>('stats');
 
@@ -114,17 +118,32 @@ const DepartmentDashboard: React.FC = () => {
     // Handle location click - could open details modal, etc.
   };
 
+
+  const handleFilterClick = async () => {
+  try {
+    const data = await fetchDepartmentCardDetails();
+    console.log("Filtered Data:", data);
+  } catch (err) {
+    console.error("Error fetching card details", err);
+  }
+};
+
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 mobile-nav-spacing">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
             {t('department.dashboard')}
           </h1>
           <p className="text-gray-600">
             Monitor worker activities and generate reports
           </p>
+          </div>
+          <LastLoggedIn time={user?.lastLoggedIn ?? null} />
         </div>
 
         {/* View Toggle */}
@@ -242,6 +261,13 @@ const DepartmentDashboard: React.FC = () => {
                     <option value="unskilled">Unskilled</option>
                   </select>
                 </div>
+                <div className="flex items-end">
+
+              <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm" onClick={handleFilterClick}>
+                  <FilterIcon className="h-4 w-4 mr-2" />
+                  Filter
+                </button>
+                </div>
               </div>
             </div>
 
@@ -291,10 +317,10 @@ const DepartmentDashboard: React.FC = () => {
               />
             </div>
 
-            {/* Charts and Tables */}
-            <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
+            {/* Charts and Tables  */}
+            {/* <div className="grid lg:grid-cols-2 gap-6 md:gap-8"> */}
               {/* Attendance Chart */}
-              <div className="card-mobile">
+              {/* <div className="card-mobile">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-semibold text-gray-900">
                     Daily Attendance Trend
@@ -304,10 +330,10 @@ const DepartmentDashboard: React.FC = () => {
                 <div className="h-48 md:h-64 flex items-center justify-center bg-gray-50 rounded-lg">
                   <p className="text-gray-500">Chart visualization would be implemented here</p>
                 </div>
-              </div>
+              </div> */}
 
               {/* Recent Activities */}
-              <div className="card-mobile">
+              {/* <div className="card-mobile">
                 <h3 className="text-lg font-semibold text-gray-900 mb-6">
                   Recent Activities
                 </h3>
@@ -327,8 +353,8 @@ const DepartmentDashboard: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              </div>
-            </div>
+              </div> */}
+            {/* </div> */}
           </>
         ) : (
           /* Location Map View */

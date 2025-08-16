@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { HardHat, Phone, Lock, Eye, EyeOff, Fingerprint } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useAuth } from '../contexts/AuthContext';
+import { mapWorkerToUser, useAuth } from '../contexts/AuthContext';
 import FormInput from '../components/FormInput';
 import BiometricAuth from '../components/BiometricAuth';
 import { Capacitor } from '@capacitor/core';
@@ -69,17 +69,31 @@ const WorkerLogin: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const user = await loginWorker({
+      // const user = await loginWorker({
+      //   mobileNumber: Number(formData.mobileNumber),
+      //   password: formData.password,
+      // });
+
+      // login({
+      //   id: Number(user.id),
+      //   type: "worker",
+      //   // name: user.fullName || `${user.firstName} ${user.lastName}`,
+      //   mobileNumber: Number(user.mobileNumber),
+      //   fullName: user.fullName,
+      //   firstName: user.firstName,
+      //   lastName: user.lastName,
+      //   middleName: user.middleName,
+      //   lastLoggedIn: user.lastLoggedIn || new Date().toISOString(),
+      // });
+      const res = await loginWorker({
         mobileNumber: Number(formData.mobileNumber),
         password: formData.password,
-      });
 
-      login({
-        id: String(user.id),
-        type: "worker",
-        name: user.fullName || `${user.firstName} ${user.lastName}`,
-        mobileNumber: String(user.mobileNumber),
       });
+const userData = mapWorkerToUser(res);
+login(userData);
+navigate("/dashboard/worker");
+
 
       navigate("/dashboard/worker");
     } catch (error: any) {
@@ -94,16 +108,50 @@ const WorkerLogin: React.FC = () => {
     setShowBiometric(true);
   };
 
+  // const handleBiometricSuccess = () => {
+  //   // Simulate successful biometric login
+  //   login({
+  //     id: 1,
+  //     type: 'worker',
+  //     firstName: 'John',
+  //     lastName: 'Doe',
+  //     fullName: 'John Doe',
+  //     mobileNumber: 9876543210,
+  //     lastLoggedIn: new Date().toISOString()
+  //   });
+
+  //   navigate('/dashboard/worker');
+  // };
   const handleBiometricSuccess = () => {
-    // Simulate successful biometric login
+    // simulate API response for worker
+    const apiResponse = {
+      id: 1,
+      firstName: "John",
+      lastName: "Doe",
+      fullName: "John Doe",
+      mobileNumber: 9876543210,
+      emailId: "john@example.com",
+      lastLoggedIn: new Date().toISOString(),
+    };
+
+    // map response → normalized User object
     login({
-      id: '1',
-      type: 'worker',
-      name: 'John Doe',
-      mobileNumber: '9876543210'
+      type: "worker",
+      id: apiResponse.id,
+      firstName: apiResponse.firstName,
+      lastName: apiResponse.lastName,
+      fullName: apiResponse.fullName,
+      mobileNumber: apiResponse.mobileNumber,
+      emailId: apiResponse.emailId,
+      lastLoggedIn: apiResponse.lastLoggedIn,
+      establishmentId: 0,
+    estmtWorkerId: 0,
+    establishmentName: "Unknown Establishment",
+    workLocation: "Unknown",
+    status: "W",
     });
 
-    navigate('/dashboard/worker');
+    navigate("/dashboard/worker");
   };
 
   // If biometric auth is showing, render that component

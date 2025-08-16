@@ -5,16 +5,20 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import FormInput from '../components/FormInput';
 import FormSelect from '../components/FormSelect';
+import { departmentLogin } from '../api/api';
 
 const DepartmentLogin: React.FC = () => {
   const { t } = useLanguage();
   const { login } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState("");
+
   const [formData, setFormData] = useState({
     username: '',
     password: '',
-    role: ''
+    role: '',
+    emailId: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -29,8 +33,11 @@ const DepartmentLogin: React.FC = () => {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.username.trim()) {
-      newErrors.username = t('forms.validation.required');
+    // if (!formData.username.trim()) {
+    //   newErrors.username = t('forms.validation.required');
+    // }
+     if (!formData.emailId.trim()) {
+      newErrors.emailId = t('forms.validation.required');
     }
 
     if (!formData.password.trim()) {
@@ -45,26 +52,58 @@ const DepartmentLogin: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+    
+  //   if (!validateForm()) return;
+
+  //   setIsLoading(true);
+    
+    // Simulate API call
+//     setTimeout(() => {
+//       // Mock successful login
+//       const roleLabel = departmentRoles.find(r => r.value === formData.role)?.label || formData.role;
+//      login({
+//   departmentUserId: user.departmentUserId,
+//   type: "department",
+//   roleName: user.roleName,
+//   roleDescription: user.roleDescription,
+//   emailId: user.emailId,
+//   contactNumber: user.contactNumber,
+//   lastLoggedIn: user.lastLoggedIn,
+// });
+
+  // };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError("");
+     e.preventDefault();
     
     if (!validateForm()) return;
 
-    setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      // Mock successful login
-      const roleLabel = departmentRoles.find(r => r.value === formData.role)?.label || formData.role;
+    try {
+      const data = await departmentLogin(formData);
+      console.log("Login successful:", data);
       login({
-        id: '1',
-        type: 'department',
-        name: `${formData.username} (${roleLabel})`
+        type: "department",
+        departmentRoleId: data.departmentRoleId,
+        roleName: data.roleName,
+        roleDescription: data.roleDescription,
+        emailId: data.emailId,
+        contactNumber: data.contactNumber,
+        lastLoggedIn: data.lastLoggedIn,
+        departmentUserId: data.departmentUserId
       });
-      
+
+      navigate("/dashboard/department");
+    } catch (err: any) {
+      setError("Invalid credentials or server error");
+      console.error("Login failed:", err);
+    } finally {
       setIsLoading(false);
-      navigate('/dashboard/department');
-    }, 1000);
+    }
   };
 
   return (
@@ -96,8 +135,8 @@ const DepartmentLogin: React.FC = () => {
               />
 
               <div className="relative">
-                <User className="absolute left-3 top-10 h-5 w-5 text-gray-400" />
-                <FormInput
+                {/* <User className="absolute left-3 top-10 h-5 w-5 text-gray-400" /> */}
+                {/* <FormInput
                   label={t('auth.username')}
                   type="text"
                   value={formData.username}
@@ -106,7 +145,17 @@ const DepartmentLogin: React.FC = () => {
                   required
                   error={errors.username}
                   className="pl-10"
-                />
+                /> */}
+                 <FormInput
+                label={t("establishment.emailAddress")}
+                type="email"
+                value={formData.emailId}
+                onChange={(value) =>
+                  setFormData({ ...formData, emailId: value })
+                }
+                required
+                error={errors.emailId}
+              />
               </div>
 
               <div className="relative">

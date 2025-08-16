@@ -12,8 +12,8 @@ export function formatWorkerPayload(formData: any) {
 
   return {
     workerId: 0,
-    // aadhaarNumber: formData.aadhaarNumber,
-    aadhaarNumber: formData.aadhaarNumber.replace(/\D/g, ""),
+    aadhaarNumber: formData.aadhaarNumber,
+    // aadhaarNumber: formData.aadhaarNumber.replace(/\D/g, ""),
     eCardId: formData.eCardId || '',
     eSharmId: formData.eSharmId || '',
     boCWId: formData.boCWId || '',
