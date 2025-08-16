@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Building2, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
-import { useAuth } from "../contexts/AuthContext";
+import { mapEstablishmentToUser, useAuth } from "../contexts/AuthContext";
 import FormInput from "../components/FormInput";
-import { loginEstablishment } from "../api/api";
+import { loginEstablishmentApi } from "../api/api";
+// import {  loginEstablishmentApi } from "../api/api";
 
 const EstablishmentLogin: React.FC = () => {
   const { t } = useLanguage();
@@ -51,17 +52,29 @@ const EstablishmentLogin: React.FC = () => {
   setIsLoading(true);
 
   try {
-    const user = await loginEstablishment({
-      mobileNumber: Number(formData.mobileNumber),
-      password: formData.password,
-    });
+    // const user = await loginEstablishmentApi({
+    //   mobileNumber: Number(formData.mobileNumber),
+    //   password: formData.password,
+    // });
 
-    login({
-      id: user.establishmentId,
-      type: "establishment",
-      name: user.establishmentName,
-      mobileNumber: user.mobileNumber,
-    });
+    // login({
+    //   id: user.establishmentId,
+    //   type: "establishment",
+    //   name: user.establishmentName,
+    //   mobileNumber: user.mobileNumber,
+    // });
+
+    const res = await loginEstablishmentApi({
+  mobileNumber: Number(formData.mobileNumber),
+  password: formData.password,
+});
+
+// normalize response
+const userData = mapEstablishmentToUser(res);
+login(userData);
+
+navigate("/dashboard/establishment");
+
 
     navigate("/dashboard/establishment");
   } catch (error: any) {

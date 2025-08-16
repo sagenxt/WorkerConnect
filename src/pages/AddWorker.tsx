@@ -98,10 +98,11 @@ const AddWorkerModal: React.FC<AddWorkerModalProps> = ({
     if (!selectedWorker) return;
 
     setLoading(true);
+    const establishmentId = user?.type === "establishment" ? user?.establishmentId : null;
     try {
       const payload = {
-        estmtWorkerId: null,          
-        establishmentId: Number(user?.id), // Ensure establishmentId is a number
+        estmtWorkerId: null,
+        establishmentId: Number(establishmentId), // Ensure establishmentId is a number
         workerId: selectedWorker.id,
         aadhaarCardNumber: selectedWorker.aadhaar,
         workingFromDate: formData.fromDate,

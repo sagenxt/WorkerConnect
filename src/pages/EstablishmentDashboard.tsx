@@ -4,11 +4,13 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { fetchEstablishmentCardDetails } from '../api/api';
+import LastLoggedIn from './LastloggedIn';
 
 const EstablishmentDashboard: React.FC = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const hasFetched = useRef(false);
+      console.log(user, 'cardDetails data');
 
   const [cardDetails, setCardDetails] = useState<any>(null);
 
@@ -23,16 +25,18 @@ const EstablishmentDashboard: React.FC = () => {
 
   
   useEffect(() => {
-    if (!user?.id || hasFetched.current) return;
-hasFetched.current = true;
+    if (!user || hasFetched.current) return;
+    hasFetched.current = true;
     const loadData = async () => {
-      const data = await fetchEstablishmentCardDetails(Number(user.id));
-      console.log(data, 'cardDetails data');
-      setCardDetails(data);
+      if (user?.type === "establishment") {
+
+        const data = await fetchEstablishmentCardDetails(Number(user?.establishmentId));
+        setCardDetails(data);
+      }
     };
 
     loadData();
-  }, [user?.id]);
+  }, [user]);
 console.log(cardDetails, 'cardDetails');
   const StatCard = ({ icon: Icon, title, value, color, trend, link }: any) => (
     <Link to={link || '#'} className="card-mobile hover:shadow-xl transition-shadow group">
@@ -57,7 +61,7 @@ console.log(cardDetails, 'cardDetails');
     <div className="min-h-screen py-8 mobile-nav-spacing">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-8 flex justify-between items-center">
           <div className="flex items-center space-x-3 mb-2">
             <Building2 className="h-8 w-8 text-orange-600" />
             <div>
@@ -65,10 +69,13 @@ console.log(cardDetails, 'cardDetails');
                 {t('establishment.dashboard')}
               </h1>
               <p className="text-gray-600">
-                {t('common.welcome')}, {user?.name}
+                {/* {t('common.welcome')}, { user?.establishmentName} */}
+                {t('common.welcome')},{" "}
+  {user?.type === "establishment" && user?.establishmentName}
               </p>
             </div>
           </div>
+          <LastLoggedIn time={user?.lastLoggedIn} />
         </div>
 
         {/* Quick Stats */}
@@ -79,7 +86,7 @@ console.log(cardDetails, 'cardDetails');
             value={cardDetails?.totalWorkers}
             color="text-blue-600"
             trend={5.2}
-            link="/workers/management"
+            // link="/workers/management"
           />
           <StatCard
             icon={UserCheck}
@@ -88,13 +95,13 @@ console.log(cardDetails, 'cardDetails');
             color="text-green-600"
             trend={2.1}
           />
-          <StatCard
+          {/* <StatCard
             icon={Calendar}
             title={t('department.present')}
             value={stats?.presentToday}
             color="text-emerald-600"
             trend={3.7}
-          />
+          /> */}
           <StatCard
             icon={UserX}
             title={t('department.absent')}
@@ -102,19 +109,19 @@ console.log(cardDetails, 'cardDetails');
             color="text-red-600"
             trend={-1.3}
           />
-          <StatCard
+          {/* <StatCard
             icon={AlertTriangle}
             title={t('establishment.pendingRegistrations')}
             value={stats?.pendingRegistrations}
             color="text-yellow-600"
-          />
-          <StatCard
+          /> */}
+          {/* <StatCard
             icon={TrendingUp}
             title={t('establishment.complianceScore')}
             value={`${stats?.complianceScore}%`}
             color="text-purple-600"
             trend={1.5}
-          />
+          /> */}
         </div>
 
         {/* Quick Actions */}
@@ -145,7 +152,7 @@ console.log(cardDetails, 'cardDetails');
             </div>
           </Link>
 
-          <Link to="/compliance/reports" className="card-mobile hover:shadow-xl transition-shadow group">
+          {/* <Link to="/compliance/reports" className="card-mobile hover:shadow-xl transition-shadow group">
             <div className="flex items-center space-x-3 mb-3">
               <TrendingUp className="h-6 w-6 text-purple-600" />
               <h3 className="font-semibold text-gray-900">{t('establishment.complianceReport')}</h3>
@@ -156,7 +163,7 @@ console.log(cardDetails, 'cardDetails');
             <div className="text-purple-600 group-hover:text-purple-700 text-sm font-medium">
               {t('common.view')} →
             </div>
-          </Link>
+          </Link> */}
         </div>
 
         {/* Recent Activities */}

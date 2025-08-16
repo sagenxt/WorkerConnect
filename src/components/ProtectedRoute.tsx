@@ -8,9 +8,12 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, userType }) => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated,loading  } = useAuth();
   const location = useLocation();
 
+  if (loading) {
+    return <div>Loading...</div>; // ✅ wait until restored
+  }
   if (!isAuthenticated) {
     // Redirect to appropriate login page based on the route
     const path = location.pathname;

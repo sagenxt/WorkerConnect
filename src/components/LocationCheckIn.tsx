@@ -151,7 +151,7 @@ const LocationCheckIn: React.FC<LocationCheckInProps> = ({
           {loading && <Loader className="h-4 w-4 animate-spin text-blue-500" />}
         </div>
         
-        <div className={`flex items-center space-x-2 p-3 rounded-lg ${
+        {/* <div className={`flex items-center space-x-2 p-3 rounded-lg ${
           locationStatus === 'allowed' ? 'bg-green-50 border border-green-200' :
           locationStatus === 'restricted' ? 'bg-red-50 border border-red-200' :
           'bg-yellow-50 border border-yellow-200'
@@ -164,7 +164,7 @@ const LocationCheckIn: React.FC<LocationCheckInProps> = ({
           }`}>
             {getLocationStatusText()}
           </span>
-        </div>
+        </div> */}
 
         {error && (
           <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
@@ -278,7 +278,7 @@ const LocationCheckIn: React.FC<LocationCheckInProps> = ({
           </button>
         )}
 
-        {!coordinates && !loading && (
+        {/* {!coordinates && !loading && (
           <button
             onClick={getCurrentPosition}
             className="w-full btn-mobile bg-blue-600 text-white hover:bg-blue-700 font-semibold"
@@ -288,7 +288,7 @@ const LocationCheckIn: React.FC<LocationCheckInProps> = ({
               {t('worker.getLocation')}
             </div>
           </button>
-        )}
+        )} */}
       </div>
 
       {/* Location Permission Help */}

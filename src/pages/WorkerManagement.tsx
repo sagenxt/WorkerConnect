@@ -4,6 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import AddWorkerModal from './AddWorker';
 import { fetchWorkerDetailsByEstablishment } from '../api/api';
 import { useAuth } from '../contexts/AuthContext';
+import { exportToExcel } from '../utils/download-excel';
 
 interface Worker {
   id: string;
@@ -32,6 +33,7 @@ interface Worker {
     photo: boolean;
     bankDetails: boolean;
   };
+  stateName?: string; // optional, if available
 }
 
 interface WorkerOption {
@@ -167,12 +169,13 @@ const WorkerManagement: React.FC = () => {
     }, 1000);
   }, []);
 
-console.log("Workers:", workers);
-console.log("Filtered Workers:", filteredWorkers);
+  console.log("Workers:", workers);
+  console.log("Filtered Workers:", filteredWorkers);
   const loadWorkerDetails = async () => {
-    if (!user?.id) return;
+    const workerId = user?.type === "establishment" ? user?.establishmentId : null;
+    if (!workerId) return;
     try {
-      const data = await fetchWorkerDetailsByEstablishment(Number(user.id));
+      const data = await fetchWorkerDetailsByEstablishment(Number(workerId));
       setWorkers(Array.isArray(data) ? data : [data]); // handle if single object
     } catch (error) {
       console.error("Failed to fetch worker details:", error);
@@ -275,28 +278,39 @@ console.log("Filtered Workers:", filteredWorkers);
   };
 
   const exportWorkers = () => {
-    const csvContent = [
-      ['Name', 'Registration ID', 'Mobile', 'Trade', 'Category', 'Status', 'Attendance', 'Employer', 'Join Date'],
-      ...filteredWorkers.map(worker => [
-        worker.name,
-        worker.registrationId,
-        worker.mobileNumber,
-        worker.trade,
-        worker.category,
-        worker.status,
-        worker.attendanceStatus,
-        worker.employer,
-        worker.joinDate.toLocaleDateString()
-      ])
-    ].map(row => row.join(',')).join('\n');
+    // const csvContent = [
+    //   ['Name', 'Registration ID', 'Mobile', 'Trade', 'Category', 'Status', 'Attendance', 'Employer', 'Join Date'],
+    //   ...filteredWorkers.map(worker => [
+    //     worker.name,
+    //     worker.registrationId,
+    //     worker.mobileNumber,
+    //     worker.trade,
+    //     worker.category,
+    //     worker.status,
+    //     worker.attendanceStatus,
+    //     worker.employer,
+    //     // worker.joinDate.toLocaleDateString()
+    //   ])
+    // ].map(row => row.join(',')).join('\n');
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'workers-list.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
+    // const blob = new Blob([csvContent], { type: 'text/csv' });
+    // const url = window.URL.createObjectURL(blob);
+    // const a = document.createElement('a');
+    // a.href = url;
+    // a.download = 'workers-list.csv';
+    // a.click();
+    // window.URL.revokeObjectURL(url);
+    const exportData = filteredWorkers.map(w => ({
+      Aadhaar: w.aadhaarCardNumber,
+    Mobile: w.mobileNumber,
+    State: w.stateName,
+    FirstName: w.firstName,
+    FromDate: w.workingFromDate,
+    ToDate: w.workingToDate,
+    }));
+
+    exportToExcel(exportData, "worker_management");
+
   };
 
   const getStats = () => {
@@ -386,7 +400,7 @@ console.log("Filtered Workers:", filteredWorkers);
               <option value="suspended">Suspended</option>
             </select>
 
-            <select
+            {/* <select
               value={tradeFilter}
               onChange={(e) => setTradeFilter(e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -408,7 +422,7 @@ console.log("Filtered Workers:", filteredWorkers);
               <option value="checked-in">Checked In</option>
               <option value="checked-out">Checked Out</option>
               <option value="absent">Absent</option>
-            </select>
+            </select> */}
           </div>
 
           <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
@@ -507,7 +521,7 @@ console.log("Filtered Workers:", filteredWorkers);
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                          <p className="text-sm text-gray-900">{worker.workingToDate}</p>
+                        <p className="text-sm text-gray-900">{worker.workingToDate}</p>
                       </td>
                       {/* <td className="py-3 px-4">
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${getAttendanceColor(worker.attendanceStatus)}`}>
