@@ -196,10 +196,10 @@ const WorkerManagement: React.FC = () => {
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(worker =>
-        worker.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        worker.registrationId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        worker.mobileNumber.includes(searchTerm) ||
-        worker.employer.toLowerCase().includes(searchTerm.toLowerCase())
+        worker.firstName.toLowerCase().includes(searchTerm.toLowerCase()) //||
+        // worker.registrationId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        // worker.mobileNumber.includes(searchTerm) ||
+        // worker.employer.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -302,11 +302,11 @@ const WorkerManagement: React.FC = () => {
     // window.URL.revokeObjectURL(url);
     const exportData = filteredWorkers.map(w => ({
       Aadhaar: w.aadhaarCardNumber,
-    Mobile: w.mobileNumber,
-    State: w.stateName,
-    FirstName: w.firstName,
-    FromDate: w.workingFromDate,
-    ToDate: w.workingToDate,
+      Mobile: w.mobileNumber,
+      State: w.stateName,
+      FirstName: w.firstName,
+      FromDate: w.workingFromDate,
+      ToDate: w.workingToDate,
     }));
 
     exportToExcel(exportData, "worker_management");

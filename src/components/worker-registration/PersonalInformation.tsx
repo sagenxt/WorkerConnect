@@ -3,7 +3,7 @@ import { User, Plus, Trash2 } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import FormInput from "../FormInput";
 import FormSelect from "../FormSelect";
-import { GENDERS, MARITAL_STATUS, RELATIONSHIPS } from "../../utils/constants";
+import { GENDERS, MARITAL_STATUS, RELATIONSHIPS, validateName } from "../../utils/constants";
 
 interface PersonalInformationProps {
   formData: any;
@@ -99,9 +99,20 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
+    const firstNameError = validateName(formData.firstName, "First name");
+    const lastNameError = validateName(formData.lastName, "Last name");
 
     if (!formData.firstName?.trim()) {
       newErrors.firstName = "First name is required";
+    }
+    if (firstNameError !== true) {
+      // setErrors({ firstName: firstNameError });
+      newErrors.firstName = firstNameError as string;
+      // return;
+    }
+    if (lastNameError !== true) {
+      newErrors.lastName = lastNameError as string;
+      // return;
     }
 
     if (!formData.lastName?.trim()) {
@@ -202,9 +213,8 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
               }
               min={minDate}
               max={maxDate}
-              className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.dateOfBirth ? "border-red-500" : ""
-              }`}
+              className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.dateOfBirth ? "border-red-500" : ""
+                }`}
             />
             {errors.dateOfBirth && (
               <p className="mt-1 text-sm text-red-600">{errors.dateOfBirth}</p>
@@ -214,7 +224,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
           <FormInput
             label={t("worker.age")}
             value={formData.age || ""}
-            onChange={() => {}} // Read-only
+            onChange={() => { }} // Read-only
             disabled
           />
 

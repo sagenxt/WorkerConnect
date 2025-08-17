@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BarChart3, Users, UserCheck, UserX, Calendar, Filter, Download, MapPin,FilterIcon } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import LocationMap from '../components/LocationMap';
 import LastLoggedIn from './LastloggedIn';
-import { fetchDepartmentCardDetails } from '../api/api';
+import { fetchDepartmentCardDetails, fetchWorkerDetails } from '../api/api';
 import { useAuth } from '../contexts/AuthContext';
+import { exportToExcel } from '../utils/download-excel';
+// import { set } from 'date-fns';
 
 interface LocationData {
   id: string;
@@ -29,16 +31,27 @@ const DepartmentDashboard: React.FC = () => {
     const { user } = useAuth();
   const [locations, setLocations] = useState<LocationData[]>([]);
   const [selectedView, setSelectedView] = useState<'stats' | 'map'>('stats');
+  const [workers, setWorkers] = useState<any[]>([]);
+    const hasFetchedRef = useRef(false);
+    const [stats, setStats] = useState({
+      totalWorkers: 10,
+      loggedIn: 10,
+      loggedOut: 10,
+      present: 10,
+      absent: 0,
+      newRegistrations: 0,
+      newEstablishments: 0
+    });
 
   // Mock data - in real app, this would come from API
-  const stats = {
-    totalWorkers: 15420,
-    loggedIn: 8934,
-    loggedOut: 6486,
-    present: 12340,
-    absent: 3080,
-    newRegistrations: 234
-  };
+  // const stats = {
+  //   totalWorkers: 15420,
+  //   loggedIn: 8934,
+  //   loggedOut: 6486,
+  //   present: 12340,
+  //   absent: 3080,
+  //   newRegistrations: 234
+  // };
 
   // Mock location data
   useEffect(() => {
@@ -122,12 +135,76 @@ const DepartmentDashboard: React.FC = () => {
   const handleFilterClick = async () => {
   try {
     const data = await fetchDepartmentCardDetails();
+    // Map the API response to the expected stats shape
+    setStats({
+      totalWorkers: data.totalWorkers ?? 0,
+      loggedIn: data.loggedInWorkers ?? 0,
+      loggedOut: data.loggedOutWorkers ?? 0,
+      present: data.presentWorkers ?? 0,
+      absent: data.absentWorkers ?? 0,
+      newRegistrations: data.newRegistrationWorkers ?? 0,
+      newEstablishments: data.newEstablishmentWorkers ?? 0
+    });
     console.log("Filtered Data:", data);
   } catch (err) {
     console.error("Error fetching card details", err);
   }
 };
 
+useEffect(() => {
+  const fetchData = async () => {
+    await handleFilterClick();
+  };
+  fetchData();
+}, []);
+
+const loadWorkerDetails = async () => {
+    // const workerId = user?.type === "establishment" ? user?.establishmentId : null;
+    // if (!workerId) return;
+    try {
+      const data = await fetchWorkerDetails();
+      setWorkers(Array.isArray(data) ? data : [data]); // handle if single object
+    } catch (error) {
+      console.error("Failed to fetch worker details:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!hasFetchedRef.current) {
+      loadWorkerDetails();
+      hasFetchedRef.current = true;
+    }
+  }, []);
+
+interface WorkerStats {
+  totalWorkers: number;
+  loggedIn: number;
+  loggedOut: number;
+  present: number;
+  absent: number;
+  newRegistrations: number;
+  newEstablishments: number;
+}
+
+interface ExcelStatRow {
+  [key: string]: number | string;
+}
+
+const handleExportExcel = (stats: WorkerStats) => {
+  const exportData: ExcelStatRow[] = [{
+    'Total Workers': stats.totalWorkers,
+    'Logged In': stats.loggedIn,
+    'Logged Out': stats.loggedOut,
+    'Present': stats.present,
+    'Absent': stats.absent,
+    'New Registrations': stats.newRegistrations,
+    'New Establishments': stats.newEstablishments
+  }];
+
+  exportToExcel(exportData, "worker_statistics");
+};
+
+console.log("Exporting Excel with data:", stats);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 mobile-nav-spacing">
@@ -179,7 +256,7 @@ const DepartmentDashboard: React.FC = () => {
             <div className="card-mobile mb-8">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">Filters & Controls</h2>
-                <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm" onClick={() => handleExportExcel(stats)}>
                   <Download className="h-4 w-4 mr-2" />
                   Export Report
                 </button>
@@ -403,12 +480,7 @@ const DepartmentDashboard: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {[
-                  { name: 'Ravi Kumar', id: 'WK001', trade: 'Mason', status: 'Checked In', location: 'Site A', lastActive: '2 hours ago' },
-                  { name: 'Priya Sharma', id: 'WK002', trade: 'Electrician', status: 'Checked Out', location: 'Site B', lastActive: '1 hour ago' },
-                  { name: 'Suresh Reddy', id: 'WK003', trade: 'Carpenter', status: 'Offline', location: 'Unknown', lastActive: '1 day ago' },
-                  { name: 'Anjali Devi', id: 'WK004', trade: 'Painter', status: 'Checked In', location: 'Site C', lastActive: '30 min ago' }
-                ].map((worker, index) => (
+                {workers?.map((worker, index) => (
                   <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="py-3 px-4 text-gray-900">{worker.name}</td>
                     <td className="py-3 px-4 text-gray-600">{worker.id}</td>

@@ -117,6 +117,7 @@ navigate("/dashboard/establishment");
                   required
                   error={errors.mobileNumber}
                   className="pl-10"
+                   autoComplete="new-tel"
                 />
               </div>
 
@@ -133,6 +134,7 @@ navigate("/dashboard/establishment");
                   required
                   error={errors.password}
                   className="pl-10 pr-10"
+                  autoComplete="new-password"
                 />
                 <button
                   type="button"

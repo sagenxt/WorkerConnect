@@ -15,10 +15,10 @@ interface AddressDetailsProps {
   onNext: () => void;
   onPrevious: () => void;
 }
-type OptionType = {
-  value: string;
-  label: string;
-};
+// type OptionType = {
+//   value: string;
+//   label: string;
+// };
 
 const AddressDetails: React.FC<AddressDetailsProps> = ({
   formData,
@@ -128,6 +128,7 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
 
 
   const handleSameAsPresent = (checked: boolean) => {
+    console.log(formData,'formData')
     if (checked) {
       setFormData({
         ...formData,
@@ -164,6 +165,12 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
     if (!presentAddress?.district) {
       newErrors.presentDistrict = "District is required";
     }
+    if (!presentAddress?.mandal) {
+      newErrors.presentMandal = "Mandal is required";
+    }
+    if (!presentAddress?.village) {
+      newErrors.presentVillage = "Village is required";
+    }
     if (!presentAddress?.pincode?.trim()) {
       newErrors.presentPincode = "Pincode is required";
     } else if (!/^\d{6}$/.test(presentAddress.pincode.trim())) {
@@ -178,8 +185,11 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
       if (!permanentAddress?.street?.trim()) {
         newErrors.permanentStreet = "Street is required";
       }
-      if (!permanentAddress?.district) {
-        newErrors.permanentDistrict = "District is required";
+      if (!permanentAddress?.mandal) {
+        newErrors.permanentMandal = "Mandal is required";
+      }
+      if (!permanentAddress?.village) {
+        newErrors.permanentVillage = "Village is required";
       }
       if (!permanentAddress?.pincode?.trim()) {
         newErrors.permanentPincode = "Pincode is required";
