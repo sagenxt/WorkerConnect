@@ -90,9 +90,9 @@ const WorkerLogin: React.FC = () => {
         password: formData.password,
 
       });
-const userData = mapWorkerToUser(res);
-login(userData);
-navigate("/dashboard/worker");
+      const userData = mapWorkerToUser(res);
+      login(userData);
+      navigate("/dashboard/worker");
 
 
       navigate("/dashboard/worker");
@@ -145,10 +145,10 @@ navigate("/dashboard/worker");
       emailId: apiResponse.emailId,
       lastLoggedIn: apiResponse.lastLoggedIn,
       establishmentId: 0,
-    estmtWorkerId: 0,
-    establishmentName: "Unknown Establishment",
-    workLocation: "Unknown",
-    status: "W",
+      estmtWorkerId: 0,
+      establishmentName: "Unknown Establishment",
+      workLocation: "Unknown",
+      status: "W",
     });
 
     navigate("/dashboard/worker");
@@ -197,6 +197,7 @@ navigate("/dashboard/worker");
                   pattern="[0-9]*"
                   error={errors.mobile}
                   className="pl-10"
+                  autoComplete='new-tel'
                 />
               </div>
 
@@ -211,6 +212,7 @@ navigate("/dashboard/worker");
                   required
                   error={errors.password}
                   className="pl-10 pr-10"
+                  autoComplete='new-password'
                 />
                 <button
                   type="button"

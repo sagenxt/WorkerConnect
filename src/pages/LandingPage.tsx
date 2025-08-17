@@ -161,7 +161,7 @@ const LandingPage: React.FC = () => {
                 {t('mobile.getStarted')}
               </p>
               <div className="flex items-center text-purple-600 group-hover:text-purple-700">
-                <span className="text-sm font-medium">{t('mobile.downloadNow')}</span>
+                <span className="text-sm font-medium">{t('mobile.downloadApp')}</span>
                 <ArrowRight className="ml-2 h-4 w-4" />
               </div>
             </Link>

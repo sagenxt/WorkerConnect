@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, User, Lock, Eye, EyeOff } from 'lucide-react';
+import { Shield, Lock, Eye, EyeOff } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import FormInput from '../components/FormInput';
@@ -155,6 +155,7 @@ const DepartmentLogin: React.FC = () => {
                 }
                 required
                 error={errors.emailId}
+                autoComplete='new-email'
               />
               </div>
 
@@ -169,6 +170,7 @@ const DepartmentLogin: React.FC = () => {
                   required
                   error={errors.password}
                   className="pl-10 pr-10"
+                  autoComplete='new-password'
                 />
                 <button
                   type="button"

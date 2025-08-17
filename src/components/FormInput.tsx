@@ -1,5 +1,5 @@
 import React from "react";
-import { useLanguage } from "../contexts/LanguageContext";
+// import { useLanguage } from "../contexts/LanguageContext";
 
 interface FormInputProps {
   label: string;
@@ -13,6 +13,7 @@ interface FormInputProps {
   pattern?: string;
   disabled?: boolean;
   className?: string;
+  autoComplete?: string;
 }
 
 const FormInput: React.FC<FormInputProps> = ({
@@ -27,8 +28,9 @@ const FormInput: React.FC<FormInputProps> = ({
   pattern,
   disabled = false,
   className = "",
+  autoComplete
 }) => {
-  const { t } = useLanguage();
+  // const { t } = useLanguage();
 
   return (
     <div className={`mb-4 ${className}`}>
@@ -52,6 +54,7 @@ const FormInput: React.FC<FormInputProps> = ({
         className={`input-mobile w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
           error ? "border-red-500" : ""
         } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} ${className}`}
+        autoComplete={autoComplete}
       />
       {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>

@@ -277,3 +277,15 @@ export const getGenderLabel = (value: string): string => {
 export const getYesNoLabel = (value: string): string => {
   return value === "yes" ? "Yes" : value === "no" ? "No" : value;
 };
+
+export const isValidMobile = (mobile: string): boolean => {
+  return /^[6-9]\d{9}$/.test(mobile);
+};
+
+
+export const validateName = (name: string, field: string): string | true => {
+  if (!name) return `${field} is required`;
+  const regex = /^[A-Za-z]+$/;
+  if (!regex.test(name)) return `${field} should contain only letters`;
+  return true;
+};

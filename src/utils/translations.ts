@@ -370,7 +370,9 @@ export const translations = {
       manageWorkers: "Manage your workers and their registrations",
       viewAttendanceReports: "View attendance reports and analytics",
       viewComplianceStatus: "View compliance status and reports",
-      workers: "Workers"
+      workers: "Workers",
+      toDate : "To Date",
+
     },
     department: {
       login: "Department Login",
@@ -622,7 +624,8 @@ export const translations = {
       biometricAuth: "Biometric Authentication",
       installSteps: "Installation Steps",
       troubleshooting: "Troubleshooting",
-      support: "Need help? Contact support"
+      support: "Need help? Contact support",
+      getStarted: "Get Started",
     }
   },
   te: {

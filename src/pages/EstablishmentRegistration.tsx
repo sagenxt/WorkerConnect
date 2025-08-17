@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Building2 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
@@ -6,8 +6,8 @@ import FormInput from "../components/FormInput";
 import FormSelect from "../components/FormSelect";
 import {
   DISTRICTS,
-  ESTABLISHMENT_CATEGORIES,
-  NATURE_OF_WORK,
+  // ESTABLISHMENT_CATEGORIES,
+  // NATURE_OF_WORK,
   getDistrictLabel,
   getEstablishmentCategoryLabel,
   getNatureOfWorkLabel,
@@ -17,6 +17,7 @@ import {
   fetchVillagesByCityId,
 } from "../api/location";
 import { api, fetchEstablishmentCategories, fetchNatureOfWorkByCategory } from "../api/api";
+import toast, { Toaster } from "react-hot-toast";
 
 const EstablishmentRegistration: React.FC = () => {
   const { t } = useLanguage();
@@ -62,6 +63,7 @@ const EstablishmentRegistration: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [establishmentCategoryOptions, setEstablishmentCategoryOptions] = useState<OptionType[]>([]);
   const [natureOfWorkOptions, setNatureOfWorkOptions] = useState<OptionType[]>([]);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   const sections = [
     { id: 1, title: "Establishment Details" },
@@ -87,6 +89,25 @@ const EstablishmentRegistration: React.FC = () => {
 
   const [mandalOptions, setMandalOptions] = useState<OptionType[]>([]);
   const [villageOptions, setVillageOptions] = useState<OptionType[]>([]);
+
+
+  useEffect(() => {
+    if (progressRef.current) {
+      const container = progressRef.current;
+      const activeStep = container.querySelector(`[data-step="${currentSection}"]`);
+
+      if (activeStep) {
+        const containerWidth = container.offsetWidth;
+        const stepPosition = (activeStep as HTMLElement).offsetLeft;
+        const stepWidth = (activeStep as HTMLElement).offsetWidth;
+
+        container.scrollTo({
+          left: stepPosition - (containerWidth / 2) + (stepWidth / 2),
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [currentSection]);
 
   const validateCurrentSection = () => {
     const newErrors: Record<string, string> = {};
@@ -146,7 +167,7 @@ const EstablishmentRegistration: React.FC = () => {
       contactPerson: formData.ownerName,
       mobileNumber: Number(formData.mobileNumber),
       emailId: formData.emailAddress,
-      password: "123456", // or however you're handling password
+      password: "Password@123", // or however you're handling password
       doorNumber: formData.doorNumber,
       street: formData.street,
       stateId: 1,
@@ -175,11 +196,18 @@ const EstablishmentRegistration: React.FC = () => {
     try {
       const data = await api("/establishment/register", "POST", payload);
       console.log("Submitted successfully:", data);
+      toast.success("Registration successful!", {
+        duration: 4000,
+        position: "top-center",
+      });
       // alert("Registration successful!");
       navigate("/");
     } catch (error) {
       console.error("Submission failed:", error);
-      alert("Something went wrong!");
+      toast.error("Something went wrong!", {
+        duration: 4000,
+        position: "top-center",
+      });
     }
   };
 
@@ -645,6 +673,7 @@ const EstablishmentRegistration: React.FC = () => {
 
   return (
     <div className="min-h-screen py-8">
+      <Toaster position="top-center" />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
           <div className="bg-gradient-to-r from-orange-600 to-orange-700 px-6 py-4">
@@ -657,12 +686,12 @@ const EstablishmentRegistration: React.FC = () => {
           </div>
 
           {/* Progress Indicator */}
-          <div className="bg-gray-50 px-6 py-4">
-            <div className="flex items-center justify-between">
+          <div ref={progressRef} className="bg-gray-50 px-6 py-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <div className="flex items-center justify-center min-w-max space-x-4 md:space-x-8">
               {sections.map((section, index) => (
-                <div key={section.id} className="flex items-center">
+                <div key={section.id} data-step={section.id} className={`flex flex-col items-center ${currentSection >= section.id ? 'text-orange-600' : 'text-gray-500'}`}>
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${currentSection >= section.id
+                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${currentSection >= section.id
                         ? "bg-orange-600 text-white"
                         : "bg-gray-200 text-gray-600"
                       }`}
@@ -670,18 +699,16 @@ const EstablishmentRegistration: React.FC = () => {
                     {section.id}
                   </div>
                   <span
-                    className={`ml-2 text-sm ${currentSection >= section.id
-                        ? "text-orange-600 font-medium"
-                        : "text-gray-500"
+                    className={`mt-2 text-xs font-medium whitespace-nowrap ${currentSection >= section.id ? "text-orange-600" : "text-gray-500"
                       }`}
                   >
                     {section.title}
                   </span>
-                  {index < sections.length - 1 && (
+                  {index < sections.length  && (
                     <div
-                      className={`w-12 h-0.5 mx-4 ${currentSection > section.id
-                          ? "bg-orange-600"
-                          : "bg-gray-300"
+                      className={`hidden md:block w-12 h-0.5 mx-4 ${currentSection >= section.id
+                        ? "bg-orange-600"
+                        : "bg-gray-300"
                         }`}
                     />
                   )}

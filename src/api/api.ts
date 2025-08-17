@@ -206,6 +206,12 @@ export const fetchWorkerDetailsByEstablishment = (establishmentId: number) => {
   ).then((res) => res.data);
 };
 
+export const fetchWorkerDetails = () => {
+  return api<WorkerDetailsResponse>(
+    `/establishment/workerdetails`,
+    "GET"
+  ).then((res) => res.data);
+};
 
 // types.ts
 export interface DepartmentCardDetailsData {

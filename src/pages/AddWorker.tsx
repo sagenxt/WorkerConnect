@@ -127,6 +127,12 @@ const AddWorkerModal: React.FC<AddWorkerModalProps> = ({
     }
   };
 
+  const formatAadhaar = (aadhaar: string) => {
+  if (!aadhaar) return '';
+  const digits = aadhaar.replace(/\D/g, '');
+  return `${digits.slice(0, 4)}-${digits.slice(4, 8)}-${digits.slice(8, 12)}`;
+};
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative">
@@ -137,7 +143,7 @@ const AddWorkerModal: React.FC<AddWorkerModalProps> = ({
             <Autocomplete
               options={options}
               getOptionLabel={(option) =>
-                `${option.name} (${option.aadhaar})`
+                `${option.name} (${formatAadhaar(option.aadhaar)})`
               }
               isOptionEqualToValue={(opt, val) => opt.id === val.id}
               value={selectedWorker}

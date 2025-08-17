@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import LocationCheckIn from '../components/LocationCheckIn';
 import LastLoggedIn from './LastloggedIn';
 import { checkInOrOut, CheckInOutPayload } from '../api/api';
+import { toast, Toaster } from "react-hot-toast";
 
 interface AttendanceRecord {
   id: string;
@@ -152,10 +153,17 @@ const WorkerDashboard: React.FC = () => {
       };
       setAttendanceRecords((prev) => [newRecord, ...prev]);
 
-      alert(t("worker.checkInSuccess"));
+      toast.success("worker.checkInSuccess", {
+        duration: 4000,
+        position: "top-center",
+      });
+      // alert(t("worker.checkInSuccess"));
     } catch (error) {
       console.error("Check-in failed:", error);
-      alert(t("worker.checkInError"));
+      toast.error("worker.checkInError", {
+        duration: 4000,
+        position: "top-center",
+      });
     }
   };
 
@@ -193,10 +201,16 @@ const WorkerDashboard: React.FC = () => {
         )
       );
 
-      alert(t("worker.checkOutSuccess"));
+      toast.success("worker.checkOutSuccess", {
+        duration: 4000,
+        position: "top-center",
+      });
     } catch (error) {
       console.error("Check-out failed:", error);
-      alert(t("worker.checkOutError"));
+      toast.error("worker.checkOutError", {
+        duration: 4000,
+        position: "top-center",
+      });
     }
   };
 
@@ -274,9 +288,9 @@ const WorkerDashboard: React.FC = () => {
             {!isCheckedIn ? (
               <button
                 onClick={handleCheckIn}
-            //     disabled={
-            //       isProcessing 
-            // }
+                //     disabled={
+                //       isProcessing 
+                // }
                 // className={`w-full btn-mobile font-semibold ${workLocation
                 //     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 //     : 'bg-green-600 text-white hover:bg-green-700'
@@ -317,91 +331,91 @@ const WorkerDashboard: React.FC = () => {
 
 
           </div>
+        </div>
+
+
+        {/* Recent Attendance */}
+        <div className="card-mobile">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">
+              {t('worker.recentAttendance')}
+            </h3>
+            <Calendar className="h-5 w-5 text-gray-500" />
           </div>
 
-
-          {/* Recent Attendance */}
-          <div className="card-mobile">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                {t('worker.recentAttendance')}
-              </h3>
-              <Calendar className="h-5 w-5 text-gray-500" />
-            </div>
-
-            <div className="space-y-3">
-              {attendanceRecords.slice(0, 5).map((record) => (
-                <div key={record.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-3 h-3 rounded-full ${record.status === 'present' ? 'bg-green-500' :
-                      record.status === 'partial' ? 'bg-yellow-500' :
-                        'bg-red-500'
-                      }`}></div>
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        {record.date.toLocaleDateString()}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {record.status === 'present' ? t('department.present') :
-                          record.status === 'partial' ? t('worker.partial') :
-                            t('department.absent')}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right text-sm text-gray-600">
-                    {record.checkInTime && (
-                      <div>In: {record.checkInTime.toLocaleTimeString('en-US', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}</div>
-                    )}
-                    {record.checkOutTime && (
-                      <div>Out: {record.checkOutTime.toLocaleTimeString('en-US', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}</div>
-                    )}
+          <div className="space-y-3">
+            {attendanceRecords.slice(0, 5).map((record) => (
+              <div key={record.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-3 h-3 rounded-full ${record.status === 'present' ? 'bg-green-500' :
+                    record.status === 'partial' ? 'bg-yellow-500' :
+                      'bg-red-500'
+                    }`}></div>
+                  <div>
+                    <p className="font-medium text-gray-900">
+                      {record.date.toLocaleDateString()}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {record.status === 'present' ? t('department.present') :
+                        record.status === 'partial' ? t('worker.partial') :
+                          t('department.absent')}
+                    </p>
                   </div>
                 </div>
-              ))}
+                <div className="text-right text-sm text-gray-600">
+                  {record.checkInTime && (
+                    <div>In: {record.checkInTime.toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}</div>
+                  )}
+                  {record.checkOutTime && (
+                    <div>Out: {record.checkOutTime.toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}</div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid md:grid-cols-2 gap-4 mt-8">
+          <div className="card-mobile">
+            <div className="flex items-center space-x-3 mb-3">
+              <Bell className="h-5 w-5 text-blue-600" />
+              <h3 className="font-semibold text-gray-900">{t('worker.notifications')}</h3>
+            </div>
+            <div className="space-y-2 text-sm text-gray-600">
+              <p>• Monthly attendance report available</p>
+              <p>• Safety training scheduled for next week</p>
+              <p>• Wage payment processed</p>
             </div>
           </div>
 
-          {/* Quick Actions */}
-          <div className="grid md:grid-cols-2 gap-4 mt-8">
-            <div className="card-mobile">
-              <div className="flex items-center space-x-3 mb-3">
-                <Bell className="h-5 w-5 text-blue-600" />
-                <h3 className="font-semibold text-gray-900">{t('worker.notifications')}</h3>
-              </div>
-              <div className="space-y-2 text-sm text-gray-600">
-                <p>• Monthly attendance report available</p>
-                <p>• Safety training scheduled for next week</p>
-                <p>• Wage payment processed</p>
-              </div>
+          <div className="card-mobile">
+            <div className="flex items-center space-x-3 mb-3">
+              <Settings className="h-5 w-5 text-blue-600" />
+              <h3 className="font-semibold text-gray-900">{t('worker.quickActions')}</h3>
             </div>
-
-            <div className="card-mobile">
-              <div className="flex items-center space-x-3 mb-3">
-                <Settings className="h-5 w-5 text-blue-600" />
-                <h3 className="font-semibold text-gray-900">{t('worker.quickActions')}</h3>
-              </div>
-              <div className="space-y-2">
-                <button className="w-full text-left text-sm text-blue-600 hover:text-blue-700">
-                  {t('worker.viewProfile')}
-                </button>
-                <button className="w-full text-left text-sm text-blue-600 hover:text-blue-700">
-                  {t('worker.attendanceHistory')}
-                </button>
-                <button className="w-full text-left text-sm text-blue-600 hover:text-blue-700">
-                  {t('worker.updateDocuments')}
-                </button>
-              </div>
+            <div className="space-y-2">
+              <button className="w-full text-left text-sm text-blue-600 hover:text-blue-700">
+                {t('worker.viewProfile')}
+              </button>
+              <button className="w-full text-left text-sm text-blue-600 hover:text-blue-700">
+                {t('worker.attendanceHistory')}
+              </button>
+              <button className="w-full text-left text-sm text-blue-600 hover:text-blue-700">
+                {t('worker.updateDocuments')}
+              </button>
             </div>
           </div>
         </div>
       </div>
-      );
+    </div>
+  );
 };
 
-      export default WorkerDashboard;
+export default WorkerDashboard;

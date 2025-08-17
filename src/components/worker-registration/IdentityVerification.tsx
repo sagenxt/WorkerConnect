@@ -46,7 +46,7 @@ const IdentityVerification: React.FC<IdentityVerificationProps> = ({
       });
       return;
     }
-
+    setFormData({ ...formData, otp: '' });
     setErrors({});
     setOtpSent(true);
     // Simulate OTP generation
