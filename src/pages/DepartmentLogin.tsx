@@ -15,9 +15,9 @@ const DepartmentLogin: React.FC = () => {
     const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
-    username: '',
+    // username: '',
     password: '',
-    role: '',
+    // role: '',
     emailId: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -44,9 +44,9 @@ const DepartmentLogin: React.FC = () => {
       newErrors.password = t('forms.validation.required');
     }
 
-    if (!formData.role) {
-      newErrors.role = t('forms.validation.required');
-    }
+    // if (!formData.role) {
+    //   newErrors.role = t('forms.validation.required');
+    // }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -124,7 +124,7 @@ const DepartmentLogin: React.FC = () => {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
             <div className="space-y-4">
-              <FormSelect
+              {/* <FormSelect
                 label={t('department.role')}
                 value={formData.role}
                 onChange={(value) => setFormData(prev => ({ ...prev, role: value }))}
@@ -132,7 +132,7 @@ const DepartmentLogin: React.FC = () => {
                 placeholder={t('forms.placeholders.selectOption')}
                 required
                 error={errors.role}
-              />
+              /> */}
 
               <div className="relative">
                 {/* <User className="absolute left-3 top-10 h-5 w-5 text-gray-400" /> */}

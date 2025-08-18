@@ -51,9 +51,9 @@ const Header: React.FC = () => {
 
             {user && (
               <>
-                <span className="hidden md:block text-sm text-gray-600">
+                {/* <span className="hidden md:block text-sm text-gray-600">
                   {t('common.welcome')}, {user.name}
-                </span>
+                </span> */}
                 <button
                   onClick={handleLogout}
                   className="flex items-center space-x-1 px-2 md:px-3 py-2 rounded-md text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors touch-manipulation"

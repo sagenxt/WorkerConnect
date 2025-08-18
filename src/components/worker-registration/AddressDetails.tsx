@@ -6,6 +6,7 @@ import FormSelect from "../FormSelect";
 import { DISTRICTS } from "../../utils/constants";
 import {
   fetchCitiesByDistrictId,
+  fetchDistrictsByStateId,
   fetchVillagesByCityId,
 } from "../../api/location";
 
@@ -28,6 +29,8 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
 }) => {
   const { t } = useLanguage();
   const [errors, setErrors] = useState<Record<string, string>>({});
+const [districts, setDistricts] = useState<{ value: string; label: string }[]>([]);
+const [selectedStateId, setSelectedStateId] = useState<number | null>(1);
 
 
   type AddressKey = "presentAddress" | "permanentAddress";
@@ -55,46 +58,107 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
     permanentAddress: "",
   });
 
-  const districtOptions = DISTRICTS.map((d) => ({
-    value: d.name.toLowerCase().replace(/\s+/g, "_"),
-    label: d.name,
+  const districtOptions = districts.map((d) => ({
+    value: d.value,
+    label: d.label,
   }));
 
+// useEffect(() => {
+//   if (!selectedStateId) return;
+
+//   fetchDistrictsByStateId(selectedStateId)
+//     .then(setDistricts)
+//     .catch((err) => {
+//       console.error("Failed to fetch districts:", err);
+//       setDistricts([]);
+//     });
+// }, []);
+
+useEffect(() => {
+  const fetchDistricts = async () => {
+    try {
+      const districtsData = await fetchDistrictsByStateId(1);
+      const mappedDistricts = districtsData.map((d: any) => ({
+        value: String(d.id),
+        label: d.name,
+        code: d.code,
+        id: String(d.id),
+        name: d.name,
+      }));
+      setDistricts(mappedDistricts);
+    } catch (err) {
+      setDistricts([]);
+      console.error("Failed to fetch districts:", err);
+    }
+  };
+  fetchDistricts();
+}, []);
 
 
-  useEffect(() => {
-    const fetchMandals = async (type: AddressKey, districtSlug: string) => {
-      const selected = DISTRICTS.find(
-        (d) => d.name.toLowerCase().replace(/\s+/g, "_") === districtSlug
-      );
-      const districtId = selected?.id;
-      if (!districtId) return;
+  // useEffect(() => {
+  //   const fetchMandals = async (type: AddressKey, districtSlug: string) => {
+  //     const selected = DISTRICTS.find(
+  //       (d) => d.name.toLowerCase().replace(/\s+/g, "_") === districtSlug
+  //     );
+  //     const districtId = selected?.id;
+  //     if (!districtId) return;
 
-      try {
-        const options = await fetchCitiesByDistrictId(districtId);
-        setMandalOptions((prev) => ({ ...prev, [type]: options }));
+  //     try {
+  //       const options = await fetchCitiesByDistrictId(districtId);
+  //       setMandalOptions((prev) => ({ ...prev, [type]: options }));
 
-        setFormData((prev: any) => ({
-          ...prev,
-          [type]: {
-            ...prev[type],
-            mandal: "",
-            village: "",
-          },
-        }));
-      } catch (error) {
-        console.error(`Error fetching mandals for ${type}:`, error);
-      }
-    };
+  //       setFormData((prev: any) => ({
+  //         ...prev,
+  //         [type]: {
+  //           ...prev[type],
+  //           mandal: "",
+  //           village: "",
+  //         },
+  //       }));
+  //     } catch (error) {
+  //       console.error(`Error fetching mandals for ${type}:`, error);
+  //     }
+  //   };
 
-    (["presentAddress", "permanentAddress"] as AddressKey[]).forEach((type) => {
-      const district = formData[type]?.district;
-      if (district && district !== prevDistrict.current[type]) {
-        fetchMandals(type, district);
-        prevDistrict.current[type] = district;
-      }
-    });
-  }, [formData.presentAddress?.district, formData.permanentAddress?.district]);
+  //   (["presentAddress", "permanentAddress"] as AddressKey[]).forEach((type) => {
+  //     const district = formData[type]?.district;
+  //     if (district && district !== prevDistrict.current[type]) {
+  //       fetchMandals(type, district);
+  //       prevDistrict.current[type] = district;
+  //     }
+  //   });
+  // }, [formData.presentAddress?.district, formData.permanentAddress?.district]);
+
+//   useEffect(() => {
+//   const fetchMandals = async (type: AddressKey, districtId: string) => {
+//   if (!districtId) return;
+
+//   try {
+//     const options = await fetchCitiesByDistrictId(districtId);
+//     setMandalOptions((prev) => ({ ...prev, [type]: options }));
+
+//     setFormData((prev: any) => ({
+//       ...prev,
+//       [type]: {
+//         ...prev[type],
+//         mandal: "",
+//         village: "",
+//       },
+//     }));
+//   } catch (error) {
+//     console.error(`Error fetching mandals for ${type}:`, error);
+//   }
+// };
+
+//   (["presentAddress", "permanentAddress"] as AddressKey[]).forEach((type) => {
+//     const district = formData[type]?.district; // this will be districtId (string)
+//     if (district && district !== prevDistrict.current[type]) {
+//       fetchMandals(type, district);
+//       prevDistrict.current[type] = district;
+//     }
+//   });
+// }, [formData.presentAddress?.district, formData.permanentAddress?.district]);
+
 
 
   useEffect(() => {
@@ -125,6 +189,46 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
       }
     });
   }, [formData.presentAddress?.mandal, formData.permanentAddress?.mandal]);
+
+//   useEffect(() => {
+//   const fetchVillages = async (type: AddressKey, mandalId: string) => {
+//     if (!mandalId) return;
+
+//     try {
+//       const villages = await fetchVillagesByCityId(mandalId);
+
+//       const mapped = villages.map((v: any) => ({
+//         value: String(v.villageId),
+//         label: v.villageName,
+//         code: v.villageCode,
+//         id: String(v.villageId),
+//         name: v.villageName,
+//       }));
+
+//       setVillageOptions((prev) => ({ ...prev, [type]: mapped }));
+
+//       // reset village whenever mandal changes
+//       setFormData((prev: any) => ({
+//         ...prev,
+//         [type]: {
+//           ...prev[type],
+//           village: "",
+//         },
+//       }));
+//     } catch (error) {
+//       console.error(`Error fetching villages for ${type}:`, error);
+//     }
+//   };
+
+//   (["presentAddress", "permanentAddress"] as AddressKey[]).forEach((type) => {
+//     const mandal = formData[type]?.mandal;
+//     if (mandal && mandal !== prevMandal.current[type]) {
+//       fetchVillages(type, mandal);
+//       prevMandal.current[type] = mandal;
+//     }
+//   });
+// }, [formData.presentAddress?.mandal, formData.permanentAddress?.mandal]);
+
 
 
   const handleSameAsPresent = (checked: boolean) => {

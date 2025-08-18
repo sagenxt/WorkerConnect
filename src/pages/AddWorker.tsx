@@ -107,7 +107,7 @@ const AddWorkerModal: React.FC<AddWorkerModalProps> = ({
         aadhaarCardNumber: selectedWorker.aadhaar,
         workingFromDate: formData.fromDate,
         workingToDate: formData.toDate,
-        status: "A",           // or get from a form input or constant
+        status: "W",           // or get from a form input or constant
       };
 
       await persistWorkerDetails(payload);
