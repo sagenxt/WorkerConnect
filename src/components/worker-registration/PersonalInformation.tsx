@@ -65,28 +65,28 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 
   const { min: minDate, max: maxDate } = getDateLimits();
 
-  const handleAddDependent = () => {
-    const newDependent = {
-      id: Date.now(),
-      name: "",
-      dateOfBirth: "",
-      relationship: "",
-      isNominee: "",
-      benefitPercentage: "",
-    };
+  // const handleAddDependent = () => {
+  //   const newDependent = {
+  //     id: Date.now(),
+  //     name: "",
+  //     dateOfBirth: "",
+  //     relationship: "",
+  //     isNominee: "",
+  //     benefitPercentage: "",
+  //   };
 
-    setFormData({
-      ...formData,
-      dependents: [...(formData.dependents || []), newDependent],
-    });
-  };
+  //   setFormData({
+  //     ...formData,
+  //     dependents: [...(formData.dependents || []), newDependent],
+  //   });
+  // };
 
-  const handleRemoveDependent = (id: number) => {
-    setFormData({
-      ...formData,
-      dependents: formData.dependents.filter((dep: any) => dep.id !== id),
-    });
-  };
+  // const handleRemoveDependent = (id: number) => {
+  //   setFormData({
+  //     ...formData,
+  //     dependents: formData.dependents.filter((dep: any) => dep.id !== id),
+  //   });
+  // };
 
   const handleDependentChange = (id: number, field: string, value: string) => {
     setFormData({
@@ -269,7 +269,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
       </div>
 
       {/* Dependents Section */}
-      <div className="bg-blue-50 p-6 rounded-xl">
+      {/* <div className="bg-blue-50 p-6 rounded-xl">
         <div className="flex flex-col md:flex-row md:mx-1 items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             {t("worker.dependents")}
@@ -384,7 +384,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
             members.
           </p>
         )}
-      </div>
+      </div> */}
 
       <div className="flex justify-between">
         <button

@@ -14,6 +14,7 @@ import {
 } from "../utils/constants";
 import {
   fetchCitiesByDistrictId,
+  fetchDistrictsByStateId,
   fetchVillagesByCityId,
 } from "../api/location";
 import { api, fetchEstablishmentCategories, fetchNatureOfWorkByCategory } from "../api/api";
@@ -61,7 +62,8 @@ const EstablishmentRegistration: React.FC = () => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [establishmentCategoryOptions, setEstablishmentCategoryOptions] = useState<OptionType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [establishmentCategoryOptions, setEstablishmentCategoryOptions] = useState<CategoryOptionType[]>([]);
   const [natureOfWorkOptions, setNatureOfWorkOptions] = useState<OptionType[]>([]);
   const progressRef = useRef<HTMLDivElement>(null);
 
@@ -85,11 +87,21 @@ const EstablishmentRegistration: React.FC = () => {
   type OptionType = {
     value: string;
     label: string;
+    code: string;
+    id: string;
+    name: string;
   };
 
+  type CategoryOptionType = {
+    value: string;
+    label: string;
+  }
   const [mandalOptions, setMandalOptions] = useState<OptionType[]>([]);
   const [villageOptions, setVillageOptions] = useState<OptionType[]>([]);
-
+const [districts, setDistricts] = useState<{value: string, label: string, code: string, id: string, name: string}[]>([]);
+const [cities, setCities] = useState<{value: string, label: string, code: string, id: string, name: string}[]>([]);
+const [selectedDistrict, setSelectedDistrict] = useState<{id: string, code: string} | null>(null);
+const [selectedCity, setSelectedCity] = useState<{id: string, code: string} | null>(null);
 
   useEffect(() => {
     if (progressRef.current) {
@@ -157,10 +169,16 @@ const EstablishmentRegistration: React.FC = () => {
   };
 
   const submitEstablishment = async () => {
-    const selectedDistrict = DISTRICTS.find(
-      (d) => d.name.toLowerCase().replace(/\s+/g, "_") === formData.district
-    );
+    // const selectedDistrict = districts.find(
+    //   (d) => d.name.toLowerCase().replace(/\s+/g, "_") === formData.district
+    // );
+    const selectedDistrict = districts.find(d => d.value === formData.district);
+  const selectedCity = mandalOptions.find(c => c.value === formData.mandal);
+  const selectedVillage = villageOptions.find(v => v.value === formData.village);
+  const selectedCategory = establishmentCategoryOptions.find(c => c.value === formData.establishmentCategory);
+    const selectedNatureOfWork = natureOfWorkOptions.find(n => n.value === formData.natureOfWork);
 
+    console.log(selectedDistrict, "selectedDistrict");
     const payload = {
       establishmentId: 0,
       establishmentName: formData.establishmentName,
@@ -172,16 +190,28 @@ const EstablishmentRegistration: React.FC = () => {
       street: formData.street,
       stateId: 1,
       stateCode: "AP",
-      districtId: selectedDistrict?.id || 0,
-      districtCode: selectedDistrict?.name || "",
-      cityId: Number(formData.mandal),
-      cityCode: "", // optional if not available
-      villageOrAreaId: Number(formData.village),
+
+      districtId: Number(selectedDistrict?.id) || 0,
+      districtCode: selectedDistrict?.code || "",
+      districtName: selectedDistrict?.name || "",
+
+      // cityId: Number(formData.mandal),
+
+      cityId: Number(selectedCity?.id) || 0,
+      cityCode: selectedCity?.code || "",
+      cityName: selectedCity?.name || "",
+
+      // villageOrAreaId: Number(formData.village),
+
+      villageOrAreaId: Number(selectedVillage?.id) || 0,
+      villageOrAreaCode: selectedVillage?.code || "",
+      villageOrAreaName: selectedVillage?.name || "",
+
       pincode: Number(formData.pincode),
       isPlanApprovalId: formData.hasPlanApproval === "yes" ? "Y" : "N",
       planApprovalId: formData.planApprovalId || "",
-      categoryId: 1, // static or mapped
-      workNatureId: 1, // static or mapped
+      categoryId: Number(selectedCategory?.value) || 0, // static or mapped
+      workNatureId: Number(selectedNatureOfWork?.value) || 0, // static or mapped
       commencementDate: formData.commencementDate,
       completionDate: formData.completionDate || formData.commencementDate,
       constructionEstimatedCost: Number(formData.estimatedCost || 0),
@@ -202,6 +232,7 @@ const EstablishmentRegistration: React.FC = () => {
       });
       // alert("Registration successful!");
       navigate("/");
+      console.log(payload, "payload");
     } catch (error) {
       console.error("Submission failed:", error);
       toast.error("Something went wrong!", {
@@ -220,10 +251,29 @@ const EstablishmentRegistration: React.FC = () => {
   };
 
   useEffect(() => {
+   const fetchDistricts = async () => {
+     setLoading(true);
+     const districtsval = await fetchDistrictsByStateId(1);
+     // Ensure each district has a 'code' property
+     const districtsWithCode = districtsval.map((d: any) => ({
+       value: d.value,
+       label: d.label,
+       code: d.code ?? "",
+       id: d.id,
+       name: d.name,
+     }));
+     console.log(districtsWithCode, "districtsWithCode");
+     setDistricts(districtsWithCode);
+     setLoading(false);
+   };
+   fetchDistricts();
+}, []);
+
+  useEffect(() => {
     if (!formData.district) return;
 
-    const selectedDistrict = DISTRICTS.find(
-      (d) => d.name.toLowerCase().replace(/\s+/g, "_") === formData.district
+    const selectedDistrict = districts.find(
+      (d) => d.value.toLowerCase().replace(/\s+/g, "_") === formData.district
     );
 
     const districtId = selectedDistrict?.id;
@@ -233,7 +283,14 @@ const EstablishmentRegistration: React.FC = () => {
       try {
         const options = await fetchCitiesByDistrictId(districtId);
         console.log(options, "options");
-        setMandalOptions(options);
+        const mappedOptions = options.map((o: any) => ({
+          value: o.value,
+          label: o.label,
+          code: o.code ?? "",
+          id: o.id ?? "",
+          name: o.name ?? o.label ?? "",
+        }));
+        setMandalOptions(mappedOptions);
 
         setFormData((prev) => ({
           ...prev,
@@ -254,7 +311,14 @@ const EstablishmentRegistration: React.FC = () => {
     const loadVillages = async () => {
       try {
         const options = await fetchVillagesByCityId(formData.mandal);
-        setVillageOptions(options);
+        const mappedOptions = options.map((v: any) => ({
+          value: v.value,
+          label: v.label,
+          code: v.code ?? "",
+          id: v.id ?? "",
+          name: v.name ?? v.label ?? "",
+        }));
+        setVillageOptions(mappedOptions);
         setFormData((prev) => ({ ...prev, village: "" }));
       } catch (err) {
         console.error("Failed to fetch villages:", err);
@@ -389,7 +453,7 @@ const EstablishmentRegistration: React.FC = () => {
                 onChange={(value) =>
                   setFormData({ ...formData, district: value })
                 }
-                options={districtOptions}
+                options={districts}
                 required
                 error={errors.district}
               />
@@ -749,6 +813,13 @@ const EstablishmentRegistration: React.FC = () => {
           </div>
         </div>
       </div>
+      
+        {loading && (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="text-gray-600 mt-2">Loading Aadhaar details...</p>
+          </div>
+        )}
     </div>
   );
 };
