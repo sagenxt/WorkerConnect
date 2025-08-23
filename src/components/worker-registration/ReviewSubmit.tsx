@@ -67,9 +67,8 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 
         {/* Personal Information */}
         {renderSection("Personal Information", {
-          "Full Name": `${formData.firstName} ${formData.middleName || ""} ${
-            formData.lastName
-          }`.trim(),
+          "Full Name": `${formData.firstName} ${formData.middleName || ""} ${formData.lastName
+            }`.trim(),
           Gender: getGenderLabel(formData.gender),
           "Date of Birth": formData.dateOfBirth,
           Age: formData.age,
@@ -91,10 +90,10 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
         {renderSection("Present Address", {
           "Door Number": formData.presentAddress?.doorNumber,
           Street: formData.presentAddress?.street,
-          District: getDistrictLabel(formData.presentAddress?.district),
-          Mandal: formData.presentAddress?.mandal,
-          Village: formData.presentAddress?.village,
-          Pincode: formData.presentAddress?.pincode,
+          District: getDistrictLabel(formData.presentAddress?.district?.label || ""),
+          Mandal: formData.presentAddress?.mandal?.label || "",
+          Village: formData.presentAddress?.village?.label || "",
+          Pincode: formData.presentAddress?.pincode
         })}
 
         {/* Bank Details

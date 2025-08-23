@@ -12,7 +12,7 @@ const DepartmentLogin: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState("");
+  const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
     // username: '',
@@ -36,7 +36,7 @@ const DepartmentLogin: React.FC = () => {
     // if (!formData.username.trim()) {
     //   newErrors.username = t('forms.validation.required');
     // }
-     if (!formData.emailId.trim()) {
+    if (!formData.emailId.trim()) {
       newErrors.emailId = t('forms.validation.required');
     }
 
@@ -54,24 +54,24 @@ const DepartmentLogin: React.FC = () => {
 
   // const handleSubmit = async (e: React.FormEvent) => {
   //   e.preventDefault();
-    
+
   //   if (!validateForm()) return;
 
   //   setIsLoading(true);
-    
-    // Simulate API call
-//     setTimeout(() => {
-//       // Mock successful login
-//       const roleLabel = departmentRoles.find(r => r.value === formData.role)?.label || formData.role;
-//      login({
-//   departmentUserId: user.departmentUserId,
-//   type: "department",
-//   roleName: user.roleName,
-//   roleDescription: user.roleDescription,
-//   emailId: user.emailId,
-//   contactNumber: user.contactNumber,
-//   lastLoggedIn: user.lastLoggedIn,
-// });
+
+  // Simulate API call
+  //     setTimeout(() => {
+  //       // Mock successful login
+  //       const roleLabel = departmentRoles.find(r => r.value === formData.role)?.label || formData.role;
+  //      login({
+  //   departmentUserId: user.departmentUserId,
+  //   type: "department",
+  //   roleName: user.roleName,
+  //   roleDescription: user.roleDescription,
+  //   emailId: user.emailId,
+  //   contactNumber: user.contactNumber,
+  //   lastLoggedIn: user.lastLoggedIn,
+  // });
 
   // };
 
@@ -79,8 +79,8 @@ const DepartmentLogin: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-     e.preventDefault();
-    
+    e.preventDefault();
+
     if (!validateForm()) return;
 
     try {
@@ -146,17 +146,17 @@ const DepartmentLogin: React.FC = () => {
                   error={errors.username}
                   className="pl-10"
                 /> */}
-                 <FormInput
-                label={t("establishment.emailAddress")}
-                type="email"
-                value={formData.emailId}
-                onChange={(value) =>
-                  setFormData({ ...formData, emailId: value })
-                }
-                required
-                error={errors.emailId}
-                autoComplete='new-email'
-              />
+                <FormInput
+                  label={t("establishment.emailAddress")}
+                  type="email"
+                  value={formData.emailId}
+                  onChange={(value) =>
+                    setFormData({ ...formData, emailId: value })
+                  }
+                  required
+                  error={errors.emailId}
+                  autoComplete='new-email'
+                />
               </div>
 
               <div className="relative">

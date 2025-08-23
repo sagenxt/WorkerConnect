@@ -383,7 +383,7 @@ const WorkerDashboard: React.FC = () => {
 
         {/* Quick Actions */}
         <div className="grid md:grid-cols-2 gap-4 mt-8">
-          <div className="card-mobile">
+          {/* <div className="card-mobile">
             <div className="flex items-center space-x-3 mb-3">
               <Bell className="h-5 w-5 text-blue-600" />
               <h3 className="font-semibold text-gray-900">{t('worker.notifications')}</h3>
@@ -393,7 +393,7 @@ const WorkerDashboard: React.FC = () => {
               <p>• Safety training scheduled for next week</p>
               <p>• Wage payment processed</p>
             </div>
-          </div>
+          </div> */}
 
           <div className="card-mobile">
             <div className="flex items-center space-x-3 mb-3">
@@ -407,9 +407,9 @@ const WorkerDashboard: React.FC = () => {
               <button className="w-full text-left text-sm text-blue-600 hover:text-blue-700">
                 {t('worker.attendanceHistory')}
               </button>
-              <button className="w-full text-left text-sm text-blue-600 hover:text-blue-700">
+              {/* <button className="w-full text-left text-sm text-blue-600 hover:text-blue-700">
                 {t('worker.updateDocuments')}
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

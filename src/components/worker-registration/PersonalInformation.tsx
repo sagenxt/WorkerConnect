@@ -114,6 +114,9 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
       newErrors.lastName = lastNameError as string;
       // return;
     }
+    if (!formData.password?.trim()) {
+      newErrors.password = "Password is required";
+    }
 
     if (!formData.lastName?.trim()) {
       newErrors.lastName = "Last name is required";
@@ -263,6 +266,19 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
             required
             maxLength={10}
             error={errors.mobileNumber}
+            autoComplete="new-tel"
+          />
+
+          <FormInput
+            label={t("worker.password")}
+            type="password"
+            value={formData.password}
+            onChange={(value) =>
+              setFormData({ ...formData, password: value })
+            }
+            required
+            error={errors.password}
+            autoComplete="new-password"
           />
 
         </div>

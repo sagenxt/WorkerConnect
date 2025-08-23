@@ -66,7 +66,7 @@ export interface EstablishmentUser {
 }
 
 export const loginEstablishmentApi = async (payload: loginPayload) => {
-  const res : any = await api<EstablishmentUser>("/establishment/login", "POST", payload);
+  const res: any = await api<EstablishmentUser>("/establishment/login", "POST", payload);
   return res.data;
 };
 

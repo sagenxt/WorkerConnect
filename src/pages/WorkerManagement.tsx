@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Users, Search, Filter, Plus, Edit, Eye, Trash2, Download, MapPin, Clock } from 'lucide-react';
+import { Users, Search, Filter, Plus, Edit, Eye, Trash2, Download, MapPin, Clock, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import AddWorkerModal from './AddWorker';
 import { fetchWorkerDetailsByEstablishment } from '../api/api';
 import { useAuth } from '../contexts/AuthContext';
 import { exportToExcel } from '../utils/download-excel';
-
+import { useNavigate } from 'react-router-dom';
 interface Worker {
   id: string;
   name: string;
@@ -56,6 +56,7 @@ const WorkerManagement: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
   const hasFetchedRef = useRef(false);
+  const navigate = useNavigate();
 
   // Mock data
   useEffect(() => {
@@ -338,13 +339,16 @@ const WorkerManagement: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                Worker Management
-              </h1>
-              <p className="text-gray-600">
-                Manage and monitor all registered workers
-              </p>
+            <div className='flex items-center space-x-3 mb-6'>
+              <button onClick={() => navigate(-1)} className="p-2 rounded-full:bg-gray-100"><ArrowLeft className='h-6 w-6 text-gray-700' /></button>
+              <div >
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                  Worker Management
+                </h1>
+                <p className="text-gray-600">
+                  Manage and monitor all registered workers
+                </p>
+              </div>
             </div>
             <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" onClick={() => setIsModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
@@ -367,10 +371,10 @@ const WorkerManagement: React.FC = () => {
             <div className="text-2xl font-bold text-emerald-600">{stats.checkedIn}</div>
             <div className="text-sm text-gray-600">Checked In</div>
           </div>
-          <div className="card-mobile text-center">
+          {/* <div className="card-mobile text-center">
             <div className="text-2xl font-bold text-orange-600">{stats.pendingDocs}</div>
             <div className="text-sm text-gray-600">Pending Docs</div>
-          </div>
+          </div> */}
         </div>
 
         {/* Filters */}

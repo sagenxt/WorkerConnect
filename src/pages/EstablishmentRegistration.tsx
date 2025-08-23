@@ -98,10 +98,10 @@ const EstablishmentRegistration: React.FC = () => {
   }
   const [mandalOptions, setMandalOptions] = useState<OptionType[]>([]);
   const [villageOptions, setVillageOptions] = useState<OptionType[]>([]);
-const [districts, setDistricts] = useState<{value: string, label: string, code: string, id: string, name: string}[]>([]);
-const [cities, setCities] = useState<{value: string, label: string, code: string, id: string, name: string}[]>([]);
-const [selectedDistrict, setSelectedDistrict] = useState<{id: string, code: string} | null>(null);
-const [selectedCity, setSelectedCity] = useState<{id: string, code: string} | null>(null);
+  const [districts, setDistricts] = useState<{ value: string, label: string, code: string, id: string, name: string }[]>([]);
+  const [cities, setCities] = useState<{ value: string, label: string, code: string, id: string, name: string }[]>([]);
+  const [selectedDistrict, setSelectedDistrict] = useState<{ id: string, code: string } | null>(null);
+  const [selectedCity, setSelectedCity] = useState<{ id: string, code: string } | null>(null);
 
   useEffect(() => {
     if (progressRef.current) {
@@ -173,9 +173,9 @@ const [selectedCity, setSelectedCity] = useState<{id: string, code: string} | nu
     //   (d) => d.name.toLowerCase().replace(/\s+/g, "_") === formData.district
     // );
     const selectedDistrict = districts.find(d => d.value === formData.district);
-  const selectedCity = mandalOptions.find(c => c.value === formData.mandal);
-  const selectedVillage = villageOptions.find(v => v.value === formData.village);
-  const selectedCategory = establishmentCategoryOptions.find(c => c.value === formData.establishmentCategory);
+    const selectedCity = mandalOptions.find(c => c.value === formData.mandal);
+    const selectedVillage = villageOptions.find(v => v.value === formData.village);
+    const selectedCategory = establishmentCategoryOptions.find(c => c.value === formData.establishmentCategory);
     const selectedNatureOfWork = natureOfWorkOptions.find(n => n.value === formData.natureOfWork);
 
     console.log(selectedDistrict, "selectedDistrict");
@@ -251,23 +251,23 @@ const [selectedCity, setSelectedCity] = useState<{id: string, code: string} | nu
   };
 
   useEffect(() => {
-   const fetchDistricts = async () => {
-     setLoading(true);
-     const districtsval = await fetchDistrictsByStateId(1);
-     // Ensure each district has a 'code' property
-     const districtsWithCode = districtsval.map((d: any) => ({
-       value: d.value,
-       label: d.label,
-       code: d.code ?? "",
-       id: d.id,
-       name: d.name,
-     }));
-     console.log(districtsWithCode, "districtsWithCode");
-     setDistricts(districtsWithCode);
-     setLoading(false);
-   };
-   fetchDistricts();
-}, []);
+    const fetchDistricts = async () => {
+      setLoading(true);
+      const districtsval = await fetchDistrictsByStateId(1);
+      // Ensure each district has a 'code' property
+      const districtsWithCode = districtsval.map((d: any) => ({
+        value: d.value,
+        label: d.label,
+        code: d.code ?? "",
+        id: d.id,
+        name: d.name,
+      }));
+      console.log(districtsWithCode, "districtsWithCode");
+      setDistricts(districtsWithCode);
+      setLoading(false);
+    };
+    fetchDistricts();
+  }, []);
 
   useEffect(() => {
     if (!formData.district) return;
@@ -756,8 +756,8 @@ const [selectedCity, setSelectedCity] = useState<{id: string, code: string} | nu
                 <div key={section.id} data-step={section.id} className={`flex flex-col items-center ${currentSection >= section.id ? 'text-orange-600' : 'text-gray-500'}`}>
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${currentSection >= section.id
-                        ? "bg-orange-600 text-white"
-                        : "bg-gray-200 text-gray-600"
+                      ? "bg-orange-600 text-white"
+                      : "bg-gray-200 text-gray-600"
                       }`}
                   >
                     {section.id}
@@ -768,7 +768,7 @@ const [selectedCity, setSelectedCity] = useState<{id: string, code: string} | nu
                   >
                     {section.title}
                   </span>
-                  {index < sections.length  && (
+                  {index < sections.length && (
                     <div
                       className={`hidden md:block w-12 h-0.5 mx-4 ${currentSection >= section.id
                         ? "bg-orange-600"
@@ -813,13 +813,13 @@ const [selectedCity, setSelectedCity] = useState<{id: string, code: string} | nu
           </div>
         </div>
       </div>
-      
-        {loading && (
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="text-gray-600 mt-2">Loading Aadhaar details...</p>
-          </div>
-        )}
+
+      {loading && (
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="text-gray-600 mt-2">Loading Aadhaar details...</p>
+        </div>
+      )}
     </div>
   );
 };
