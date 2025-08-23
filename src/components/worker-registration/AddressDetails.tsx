@@ -58,10 +58,18 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
     permanentAddress: "",
   });
 
-  const districtOptions = districts.map((d) => ({
-    value: d.value,
-    label: d.label,
-  }));
+  // const districtOptions = districts.map((d) => ({
+  //   value: d.value,
+  //   label: d.label,
+  // }));
+  const districtOptions = districts.map((d: any) => ({
+  value: d.value,
+  label: d.label,
+  code: d.code,
+  id: d.id,
+  name: d.name,
+}));
+
 
   console.log(districts, 'formData in districts')
   console.log(mandalOptions, 'formData in mandalptions')
