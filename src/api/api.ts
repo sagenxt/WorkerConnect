@@ -134,7 +134,7 @@ interface WorkerUser {
 
 export const loginWorker = async (payload: loginPayload): Promise<WorkerUser> => {
   const res = await api<{ data: WorkerUser }>("/worker/login", "POST", payload);
-  return res.data; // only return `data` field
+  return res.data;
 };
 
 interface AadhaarCardDetail {

@@ -113,6 +113,11 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
         setMandalOptions((prev) => ({ ...prev, [type]: mapped }));
 
         setFormData((prev: any) => {
+
+          const current = prev[type]?.mandal;
+          if (current && mapped.some((m) => m.value === current.value)) {
+            return prev;
+          }
           if (prev.sameAsPresent && type === "permanentAddress") return prev;
           return {
             ...prev,
@@ -149,6 +154,10 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
         setVillageOptions((prev) => ({ ...prev, [type]: mapped }));
 
         setFormData((prev: any) => {
+          const current = prev[type]?.village;
+          if (current && mapped.some((m) => m.value === current.value)) {
+            return prev; 
+          }
           if (prev.sameAsPresent && type === "permanentAddress") return prev;
           return { ...prev, [type]: { ...prev[type], village: null } };
         });

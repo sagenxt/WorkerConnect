@@ -5,6 +5,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { mapEstablishmentToUser, useAuth } from "../contexts/AuthContext";
 import FormInput from "../components/FormInput";
 import { loginEstablishmentApi } from "../api/api";
+import toast, { Toaster } from "react-hot-toast";
 // import {  loginEstablishmentApi } from "../api/api";
 
 const EstablishmentLogin: React.FC = () => {
@@ -45,49 +46,54 @@ const EstablishmentLogin: React.FC = () => {
 
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!validateForm()) return;
+    if (!validateForm()) return;
 
-  setIsLoading(true);
+    setIsLoading(true);
 
-  try {
-    // const user = await loginEstablishmentApi({
-    //   mobileNumber: Number(formData.mobileNumber),
-    //   password: formData.password,
-    // });
+    try {
+      // const user = await loginEstablishmentApi({
+      //   mobileNumber: Number(formData.mobileNumber),
+      //   password: formData.password,
+      // });
 
-    // login({
-    //   id: user.establishmentId,
-    //   type: "establishment",
-    //   name: user.establishmentName,
-    //   mobileNumber: user.mobileNumber,
-    // });
+      // login({
+      //   id: user.establishmentId,
+      //   type: "establishment",
+      //   name: user.establishmentName,
+      //   mobileNumber: user.mobileNumber,
+      // });
 
-    const res = await loginEstablishmentApi({
-  mobileNumber: Number(formData.mobileNumber),
-  password: formData.password,
-});
+      const res = await loginEstablishmentApi({
+        mobileNumber: Number(formData.mobileNumber),
+        password: formData.password,
+      });
 
-// normalize response
-const userData = mapEstablishmentToUser(res);
-login(userData);
-
-navigate("/dashboard/establishment");
-
-
-    navigate("/dashboard/establishment");
-  } catch (error: any) {
-    setErrors({ general: error.message || "Something went wrong" });
-  } finally {
-    setIsLoading(false);
-  }
-};
+      // normalize response
+      const userData = mapEstablishmentToUser(res);
+      login(userData);
+      navigate("/dashboard/establishment");
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.error?.message ||
+        error?.message ||
+        "Login failed. Please try again.";
+      // setErrors({ general: error.message || "Something went wrong" });
+      toast.error(message, {
+        duration: 4000,
+        position: "top-center",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
 
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <Toaster position="top-center" />
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -104,7 +110,7 @@ navigate("/dashboard/establishment");
             <div className="space-y-4">
               <div className="relative">
                 <Mail className="absolute left-3 top-10 h-5 w-5 text-gray-400" />
-                
+
                 <FormInput
                   label={t("auth.mobileNumber")}
                   type="tel"
@@ -117,7 +123,7 @@ navigate("/dashboard/establishment");
                   required
                   error={errors.mobileNumber}
                   className="pl-10"
-                   autoComplete="new-tel"
+                  autoComplete="new-tel"
                 />
               </div>
 

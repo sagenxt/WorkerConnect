@@ -113,11 +113,11 @@ const DepartmentDashboard: React.FC = () => {
         <div>
           <p className="text-gray-600 text-sm font-medium">{title}</p>
           <p className={`text-2xl md:text-3xl font-bold ${color}`}>{value.toLocaleString()}</p>
-          {trend && (
+          {/* {trend && (
             <p className="text-sm text-gray-500 mt-1">
               {trend > 0 ? '+' : ''}{trend}% from last period
             </p>
-          )}
+          )} */}
         </div>
         <div className={`p-3 rounded-full ${color.replace('text-', 'bg-').replace('-600', '-100')}`}>
           <Icon className={`h-5 w-5 md:h-6 md:w-6 ${color}`} />
