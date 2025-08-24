@@ -63,6 +63,7 @@ const WorkerLogin: React.FC = () => {
   // };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log('handleSubmit called',process.env.NODE_ENV);
     e.preventDefault();
 
     if (!validateForm()) return;
