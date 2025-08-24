@@ -1,15 +1,7 @@
-import { DISTRICTS } from '../utils/constants';
 
 
 export function formatWorkerPayload(formData: any) {
-  const preDistrict = DISTRICTS.find(
-    (d) => d.name.toLowerCase().replace(/\s+/g, "_") === formData.presentAddress?.district
-  );
-
-  const perDistrict = DISTRICTS.find(
-    (d) => d.name.toLowerCase().replace(/\s+/g, "_") === formData.permanentAddress?.district
-  );
-
+  
   return {
     workerId: 0,
     // aadhaarNumber: formData.aadhaarNumber,

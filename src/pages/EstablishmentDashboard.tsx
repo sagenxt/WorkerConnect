@@ -44,11 +44,11 @@ console.log(cardDetails, 'cardDetails');
         <div>
           <p className="text-gray-600 text-sm font-medium">{title}</p>
           <p className={`text-2xl md:text-3xl font-bold ${color}`}>{value}</p>
-          {trend && (
+          {/* {trend && (
             <p className="text-sm text-gray-500 mt-1">
               {trend > 0 ? '+' : ''}{trend}% from last week
             </p>
-          )}
+          )} */}
         </div>
         <div className={`p-3 rounded-full ${color.replace('text-', 'bg-').replace('-600', '-100')} group-hover:scale-110 transition-transform`}>
           <Icon className={`h-5 w-5 md:h-6 md:w-6 ${color}`} />

@@ -7,6 +7,7 @@ import FormInput from '../components/FormInput';
 import BiometricAuth from '../components/BiometricAuth';
 import { Capacitor } from '@capacitor/core';
 import { loginWorker } from '../api/api';
+import toast, { Toaster } from "react-hot-toast";
 
 const WorkerLogin: React.FC = () => {
   const { t } = useLanguage();
@@ -90,14 +91,21 @@ const WorkerLogin: React.FC = () => {
         password: formData.password,
 
       });
+
       const userData = mapWorkerToUser(res);
       login(userData);
       navigate("/dashboard/worker");
-
-
-      navigate("/dashboard/worker");
     } catch (error: any) {
-      setErrors({ general: error.message || "Something went wrong" });
+      // setErrors({ general: error.message || "Something went wrong" });
+      const message =
+        error?.response?.data?.error?.message ||
+        error?.message ||
+        "Login failed. Please try again.";
+      setErrors({ general: message });
+      toast.error(message, {
+        duration: 4000,
+        position: "top-center",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -168,6 +176,7 @@ const WorkerLogin: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <Toaster position="top-center" />
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
