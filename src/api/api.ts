@@ -137,6 +137,13 @@ interface WorkerUser {
   mobileNumber: number;
   emailId?: string;
   lastLoggedIn: string;
+
+  establishmentId?: number;
+  estmtWorkerId?: number;
+  workLocation?: string;
+  status?: string;
+
+  type?: "worker";
 }
 
 export const loginWorker = async (payload: loginPayload): Promise<WorkerUser> => {

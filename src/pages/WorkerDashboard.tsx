@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Clock, MapPin, Calendar, Bell, Settings, Loader, CheckCircle, XCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth, WorkerUser } from '../contexts/AuthContext';
 import LocationCheckIn from '../components/LocationCheckIn';
 import LastLoggedIn from './LastloggedIn';
 import { checkInOrOut, CheckInOutPayload } from '../api/api';
@@ -27,6 +27,8 @@ const WorkerDashboard: React.FC = () => {
 
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const worker = user as WorkerUser | undefined;
+  const canCheckInOut = !!(worker?.establishmentId && worker?.estmtWorkerId);
 
   // Mock work location - in real app, this would come from API
   const workLocation = {
@@ -274,8 +276,10 @@ const WorkerDashboard: React.FC = () => {
         </div>
 
         {/* Location Check-in */}
-        <div className="mb-8">
-          {/* <LocationCheckIn
+        {canCheckInOut ? (
+
+          <div className="mb-8">
+            {/* <LocationCheckIn
             workLocation={workLocation}
             onCheckIn={handleCheckIn}
             onCheckOut={handleCheckOut}
@@ -284,54 +288,55 @@ const WorkerDashboard: React.FC = () => {
           /> */}
 
 
-          <div className="space-y-3">
-            {!isCheckedIn ? (
-              <button
-                onClick={handleCheckIn}
-                //     disabled={
-                //       isProcessing 
-                // }
-                // className={`w-full btn-mobile font-semibold ${workLocation
-                //     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                //     : 'bg-green-600 text-white hover:bg-green-700'
-                //   }`}
-                className='w-full btn-mobile font-semibold bg-green-600 text-white hover:bg-green-700'
-              >
-                {isProcessing ? (
-                  <div className="flex items-center justify-center">
-                    <Loader className="h-4 w-4 animate-spin mr-2" />
-                    {t('worker.checkingIn')}
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center">
-                    <CheckCircle className="h-4 w-4 mr-2" />
-                    {t('worker.checkIn')}
-                  </div>
-                )}
-              </button>
-            ) : (
-              <button
-                onClick={handleCheckOut}
-                // disabled={isProcessing}
-                className="w-full btn-mobile bg-red-600 text-white hover:bg-red-700 font-semibold"
-              >
-                {isProcessing ? (
-                  <div className="flex items-center justify-center">
-                    <Loader className="h-4 w-4 animate-spin mr-2" />
-                    {t('worker.checkingOut')}
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center">
-                    <XCircle className="h-4 w-4 mr-2" />
-                    {t('worker.checkOut')}
-                  </div>
-                )}
-              </button>
-            )}
+            <div className="space-y-3">
+              {!isCheckedIn ? (
+                <button
+                  onClick={handleCheckIn}
+                  //     disabled={
+                  //       isProcessing 
+                  // }
+                  // className={`w-full btn-mobile font-semibold ${workLocation
+                  //     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  //     : 'bg-green-600 text-white hover:bg-green-700'
+                  //   }`}
+                  className='w-full btn-mobile font-semibold bg-green-600 text-white hover:bg-green-700'
+                >
+                  {isProcessing ? (
+                    <div className="flex items-center justify-center">
+                      <Loader className="h-4 w-4 animate-spin mr-2" />
+                      {t('worker.checkingIn')}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center">
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      {t('worker.checkIn')}
+                    </div>
+                  )}
+                </button>
+              ) : (
+                <button
+                  onClick={handleCheckOut}
+                  // disabled={isProcessing}
+                  className="w-full btn-mobile bg-red-600 text-white hover:bg-red-700 font-semibold"
+                >
+                  {isProcessing ? (
+                    <div className="flex items-center justify-center">
+                      <Loader className="h-4 w-4 animate-spin mr-2" />
+                      {t('worker.checkingOut')}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center">
+                      <XCircle className="h-4 w-4 mr-2" />
+                      {t('worker.checkOut')}
+                    </div>
+                  )}
+                </button>
+              )}
 
 
+            </div>
           </div>
-        </div>
+        ) : null}
 
 
         {/* Recent Attendance */}
