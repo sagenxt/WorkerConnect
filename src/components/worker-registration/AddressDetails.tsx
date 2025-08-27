@@ -9,6 +9,7 @@ import {
   fetchDistrictsByStateId,
   fetchVillagesByCityId,
 } from "../../api/location";
+import { useLoader } from "../../contexts/LoaderContext";
 
 interface AddressDetailsProps {
   formData: any;
@@ -31,6 +32,7 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [districts, setDistricts] = useState<{ value: string; label: string }[]>([]);
   const [selectedStateId, setSelectedStateId] = useState<number | null>(1);
+  const { showLoader, hideLoader } = useLoader();
 
 
   type AddressKey = "presentAddress" | "permanentAddress";
@@ -78,6 +80,7 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
 
   useEffect(() => {
     const fetchDistricts = async () => {
+      showLoader();
       try {
         const districtsData = await fetchDistrictsByStateId(1);
         const mapped = districtsData.map((d: any) => ({
@@ -88,9 +91,11 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
           name: d.name,
         }));
         setDistricts(mapped);
+        hideLoader();
       } catch (err) {
         console.error("Failed to fetch districts:", err);
         setDistricts([]);
+        hideLoader();
       }
     };
     fetchDistricts();
