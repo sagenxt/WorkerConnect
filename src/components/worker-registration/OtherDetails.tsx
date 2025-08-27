@@ -83,14 +83,16 @@ const OtherDetails: React.FC<OtherDetailsProps> = ({
           required
           error={errors.isTradeUnionMember}
         />
-        <FormInput
-          label={t("worker.tradeUnionNumber")}
-          value={formData.tradeUnionNumber}
-          onChange={(value: string) =>
-            setFormData({ ...formData, tradeUnionNumber: value })
-          }
-          required
-        />
+        {formData.isTradeUnionMember === "yes" && (
+          <FormInput
+            label={t("worker.tradeUnionNumber")}
+            value={formData.tradeUnionNumber}
+            onChange={(value: string) =>
+              setFormData({ ...formData, tradeUnionNumber: value })
+            }
+            required
+          />
+        )}
       </div>
 
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
