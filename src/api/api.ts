@@ -1,10 +1,11 @@
 // const BASE_URL = "http://108.181.164.242:8085/labourms/v1/services/adapter";
 
-const BASE_URL =
-  process.env.NODE_ENV === "development"
-    ? "http://108.181.164.242:8085/labourms/v1/services/adapter" // local dev direct backend
-    : "https://108.181.164.242:5001/labourms/v1/services/adapter";
+// const BASE_URL =
+//   process.env.NODE_ENV === "development"
+//     ? "http://108.181.164.242:8085/labourms/v1/services/adapter" // local dev direct backend
+//     : "https://108.181.164.242:5001/labourms/v1/services/adapter";
 
+const BASE_URL = "https://www.sagenxtapps.com/labourms/v1/services/adapter";
 
 export async function api<T>(
   path: string,
